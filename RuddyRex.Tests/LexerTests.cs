@@ -15,6 +15,8 @@ namespace RuddyRex.Tests
     {
         [TestMethod]
         [DataRow("()", "(", ")")]
+        [DataRow("{}", "{", "}")]
+        [DataRow("[]", "[", "]")]
         public void Lexer_ShouldTokenizeSymbolPairs_ReturnTokenizedSymbols(string input, string open, string close)
         {
             List<IToken> expected = new() 
