@@ -17,7 +17,19 @@ namespace RuddyRex.Lib.Extensions
         /// <returns>Bool</returns>
         public static bool IsBracket(this char c)
         {
-            return Regex.IsMatch(c.ToString(), "[(){}[\\]]");
+            return Regex.IsMatch(c.ToString(), "[(){}]");
+        }
+        public static bool IsOpeningSquareBracket(this char c)
+        {
+            return c.ToString() == "[";
+        }
+        public static bool IsClosingSquareBracket(this char c)
+        {
+            return c.ToString() == "]";
+        }
+        public static bool IsWhiteSpace(this char c)
+        {
+            return String.IsNullOrWhiteSpace(c.ToString());
         }
     }
 }

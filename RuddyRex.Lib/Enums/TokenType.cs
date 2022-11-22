@@ -10,6 +10,7 @@ namespace RuddyRex.Lib.Enums
     {
         Name,
         Symbol,
-        Number
+        Number,
+        Character
     }
 }

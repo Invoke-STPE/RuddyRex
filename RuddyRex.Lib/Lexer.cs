@@ -28,6 +28,20 @@ namespace RuddyRex.Lib
                     index++;
                     continue;
                 }
+                if (character.IsOpeningSquareBracket())
+                {
+                    TokenSymbol symbol = new() { Type = TokenType.Symbol, Value = character.ToString() };
+                    tokens.Add(symbol);
+                    index++;
+                    // How do you handle if there is white spaces? SHOULD NOT BE ALLLOWED
+                    //index = character.IsWhiteSpace() == false
+                    while (character.IsClosingSquareBracket() == false)
+                    {
+                        tokens.Add(new TokenCharacter() { Type = TokenType.Character, Value = character });
+                        character = input[++index];
+                    }
+                }
+                index++;
             }
 
             return tokens;
