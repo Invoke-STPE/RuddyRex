@@ -32,7 +32,7 @@ namespace RuddyRex.Lib
                 {
                     TokenSymbol symbol = new() { Type = TokenType.Symbol, Value = character.ToString() };
                     tokens.Add(symbol);
-                    index++;
+                    character = input[++index];
                     // How do you handle if there is white spaces? SHOULD NOT BE ALLLOWED
                     //index = character.IsWhiteSpace() == false
                     while (character.IsClosingSquareBracket() == false)
@@ -40,6 +40,7 @@ namespace RuddyRex.Lib
                         tokens.Add(new TokenCharacter() { Type = TokenType.Character, Value = character });
                         character = input[++index];
                     }
+                    tokens.Add(new TokenSymbol() { Type = TokenType.Symbol, Value = character.ToString() });
                 }
                 index++;
             }

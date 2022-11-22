@@ -32,9 +32,9 @@ namespace RuddyRex.Tests
         }
 
         [TestMethod]
-        [DataRow("[abc]")]
-        [DataRow("[ abc ]")]
-        [DataRow(" [ abc ]")]
+        [DataRow("[abc]", "[", "a", "b", "c", "]")]
+        [DataRow(" [abc]", "[", "a", "b", "c", "]")]
+ 
         public void Lexer_ShouldTokenizeSquareBrackets_ReturnsListOfBracketsAndCharacter(string input, string open, string a, string b, string c, string close)
         {
             List<IToken> expected = new()
