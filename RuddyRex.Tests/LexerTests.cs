@@ -14,7 +14,7 @@ namespace RuddyRex.Tests
     public class LexerTests
     {
         [TestMethod]
-        [DataRow("", "(", ")")]
+        [DataRow("()", "(", ")")]
         public void Lexer_ShouldTokenizeSymbolPairs_ReturnTokenizedSymbols(string input, string open, string close)
         {
             List<IToken> expected = new() 
@@ -25,7 +25,7 @@ namespace RuddyRex.Tests
 
             List<IToken> actual = Lexer.Tokenize(input);
 
-            Assert.AreEqual(expected, actual);
+            CollectionAssert.AreEqual(expected, actual);
         }
     }
 }
