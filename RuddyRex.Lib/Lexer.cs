@@ -28,19 +28,33 @@ namespace RuddyRex.Lib
                     index++;
                     continue;
                 }
-                if (character.IsOpeningSquareBracket())
+                if (character.IsLetter())
                 {
-                    TokenSymbol symbol = new() { Type = TokenType.Symbol, Value = character.ToString() };
-                    tokens.Add(symbol);
-                    character = input[++index];
-                    // How do you handle if there is white spaces? SHOULD NOT BE ALLLOWED
-                    //index = character.IsWhiteSpace() == false
-                    while (character.IsClosingSquareBracket() == false)
+                    string letters = character.ToString();
+                    //character = input[++index];
+                    while (input[++index].IsLetter())
                     {
-                        tokens.Add(new TokenCharacter() { Type = TokenType.Character, Value = character });
-                        character = input[++index];
+                        letters += input[index];
+                        if (index == input.Length - 1)
+                        {
+                            break;
+                        }
                     }
-                    tokens.Add(new TokenSymbol() { Type = TokenType.Symbol, Value = character.ToString() });
+
+                    tokens.Add(new TokenName() { Type = TokenType.Name, Value = letters });
+                    continue;
+                }
+                if (character.IsNumber())
+                {
+                    // Opgave går opmærksom på } og hvordan du debuggede
+                    string number = character.ToString();
+                    //character = input[++index];
+                    while (input[++index].IsNumber())
+                    {
+                        number += input[index];
+                    }
+                    tokens.Add(new TokenNumber() { Type = TokenType.Number, Value = Int32.Parse(number) });
+                    continue;
                 }
                 index++;
             }

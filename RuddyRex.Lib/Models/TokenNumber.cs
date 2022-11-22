@@ -7,9 +7,9 @@ using System.Threading.Tasks;
 
 namespace RuddyRex.Lib.Models
 {
-    public record TokenCharacter : IToken
+    public record TokenNumber : IToken
     {
         public TokenType Type { get; set; }
-        public char Value { get; set; }
+        public int Value { get; set; }
     }
 }

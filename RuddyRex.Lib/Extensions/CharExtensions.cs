@@ -17,7 +17,7 @@ namespace RuddyRex.Lib.Extensions
         /// <returns>Bool</returns>
         public static bool IsBracket(this char c)
         {
-            return Regex.IsMatch(c.ToString(), "[(){}]");
+            return Regex.IsMatch(c.ToString(), "[(){}[\\]]");
         }
         public static bool IsOpeningSquareBracket(this char c)
         {
@@ -30,6 +30,14 @@ namespace RuddyRex.Lib.Extensions
         public static bool IsWhiteSpace(this char c)
         {
             return String.IsNullOrWhiteSpace(c.ToString());
+        }
+        public static bool IsLetter(this char c)
+        {
+            return Regex.IsMatch(c.ToString(), "[A-Za-z]");
+        }
+        public static bool IsNumber(this char c)
+        {
+            return Regex.IsMatch(c.ToString(), "[0-9]");
         }
     }
 }
