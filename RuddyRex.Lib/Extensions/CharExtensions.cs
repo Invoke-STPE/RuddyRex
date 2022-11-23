@@ -15,9 +15,9 @@ namespace RuddyRex.Lib.Extensions
         /// </summary>
         /// <param name="c">Character to be checked</param>
         /// <returns>Bool</returns>
-        public static bool IsBracket(this char c)
+        public static bool IsSymbol(this char c)
         {
-            return Regex.IsMatch(c.ToString(), "[(){}[\\]]");
+            return Regex.IsMatch(c.ToString(), "[(){}[\\]|]");
         }
         public static bool IsOpeningSquareBracket(this char c)
         {
@@ -38,6 +38,11 @@ namespace RuddyRex.Lib.Extensions
         public static bool IsNumber(this char c)
         {
             return Regex.IsMatch(c.ToString(), "[0-9]");
+        }
+
+        public static bool IsQuote(this char c)
+        {
+            return c.ToString() == "\"";
         }
     }
 }

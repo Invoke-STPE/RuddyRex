@@ -11,6 +11,7 @@ namespace RuddyRex.Lib.Enums
         Name,
         Symbol,
         Number,
-        Character
+        Character,
+        String
     }
 }

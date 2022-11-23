@@ -17,8 +17,6 @@ namespace RuddyRex.Tests
     [TestClass]
     public class LexerTests
     {
-
-
         [TestMethod]
         [DataRow("()", "(", ")")]
         [DataRow("{}", "{", "}")]
@@ -30,6 +28,21 @@ namespace RuddyRex.Tests
             { 
                 new TokenSymbol() { Type = TokenType.Symbol, Value = open },
                 new TokenSymbol() { Type = TokenType.Symbol, Value = close },
+            };
+
+            List<IToken> actual = lexer.Tokenize();
+
+            CollectionAssert.AreEqual(expected, actual);
+        }
+
+        [TestMethod]
+        [DataRow("|")]
+        public void Lexer_ShouldTokenizeSingleSymbols(string symbol)
+        {
+            Lexer lexer = new Lexer(symbol);
+            List<IToken> expected = new()
+            {
+                new TokenSymbol() { Type = TokenType.Symbol, Value = symbol },
             };
 
             List<IToken> actual = lexer.Tokenize();
@@ -90,5 +103,32 @@ namespace RuddyRex.Tests
             Lexer lexer = new($"{invalid}Between {{ 1 Till 3}} Digit");
             lexer.Tokenize();
         }
+
+        [TestMethod]
+        public void Lexer_ShouldTokenizeAString()
+        {
+            Lexer lexer = new Lexer("\"This is pure text\"");
+
+            List<IToken> expected = new()
+            {
+                new TokenString() { Type = TokenType.String, Value = "This is pure text" },
+            };
+
+            List<IToken> actual = lexer.Tokenize();
+
+            CollectionAssert.AreEqual(expected, actual);
+        }
+
+        //[TestMethod]
+        //[ExpectedException(typeof(KeywordWasNotRecognizedException))]
+        //[DataRow("Btween")]
+        //[DataRow("Exatcly")]
+        //[DataRow("atch")]
+        //[DataRow("d")]
+        //public void Lexer_DoesNotRecognizeKeyword_ThrowsKeywordWasNotRecognizedException(string invalid)
+        //{
+        //    Lexer lexer = new($"{invalid}Between {{ 1 Till 3}} Digit");
+        //    lexer.Tokenize();
+        //}
     }
 }
