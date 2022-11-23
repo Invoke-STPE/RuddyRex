@@ -28,7 +28,7 @@ namespace RuddyRex.Lib
             while (_index <= _stringLength)
             {
                 char character = _input[_index];
-
+                
                 if (character.IsBracket())
                 {
                     TokenSymbol symbol = new() { Type = TokenType.Symbol, Value = character.ToString()};
@@ -57,7 +57,12 @@ namespace RuddyRex.Lib
                     tokens.Add(new TokenNumber() { Type = TokenType.Number, Value = Int32.Parse(number) });
                     continue;
                 }
-                _index++;
+                if (character.IsWhiteSpace())
+                {
+                    IncrementIndex();
+                    continue;
+                }
+
             }
 
             return tokens;
@@ -78,8 +83,6 @@ namespace RuddyRex.Lib
         {
             bool result = IncrementIndex();
             return _index > _stringLength ? ' ' : _input[_index];
-        
-
         }
     }
 }

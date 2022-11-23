@@ -29,7 +29,7 @@ namespace RuddyRex.Lib.Extensions
         }
         public static bool IsWhiteSpace(this char c)
         {
-            return String.IsNullOrWhiteSpace(c.ToString());
+            return c.ToString() == " ";
         }
         public static bool IsLetter(this char c)
         {

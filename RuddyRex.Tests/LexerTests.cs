@@ -76,27 +76,7 @@ namespace RuddyRex.Tests
             };
 
             List<IToken> actual = lexer.Tokenize();
-
             CollectionAssert.AreEqual(expected, actual);
         }
-        //[TestMethod]
-        //[DataRow("[abc]", "[", "a", "b", "c", "]")]
-        //[DataRow(" [abc]", "[", "a", "b", "c", "]")]
-
-        //public void Lexer_ShouldTokenizeCurlyBracketsWithNumbers_ReturnsListOfBracketsAndNumbers(string input, string open, string a, string b, string c, string close)
-        //{
-        //    List<IToken> expected = new()
-        //    {
-        //        new TokenSymbol() {Type = TokenType.Symbol, Value = open},
-        //        new TokenCharacter() {Type = TokenType.Character, Value = Char.Parse(a)},
-        //        new TokenCharacter() {Type = TokenType.Character, Value = Char.Parse(b)},
-        //        new TokenCharacter() {Type = TokenType.Character, Value = Char.Parse(c)},
-        //        new TokenSymbol() {Type = TokenType.Symbol, Value = close}
-        //    };
-
-        //    List<IToken> actual = Lexer.Tokenize(input);
-
-        //    CollectionAssert.AreEqual(expected, actual);
-        //}
     }
 }
