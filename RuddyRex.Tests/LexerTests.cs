@@ -2,6 +2,7 @@
 using Newtonsoft.Json.Linq;
 using RuddyRex.Lib;
 using RuddyRex.Lib.Enums;
+using RuddyRex.Lib.Exceptions;
 using RuddyRex.Lib.Models;
 using System;
 using System.Collections.Generic;
@@ -77,6 +78,17 @@ namespace RuddyRex.Tests
 
             List<IToken> actual = lexer.Tokenize();
             CollectionAssert.AreEqual(expected, actual);
+        }
+        [TestMethod]
+        [ExpectedException(typeof(CharacterIsNotValidException))]
+        [DataRow("%")]
+        [DataRow("-")]
+        [DataRow("+")]
+        [DataRow("-")]
+        public void Lexer_DoesNotRecognizeCharacter_ThrowsCharacterIsNotValidException(string invalid)
+        {
+            Lexer lexer = new($"{invalid}Between {{ 1 Till 3}} Digit");
+            lexer.Tokenize();
         }
     }
 }

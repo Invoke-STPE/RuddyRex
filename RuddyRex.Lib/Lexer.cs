@@ -1,4 +1,5 @@
 ﻿using RuddyRex.Lib.Enums;
+using RuddyRex.Lib.Exceptions;
 using RuddyRex.Lib.Extensions;
 using RuddyRex.Lib.Models;
 using System;
@@ -63,6 +64,7 @@ namespace RuddyRex.Lib
                     continue;
                 }
 
+                throw new CharacterIsNotValidException($"{character} Is not a valid character");
             }
 
             return tokens;
