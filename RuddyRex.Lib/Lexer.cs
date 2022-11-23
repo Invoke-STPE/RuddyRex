@@ -9,36 +9,39 @@ using System.Threading.Tasks;
 
 namespace RuddyRex.Lib
 {
-    public static class Lexer
+    public class Lexer
     {
+        private int _index;
+        private int _stringLength = 0;
+        private readonly string _input = "";
 
-        public static List<IToken> Tokenize(string input)
+        public Lexer(string input)
         {
-            
+            _stringLength = input.Length - 1;
+            _input = input;
+        }
+        public List<IToken> Tokenize()
+        {
+            _stringLength = _input.Length -1;
             List<IToken> tokens = new();
-            int index = 0;
-            while (index <= input.Length - 1)
+           
+            while (_index <= _stringLength)
             {
-                char character = input[index];
+                char character = _input[_index];
 
                 if (character.IsBracket())
                 {
                     TokenSymbol symbol = new() { Type = TokenType.Symbol, Value = character.ToString()};
                     tokens.Add(symbol);
-                    index++;
+                    IncrementIndex();
                     continue;
                 }
                 if (character.IsLetter())
                 {
                     string letters = character.ToString();
-                    //character = input[++index];
-                    while (input[++index].IsLetter())
+                    while (GetNextCharacter().IsLetter())
                     {
-                        letters += input[index];
-                        if (index == input.Length - 1)
-                        {
-                            break;
-                        }
+                        letters += _input[_index];
                     }
 
                     tokens.Add(new TokenName() { Type = TokenType.Name, Value = letters });
@@ -46,20 +49,37 @@ namespace RuddyRex.Lib
                 }
                 if (character.IsNumber())
                 {
-                    // Opgave går opmærksom på } og hvordan du debuggede
                     string number = character.ToString();
-                    //character = input[++index];
-                    while (input[++index].IsNumber())
+                    while (GetNextCharacter().IsNumber())
                     {
-                        number += input[index];
+                        number += _input[_index];
                     }
                     tokens.Add(new TokenNumber() { Type = TokenType.Number, Value = Int32.Parse(number) });
                     continue;
                 }
-                index++;
+                _index++;
             }
 
             return tokens;
+        }
+
+        private bool IncrementIndex()
+        {
+            if (_index <= _stringLength)
+            {
+                _index++;
+                return true;
+            }
+
+            return false;
+        }
+
+        private char GetNextCharacter()
+        {
+            bool result = IncrementIndex();
+            return _index > _stringLength ? ' ' : _input[_index];
+        
+
         }
     }
 }

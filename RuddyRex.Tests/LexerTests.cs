@@ -24,13 +24,14 @@ namespace RuddyRex.Tests
         [DataRow("[ ]", "[", "]")]
         public void Lexer_ShouldTokenizeSymbolPairs(string input, string open, string close)
         {
+            Lexer lexer = new Lexer(input);
             List<IToken> expected = new() 
             { 
                 new TokenSymbol() { Type = TokenType.Symbol, Value = open },
                 new TokenSymbol() { Type = TokenType.Symbol, Value = close },
             };
 
-            List<IToken> actual = Lexer.Tokenize(input);
+            List<IToken> actual = lexer.Tokenize();
 
             CollectionAssert.AreEqual(expected, actual);
         }
@@ -38,6 +39,8 @@ namespace RuddyRex.Tests
         [TestMethod]
         public void Lexer_ShouldTokenizeExpressionBetweenBrackets()
         {
+            Lexer lexer = new Lexer("(Between { 1 Till 3} Digit)");
+
             List<IToken> expected = new()
             {
                 new TokenSymbol() { Type = TokenType.Symbol, Value = "(" },
@@ -51,7 +54,7 @@ namespace RuddyRex.Tests
                 new TokenSymbol() { Type = TokenType.Symbol, Value = ")" }
             };
 
-            List<IToken> actual = Lexer.Tokenize("(Between { 1 Till 3} Digit)");
+            List<IToken> actual = lexer.Tokenize();
 
             CollectionAssert.AreEqual(expected, actual);
         }
@@ -59,6 +62,8 @@ namespace RuddyRex.Tests
         [TestMethod]
         public void Lexer_ShouldTokenizeExpressionBetweenWithoutBrackets()
         {
+            Lexer lexer = new Lexer("Between { 1 Till 3} Digit");
+
             List<IToken> expected = new()
             {
                 new TokenName() { Type = TokenType.Name, Value = "Between"},
@@ -70,7 +75,7 @@ namespace RuddyRex.Tests
                 new TokenName() { Type = TokenType.Name, Value = "Digit" },
             };
 
-            List<IToken> actual = Lexer.Tokenize("Between { 1 Till 3} Digit");
+            List<IToken> actual = lexer.Tokenize();
 
             CollectionAssert.AreEqual(expected, actual);
         }
