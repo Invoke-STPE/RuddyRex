@@ -45,7 +45,7 @@ namespace RuddyRex.Lib
                     {
                         letters += _input[_index];
                     }
-                    tokens.Add(new TokenName() { Type = TokenType.Name, Value = letters });
+                    tokens.Add(new TokenKeyword() { Type = TokenType.Name, Value = letters });
                     continue;
                 }
                 if (character.IsNumber())
@@ -81,20 +81,17 @@ namespace RuddyRex.Lib
             return tokens;
         }
 
-        private bool IncrementIndex()
+        private void IncrementIndex()
         {
             if (_index <= _maxStringLength)
             {
                 _index++;
-                return true;
             }
-
-            return false;
         }
 
         private char GetNextCharacter()
         {
-            bool result = IncrementIndex();
+            IncrementIndex();
             return _index > _maxStringLength ? ' ' : _input[_index];
         }
     }
