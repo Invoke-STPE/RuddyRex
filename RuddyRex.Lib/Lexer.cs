@@ -13,23 +13,23 @@ namespace RuddyRex.Lib
 {
     public class Lexer
     {
-        private int _index;
-        private int _maxStringLength = 0;
-        private readonly string _input = "";
+        private int _posInSourceCode;
+        private int _maxSourceCodeLength = 0;
+        private readonly string _sourceCode = "";
 
-        public Lexer(string input)
+        public Lexer(string sourceCode)
         {
-            _maxStringLength = input.Length - 1;
-            _input = input;
+            _maxSourceCodeLength = sourceCode.Length - 1;
+            _sourceCode = sourceCode;
         }
         public List<IToken> Tokenize()
         {
-            _maxStringLength = _input.Length -1;
+            _maxSourceCodeLength = _sourceCode.Length -1;
             List<IToken> tokens = new();
            
-            while (_index <= _maxStringLength)
+            while (_posInSourceCode <= _maxSourceCodeLength)
             {
-                char character = _input[_index];
+                char character = _sourceCode[_posInSourceCode];
 
                 if (character.IsSymbol())
                 {
@@ -43,7 +43,7 @@ namespace RuddyRex.Lib
                     string letters = character.ToString();
                     while (GetNextCharacter().IsLetter())
                     {
-                        letters += _input[_index];
+                        letters += _sourceCode[_posInSourceCode];
                     }
                     tokens.Add(new TokenKeyword() { Type = TokenType.Name, Value = letters });
                     continue;
@@ -53,7 +53,7 @@ namespace RuddyRex.Lib
                     string number = character.ToString();
                     while (GetNextCharacter().IsNumber())
                     {
-                        number += _input[_index];
+                        number += _sourceCode[_posInSourceCode];
                     }
                     tokens.Add(new TokenNumber() { Type = TokenType.Number, Value = Int32.Parse(number) });
                     continue;
@@ -68,7 +68,7 @@ namespace RuddyRex.Lib
                     string letters = "";
                     while (GetNextCharacter().IsQuote() == false)
                     {
-                        letters += _input[_index];
+                        letters += _sourceCode[_posInSourceCode];
                     }
                     tokens.Add(new TokenString() { Type = TokenType.String, Value = letters });
                     IncrementIndex();
@@ -83,16 +83,16 @@ namespace RuddyRex.Lib
 
         private void IncrementIndex()
         {
-            if (_index <= _maxStringLength)
+            if (_posInSourceCode <= _maxSourceCodeLength)
             {
-                _index++;
+                _posInSourceCode++;
             }
         }
 
         private char GetNextCharacter()
         {
             IncrementIndex();
-            return _index > _maxStringLength ? ' ' : _input[_index];
+            return _posInSourceCode > _maxSourceCodeLength ? ' ' : _sourceCode[_posInSourceCode];
         }
     }
 }
