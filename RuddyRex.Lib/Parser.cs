@@ -34,28 +34,31 @@ namespace RuddyRex.Lib
 
             switch (token.Type)
             {
-                case Enums.TokenType.Name:
-
+                case TokenType.OpeningParenthesis:
                     break;
-                case Enums.TokenType.Operator:
+                case TokenType.ClosingParenthesis:
                     break;
-                case Enums.TokenType.NumerLiteral:
-                    index++;
-                    TokenNumber tokenNumber = (TokenNumber)token;
-                    node = new NumberNode() { Type = NodeTypes.NumberLiteral, Value = tokenNumber.Value };
+                case TokenType.OpeningSquareBracket:
                     break;
-                case Enums.TokenType.CharacterLiteral:
+                case TokenType.ClosingSquareBracket:
                     break;
-                case Enums.TokenType.StringLiteral:
-                    index++;
-                    TokenString tokenString = (TokenString)token;
-                    node = new StringNode() { Type = NodeTypes.StringLiteral, Value = tokenString.Value };
+                case TokenType.OpeningCurlyBracket:
                     break;
-                default:
+                case TokenType.ClosingCurlyBracket:
+                    break;
+                case TokenType.AlternateOperator:
+                    break;
+                case TokenType.KeywordIdentifier:
+                    break;
+                case TokenType.NumberLiteral:
+                    break;
+                case TokenType.CharacterLiteral:
+                    break;
+                case TokenType.StringLiteral:
                     break;
             }
             return (node, 3);
-            
+
         }
     }
 }

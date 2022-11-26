@@ -24,7 +24,7 @@ namespace RuddyRex.Tests
             {
                 List<IToken> tokens = new()
                 {
-                    new TokenNumber(){Type = TokenType.NumerLiteral, Value = 5}
+                    new TokenNumber(){Type = TokenType.NumberLiteral, Value = 5}
                 };
 
                 INode expected = new NumberNode() { Type = NodeTypes.NumberLiteral, Value = 5 };
