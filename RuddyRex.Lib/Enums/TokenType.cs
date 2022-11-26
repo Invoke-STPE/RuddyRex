@@ -8,10 +8,18 @@ namespace RuddyRex.Lib.Enums
 {
     public enum TokenType
     {
-        Name,
-        Symbol,
-        Number,
-        Character,
-        String
+        // Operator definitions
+        OpeningParenthesis,
+        ClosingParenthesis,
+        OpeningSquareBracket,
+        ClosingSquareBracket,
+        OpeningCurlyBracket,
+        ClosingCurlyBracket,
+        AlternateOperator,
+        // Literal and keyword definitions
+        KeywordIdentifier,
+        NumberLiteral,
+        CharacterLiteral,
+        StringLiteral,
     }
 }

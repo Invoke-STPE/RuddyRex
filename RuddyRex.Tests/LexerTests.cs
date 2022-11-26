@@ -19,20 +19,46 @@ namespace RuddyRex.Tests
     {
 
         [TestClass]
-        public class LexerTokenizeSymbolsTest
+        public class LexerCanTokenizeBasicCharacters
         {
+
             [TestMethod]
-            [DataRow("()", "(", ")")]
-            [DataRow("{}", "{", "}")]
-            [DataRow("[ ]", "[", "]")]
-            public void Lexer_ShouldTokenizeSymbolPairs(string input, string open, string close)
+            public void Lexer_ShouldTokenizeParenthesisPairs()
             {
-                Lexer lexer = new Lexer(input);
+                Lexer lexer = new Lexer("()");
                 List<IToken> expected = new()
+                {
+                    new TokenOperator() { Type = TokenType.OpeningParenthesis, Value = "(" },
+                    new TokenOperator() { Type = TokenType.ClosingParenthesis, Value = ")" },
+                };
+
+                List<IToken> actual = lexer.Tokenize();
+
+                CollectionAssert.AreEqual(expected, actual);
+            }
+            [TestMethod]
+            public void Lexer_ShouldTokenizeCurlyBracketsPairs()
             {
-                new TokenSymbol() { Type = TokenType.Symbol, Value = open },
-                new TokenSymbol() { Type = TokenType.Symbol, Value = close },
-            };
+                Lexer lexer = new Lexer("{}");
+                List<IToken> expected = new()
+                {
+                    new TokenOperator() { Type = TokenType.OpeningCurlyBracket, Value = "{" },
+                    new TokenOperator() { Type = TokenType.ClosingCurlyBracket, Value = "}" },
+                };
+
+                List<IToken> actual = lexer.Tokenize();
+
+                CollectionAssert.AreEqual(expected, actual);
+            }
+            [TestMethod]
+            public void Lexer_ShouldTokenizeSquareBracketsPairs()
+            {
+                Lexer lexer = new Lexer("[]");
+                List<IToken> expected = new()
+                {
+                    new TokenOperator() { Type = TokenType.OpeningSquareBracket, Value = "[" },
+                    new TokenOperator() { Type = TokenType.ClosingSquareBracket, Value = "]" },
+                };
 
                 List<IToken> actual = lexer.Tokenize();
 
@@ -46,13 +72,14 @@ namespace RuddyRex.Tests
                 Lexer lexer = new Lexer(symbol);
                 List<IToken> expected = new()
             {
-                new TokenSymbol() { Type = TokenType.Symbol, Value = symbol },
+                new TokenOperator() { Type = TokenType.AlternateOperator, Value = symbol },
             };
 
                 List<IToken> actual = lexer.Tokenize();
 
                 CollectionAssert.AreEqual(expected, actual);
             }
+
             [TestMethod]
             [DataRow(" ")]
             [DataRow("\n ")]
@@ -75,15 +102,15 @@ namespace RuddyRex.Tests
 
                 List<IToken> expected = new()
             {
-                new TokenSymbol() { Type = TokenType.Symbol, Value = "(" },
-                new TokenKeyword() { Type = TokenType.Name, Value = "Between"},
-                new TokenSymbol() { Type = TokenType.Symbol, Value = "{" },
-                new TokenNumber() {Type = TokenType.Number, Value = 1},
-                new TokenKeyword() { Type = TokenType.Name, Value = "Till" },
-                new TokenNumber() {Type = TokenType.Number, Value = 3},
-                new TokenSymbol() { Type = TokenType.Symbol, Value = "}" },
-                new TokenKeyword() { Type = TokenType.Name, Value = "Digit" },
-                new TokenSymbol() { Type = TokenType.Symbol, Value = ")" }
+                new TokenOperator() { Type = TokenType.OpeningParenthesis, Value = "(" },
+                new TokenKeyword() { Type = TokenType.KeywordIdentifier, Value = "Between"},
+                new TokenOperator() { Type = TokenType.OpeningCurlyBracket, Value = "{" },
+                new TokenNumber() {Type = TokenType.NumberLiteral, Value = 1},
+                new TokenKeyword() { Type = TokenType.KeywordIdentifier, Value = "Till" },
+                new TokenNumber() {Type = TokenType.NumberLiteral, Value = 3},
+                new TokenOperator() { Type = TokenType.ClosingCurlyBracket, Value = "}" },
+                new TokenKeyword() { Type = TokenType.KeywordIdentifier, Value = "Digit" },
+                new TokenOperator() { Type = TokenType.ClosingParenthesis, Value = ")" }
             };
 
                 List<IToken> actual = lexer.Tokenize();
@@ -98,13 +125,13 @@ namespace RuddyRex.Tests
 
                 List<IToken> expected = new()
             {
-                new TokenKeyword() { Type = TokenType.Name, Value = "Between"},
-                new TokenSymbol() { Type = TokenType.Symbol, Value = "{" },
-                new TokenNumber() {Type = TokenType.Number, Value = 1},
-                new TokenKeyword() { Type = TokenType.Name, Value = "Till" },
-                new TokenNumber() {Type = TokenType.Number, Value = 3},
-                new TokenSymbol() { Type = TokenType.Symbol, Value = "}" },
-                new TokenKeyword() { Type = TokenType.Name, Value = "Digit" },
+                new TokenKeyword() { Type = TokenType.KeywordIdentifier, Value = "Between"},
+                new TokenOperator() { Type = TokenType.OpeningCurlyBracket, Value = "{" },
+                new TokenNumber() {Type = TokenType.NumberLiteral, Value = 1},
+                new TokenKeyword() { Type = TokenType.KeywordIdentifier, Value = "Till" },
+                new TokenNumber() {Type = TokenType.NumberLiteral, Value = 3},
+                new TokenOperator() { Type = TokenType.ClosingCurlyBracket, Value = "}" },
+                new TokenKeyword() { Type = TokenType.KeywordIdentifier, Value = "Digit" },
             };
 
                 List<IToken> actual = lexer.Tokenize();
@@ -117,7 +144,7 @@ namespace RuddyRex.Tests
 
                 List<IToken> expected = new()
             {
-                new TokenString() { Type = TokenType.String, Value = "This is pure text" },
+                new TokenString() { Type = TokenType.StringLiteral, Value = "This is pure text" },
             };
 
                 List<IToken> actual = lexer.Tokenize();

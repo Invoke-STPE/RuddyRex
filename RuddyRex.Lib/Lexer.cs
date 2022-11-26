@@ -1,12 +1,13 @@
 ﻿using RuddyRex.Lib.Enums;
 using RuddyRex.Lib.Exceptions;
-using RuddyRex.Lib.Extensions;
 using RuddyRex.Lib.Helpers;
 using RuddyRex.Lib.Models;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics.CodeAnalysis;
 using System.Linq;
 using System.Text;
+using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 
 namespace RuddyRex.Lib
@@ -26,53 +27,78 @@ namespace RuddyRex.Lib
         {
             _maxStringLength = _input.Length -1;
             List<IToken> tokens = new();
-           
+            
             while (_index <= _maxStringLength)
             {
+                IToken token;
                 char character = _input[_index];
-
-                if (character.IsSymbol())
+                switch (character)
                 {
-                    TokenSymbol symbol = new() { Type = TokenType.Symbol, Value = character.ToString()};
-                    tokens.Add(symbol);
-                    IncrementIndex();
-                    continue;
-                }
-                if (character.IsLetter())
-                {
-                    string letters = character.ToString();
-                    while (GetNextCharacter().IsLetter())
-                    {
-                        letters += _input[_index];
-                    }
-                    tokens.Add(new TokenKeyword() { Type = TokenType.Name, Value = letters });
-                    continue;
-                }
-                if (character.IsNumber())
-                {
-                    string number = character.ToString();
-                    while (GetNextCharacter().IsNumber())
-                    {
-                        number += _input[_index];
-                    }
-                    tokens.Add(new TokenNumber() { Type = TokenType.Number, Value = Int32.Parse(number) });
-                    continue;
-                }
-                if (character.IsWhiteSpace())
-                {
-                    IncrementIndex();
-                    continue;
-                }
-                if (character.IsQuote())
-                {
-                    string letters = "";
-                    while (GetNextCharacter().IsQuote() == false)
-                    {
-                        letters += _input[_index];
-                    }
-                    tokens.Add(new TokenString() { Type = TokenType.String, Value = letters });
-                    IncrementIndex();
-                    continue;
+                    case '(':
+                        token = new TokenOperator() { Type = TokenType.OpeningParenthesis, Value = character.ToString() };
+                        tokens.Add(token);
+                        IncrementIndex();
+                        continue;
+                    case ')':
+                        token = new TokenOperator() { Type = TokenType.ClosingParenthesis, Value = character.ToString() };
+                        tokens.Add(token);
+                        IncrementIndex();
+                        continue;
+                    case '"':
+                        string stringValue = "";
+                        while (NextCharacter() is not '"' )
+                        {
+                            stringValue += _input[_index];
+                        }
+                        tokens.Add(new TokenString() { Type = TokenType.StringLiteral, Value = stringValue });
+                        IncrementIndex();
+                        continue;
+                    case '[':
+                        token = new TokenOperator() { Type = TokenType.OpeningSquareBracket, Value = character.ToString() };
+                        tokens.Add(token);
+                        IncrementIndex();
+                        continue;
+                    case ']':
+                        token = new TokenOperator() { Type = TokenType.ClosingSquareBracket, Value = character.ToString() };
+                        tokens.Add(token);
+                        IncrementIndex();
+                        continue;
+                    case '{':
+                        token = new TokenOperator() { Type = TokenType.OpeningCurlyBracket, Value = character.ToString() };
+                        tokens.Add(token);
+                        IncrementIndex();
+                        continue;
+                    case '}':
+                        token = new TokenOperator() { Type = TokenType.ClosingCurlyBracket, Value = character.ToString() };
+                        tokens.Add(token);
+                        IncrementIndex();
+                        continue;
+                    case '|':
+                        token = new TokenOperator() { Type = TokenType.AlternateOperator, Value = character.ToString() };
+                        tokens.Add(token);
+                        IncrementIndex();
+                        continue;
+                    case var isWhitespace when new Regex("\\s").IsMatch(isWhitespace.ToString()):
+                        IncrementIndex();
+                        continue;
+                    case var isLetter when new Regex("[a-zA-Z]").IsMatch(isLetter.ToString()):
+                        string letters = character.ToString();
+                        while (Char.IsLetter(NextCharacter()))
+                        {
+                            letters += _input[_index];
+                        }
+                        tokens.Add(new TokenKeyword() { Type = TokenType.KeywordIdentifier, Value = letters });
+                        continue;
+                    case var isNumber when new Regex("[0-9]").IsMatch(isNumber.ToString()):
+                        string number = character.ToString();
+                        while (Char.IsDigit(NextCharacter()))
+                        {
+                            number += _input[_index];
+                        }
+                        tokens.Add(new TokenNumber() { Type = TokenType.NumberLiteral, Value = Int32.Parse(number) });
+                        continue;
+                    default:
+                        throw new CharacterIsNotValidException($"{character} Is not a valid character");
                 }
 
                 throw new CharacterIsNotValidException($"{character} Is not a valid character");
@@ -89,7 +115,7 @@ namespace RuddyRex.Lib
             }
         }
 
-        private char GetNextCharacter()
+        private char NextCharacter()
         {
             IncrementIndex();
             return _index > _maxStringLength ? ' ' : _input[_index];
