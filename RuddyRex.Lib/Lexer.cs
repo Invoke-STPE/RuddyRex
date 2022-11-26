@@ -2,7 +2,7 @@
 using RuddyRex.Lib.Exceptions;
 using RuddyRex.Lib.Extensions;
 using RuddyRex.Lib.Helpers;
-using RuddyRex.Lib.Models;
+using RuddyRex.Lib.Models.TokenModels;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -33,7 +33,7 @@ namespace RuddyRex.Lib
 
                 if (character.IsSymbol())
                 {
-                    TokenSymbol symbol = new() { Type = TokenType.Symbol, Value = character.ToString()};
+                    TokenOperator symbol = new() { Type = TokenType.Operator, Value = character.ToString()};
                     tokens.Add(symbol);
                     IncrementIndex();
                     continue;
@@ -55,7 +55,7 @@ namespace RuddyRex.Lib
                     {
                         number += _sourceCode[_posInSourceCode];
                     }
-                    tokens.Add(new TokenNumber() { Type = TokenType.Number, Value = Int32.Parse(number) });
+                    tokens.Add(new TokenNumber() { Type = TokenType.NumerLiteral, Value = Int32.Parse(number) });
                     continue;
                 }
                 if (character.IsWhiteSpace())
@@ -70,7 +70,7 @@ namespace RuddyRex.Lib
                     {
                         letters += _sourceCode[_posInSourceCode];
                     }
-                    tokens.Add(new TokenString() { Type = TokenType.String, Value = letters });
+                    tokens.Add(new TokenString() { Type = TokenType.StringLiteral, Value = letters });
                     IncrementIndex();
                     continue;
                 }

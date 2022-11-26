@@ -1,15 +1,16 @@
 ﻿using RuddyRex.Lib.Enums;
+using RuddyRex.Lib.Models.TokenModels;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace RuddyRex.Lib.Models
+namespace RuddyRex.Lib.Models.NodeModels
 {
-    public record TokenString : IToken
+    public record StringNode : INode
     {
-        public TokenType Type { get; set; }
+        public NodeTypes Type { get; set; }
         public string Value { get; set; }
     }
 }

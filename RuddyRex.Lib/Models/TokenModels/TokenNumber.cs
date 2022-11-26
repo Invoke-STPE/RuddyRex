@@ -5,11 +5,11 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace RuddyRex.Lib.Models
+namespace RuddyRex.Lib.Models.TokenModels
 {
-    public record TokenKeyword : IToken
+    public record TokenNumber : IToken
     {
         public TokenType Type { get; set; }
-        public string Value { get; set; }
+        public int Value { get; set; }
     }
 }

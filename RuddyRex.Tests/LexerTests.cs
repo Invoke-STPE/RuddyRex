@@ -4,6 +4,7 @@ using RuddyRex.Lib;
 using RuddyRex.Lib.Enums;
 using RuddyRex.Lib.Exceptions;
 using RuddyRex.Lib.Models;
+using RuddyRex.Lib.Models.TokenModels;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
@@ -30,8 +31,8 @@ namespace RuddyRex.Tests
                 Lexer lexer = new Lexer(input);
                 List<IToken> expected = new()
             {
-                new TokenSymbol() { Type = TokenType.Symbol, Value = open },
-                new TokenSymbol() { Type = TokenType.Symbol, Value = close },
+                new TokenOperator() { Type = TokenType.Operator, Value = open },
+                new TokenOperator() { Type = TokenType.Operator, Value = close },
             };
 
                 List<IToken> actual = lexer.Tokenize();
@@ -46,7 +47,7 @@ namespace RuddyRex.Tests
                 Lexer lexer = new Lexer(symbol);
                 List<IToken> expected = new()
             {
-                new TokenSymbol() { Type = TokenType.Symbol, Value = symbol },
+                new TokenOperator() { Type = TokenType.Operator, Value = symbol },
             };
 
                 List<IToken> actual = lexer.Tokenize();
@@ -75,15 +76,15 @@ namespace RuddyRex.Tests
 
                 List<IToken> expected = new()
             {
-                new TokenSymbol() { Type = TokenType.Symbol, Value = "(" },
+                new TokenOperator() { Type = TokenType.Operator, Value = "(" },
                 new TokenKeyword() { Type = TokenType.Name, Value = "Between"},
-                new TokenSymbol() { Type = TokenType.Symbol, Value = "{" },
-                new TokenNumber() {Type = TokenType.Number, Value = 1},
+                new TokenOperator() { Type = TokenType.Operator, Value = "{" },
+                new TokenNumber() {Type = TokenType.NumerLiteral, Value = 1},
                 new TokenKeyword() { Type = TokenType.Name, Value = "Till" },
-                new TokenNumber() {Type = TokenType.Number, Value = 3},
-                new TokenSymbol() { Type = TokenType.Symbol, Value = "}" },
+                new TokenNumber() {Type = TokenType.NumerLiteral, Value = 3},
+                new TokenOperator() { Type = TokenType.Operator, Value = "}" },
                 new TokenKeyword() { Type = TokenType.Name, Value = "Digit" },
-                new TokenSymbol() { Type = TokenType.Symbol, Value = ")" }
+                new TokenOperator() { Type = TokenType.Operator, Value = ")" }
             };
 
                 List<IToken> actual = lexer.Tokenize();
@@ -99,11 +100,11 @@ namespace RuddyRex.Tests
                 List<IToken> expected = new()
             {
                 new TokenKeyword() { Type = TokenType.Name, Value = "Between"},
-                new TokenSymbol() { Type = TokenType.Symbol, Value = "{" },
-                new TokenNumber() {Type = TokenType.Number, Value = 1},
+                new TokenOperator() { Type = TokenType.Operator, Value = "{" },
+                new TokenNumber() {Type = TokenType.NumerLiteral, Value = 1},
                 new TokenKeyword() { Type = TokenType.Name, Value = "Till" },
-                new TokenNumber() {Type = TokenType.Number, Value = 3},
-                new TokenSymbol() { Type = TokenType.Symbol, Value = "}" },
+                new TokenNumber() {Type = TokenType.NumerLiteral, Value = 3},
+                new TokenOperator() { Type = TokenType.Operator, Value = "}" },
                 new TokenKeyword() { Type = TokenType.Name, Value = "Digit" },
             };
 
@@ -117,7 +118,7 @@ namespace RuddyRex.Tests
 
                 List<IToken> expected = new()
             {
-                new TokenString() { Type = TokenType.String, Value = "This is pure text" },
+                new TokenString() { Type = TokenType.StringLiteral, Value = "This is pure text" },
             };
 
                 List<IToken> actual = lexer.Tokenize();
