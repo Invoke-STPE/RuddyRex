@@ -1,6 +1,5 @@
 ﻿using RuddyRex.Lib.Enums;
 using RuddyRex.Lib.Exceptions;
-using RuddyRex.Lib.Extensions;
 using RuddyRex.Lib.Helpers;
 using RuddyRex.Lib.Models;
 using System;
@@ -36,18 +35,18 @@ namespace RuddyRex.Lib
                 switch (character)
                 {
                     case '(':
-                        token = new TokenOperator() { Type = TokenType.Operator, Value = character.ToString() };
+                        token = new TokenOperator() { Type = TokenType.OpeningParenthesis, Value = character.ToString() };
                         tokens.Add(token);
                         IncrementIndex();
                         continue;
                     case ')':
-                        token = new TokenOperator() { Type = TokenType.Operator, Value = character.ToString() };
+                        token = new TokenOperator() { Type = TokenType.ClosingParenthesis, Value = character.ToString() };
                         tokens.Add(token);
                         IncrementIndex();
                         continue;
                     case '"':
                         string stringValue = "";
-                        while (GetNextCharacter().IsQuote() == false)
+                        while (NextCharacter() is not '"' )
                         {
                             stringValue += _input[_index];
                         }
@@ -55,27 +54,27 @@ namespace RuddyRex.Lib
                         IncrementIndex();
                         continue;
                     case '[':
-                        token = new TokenOperator() { Type = TokenType.Operator, Value = character.ToString() };
+                        token = new TokenOperator() { Type = TokenType.OpeningSquareBracket, Value = character.ToString() };
                         tokens.Add(token);
                         IncrementIndex();
                         continue;
                     case ']':
-                        token = new TokenOperator() { Type = TokenType.Operator, Value = character.ToString() };
+                        token = new TokenOperator() { Type = TokenType.ClosingSquareBracket, Value = character.ToString() };
                         tokens.Add(token);
                         IncrementIndex();
                         continue;
                     case '{':
-                        token = new TokenOperator() { Type = TokenType.Operator, Value = character.ToString() };
+                        token = new TokenOperator() { Type = TokenType.OpeningCurlyBracket, Value = character.ToString() };
                         tokens.Add(token);
                         IncrementIndex();
                         continue;
                     case '}':
-                        token = new TokenOperator() { Type = TokenType.Operator, Value = character.ToString() };
+                        token = new TokenOperator() { Type = TokenType.ClosingCurlyBracket, Value = character.ToString() };
                         tokens.Add(token);
                         IncrementIndex();
                         continue;
                     case '|':
-                        token = new TokenOperator() { Type = TokenType.Operator, Value = character.ToString() };
+                        token = new TokenOperator() { Type = TokenType.AlternateOperator, Value = character.ToString() };
                         tokens.Add(token);
                         IncrementIndex();
                         continue;
@@ -84,7 +83,7 @@ namespace RuddyRex.Lib
                         continue;
                     case var isLetter when new Regex("[a-zA-Z]").IsMatch(isLetter.ToString()):
                         string letters = character.ToString();
-                        while (GetNextCharacter().IsLetter())
+                        while (Char.IsLetter(NextCharacter()))
                         {
                             letters += _input[_index];
                         }
@@ -92,7 +91,7 @@ namespace RuddyRex.Lib
                         continue;
                     case var isNumber when new Regex("[0-9]").IsMatch(isNumber.ToString()):
                         string number = character.ToString();
-                        while (GetNextCharacter().IsNumber())
+                        while (Char.IsDigit(NextCharacter()))
                         {
                             number += _input[_index];
                         }
@@ -116,7 +115,7 @@ namespace RuddyRex.Lib
             }
         }
 
-        private char GetNextCharacter()
+        private char NextCharacter()
         {
             IncrementIndex();
             return _index > _maxStringLength ? ' ' : _input[_index];
