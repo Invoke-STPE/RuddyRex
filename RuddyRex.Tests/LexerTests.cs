@@ -67,21 +67,6 @@ namespace RuddyRex.Tests
             }
 
             [TestMethod]
-            [DataRow("|")]
-            public void Lexer_ShouldTokenizeSingleSymbols(string symbol)
-            {
-                Lexer lexer = new Lexer(symbol);
-                List<IToken> expected = new()
-            {
-                new TokenOperator() { Type = TokenType.AlternateOperator, Value = symbol },
-            };
-
-                List<IToken> actual = lexer.Tokenize();
-
-                CollectionAssert.AreEqual(expected, actual);
-            }
-
-            [TestMethod]
             [DataRow(" ")]
             [DataRow("\n ")]
             [DataRow("\t")]

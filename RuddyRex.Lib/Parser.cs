@@ -36,23 +36,9 @@ namespace RuddyRex.Lib
             {
                 case TokenType.OpeningParenthesis:
                     break;
-                case TokenType.ClosingParenthesis:
-                    break;
                 case TokenType.OpeningSquareBracket:
                     break;
-                case TokenType.ClosingSquareBracket:
-                    break;
-                case TokenType.OpeningCurlyBracket:
-                    break;
-                case TokenType.ClosingCurlyBracket:
-                    break;
-                case TokenType.AlternateOperator:
-                    break;
                 case TokenType.KeywordIdentifier:
-                    break;
-                case TokenType.NumberLiteral:
-                    break;
-                case TokenType.CharacterLiteral:
                     break;
                 case TokenType.StringLiteral:
                     break;

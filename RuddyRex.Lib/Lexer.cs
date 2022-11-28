@@ -72,11 +72,6 @@ namespace RuddyRex.Lib
                         tokens.Add(token);
                         IncrementIndex();
                         continue;
-                    case '|':
-                        token = new TokenOperator() { Type = TokenType.AlternateOperator, Value = character.ToString() };
-                        tokens.Add(token);
-                        IncrementIndex();
-                        continue;
                     case var isWhitespace when new Regex("\\s").IsMatch(isWhitespace.ToString()):
                         IncrementIndex();
                         continue;
