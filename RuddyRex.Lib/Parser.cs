@@ -1,4 +1,5 @@
 ﻿using RuddyRex.Lib.Enums;
+using RuddyRex.Lib.Exceptions;
 using RuddyRex.Lib.Models;
 using RuddyRex.Lib.Models.NodeModels;
 using RuddyRex.Lib.Models.TokenModels;
@@ -13,38 +14,75 @@ namespace RuddyRex.Lib
 {
     public class Parser
     {
+       
+        static private Queue<IToken> _tokenQueue;
+        static private IToken _token;
+
+
         public static AbstractTree ParseAST(List<IToken> tokens)
         {
+            
+            _tokenQueue = new Queue<IToken>(tokens);
             AbstractTree ast = new AbstractTree();
-            int index = 0;
+            IToken _token = NextToken();
 
-            while (index <= tokens.Count)
+            while (_tokenQueue.Count() != 0)
             {
-                var (node, newIndex) = Walk(index, tokens);
+                var node = Walk(_token);
                 ast.Nodes.Add(node);
-                index = newIndex;
             }
             return ast;
         }
 
-        private static (INode, int) Walk(int index, List<IToken> tokens)
+        private static INode Walk(IToken token)
         {
-            IToken token = tokens[index];
             INode node = null;
 
             switch (token.Type)
             {
                 case TokenType.OpeningParenthesis:
+                    GroupNode group = (GroupNode)ParseGroupExpression(token);
+                    node = group;
                     break;
-                case TokenType.OpeningSquareBracket:
-                    break;
-                case TokenType.KeywordIdentifier:
-                    break;
-                case TokenType.StringLiteral:
-                    break;
-            }
-            return (node, 3);
 
+            }
+            return node;
+        }
+
+        private static INode ParseGroupExpression(IToken token)
+        {
+            Stack<IToken> stack = new Stack<IToken>();
+            stack.Push(token);
+            _token = NextToken();
+            GroupNode node = new GroupNode() { Type = NodeType.GroupExpression};
+            while (stack.Count != 0)
+            {
+                switch (_token?.Type)
+                {
+                    case TokenType.OpeningParenthesis:
+                        stack.Push(_token);
+                        node.Nodes.Add(new GroupNode() { Type = NodeType.GroupExpression});
+                        break;
+                    case TokenType.ClosingParenthesis:
+                        if (stack.Count == 0 || stack.Pop().Type != TokenType.OpeningParenthesis) throw new UnbalancedBracketsException("Uneven pair of brackets!");
+                        break;
+                    default:
+                        break;
+                }
+                if (_tokenQueue.Count == 0) break; // If token queue is empty, no reason to try and fetch the next one. 
+                _token = NextToken();
+               
+            }
+            return stack.Count == 0 ? node : throw new UnbalancedBracketsException("Uneven pair of brackets!");
+        }
+
+        static IToken? NextToken()
+        {
+            if (_tokenQueue.TryDequeue(out IToken result))
+            {
+                return result;
+            }
+            return null;
         }
     }
 }

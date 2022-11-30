@@ -9,6 +9,6 @@ namespace RuddyRex.Lib.Models.NodeModels
 {
     public interface INode
     {
-        public NodeTypes Type { get; set; }
+        public NodeType Type { get; set; }
     }
 }

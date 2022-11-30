@@ -1,5 +1,4 @@
 ﻿using RuddyRex.Lib.Enums;
-using RuddyRex.Lib.Models.TokenModels;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -8,9 +7,9 @@ using System.Threading.Tasks;
 
 namespace RuddyRex.Lib.Models.NodeModels
 {
-    public record StringNode : INode
+    public record GroupNode : INode
     {
-        public NodeTypes Type { get; set; }
-        public string Value { get; set; }
+        public NodeType Type { get; set; }
+        public List<INode> Nodes { get; set; } = new List<INode>();
     }
 }

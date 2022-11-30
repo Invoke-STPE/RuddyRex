@@ -6,9 +6,11 @@ using System.Threading.Tasks;
 
 namespace RuddyRex.Lib.Enums
 {
-    public enum NodeTypes
+    public enum NodeType
     {
         NumberLiteral,
-        StringLiteral
+        StringLiteral,
+        GroupExpression,
+        None
     }
 }

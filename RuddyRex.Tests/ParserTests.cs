@@ -1,11 +1,13 @@
 ﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
 using RuddyRex.Lib;
 using RuddyRex.Lib.Enums;
+using RuddyRex.Lib.Exceptions;
 using RuddyRex.Lib.Models;
 using RuddyRex.Lib.Models.NodeModels;
 using RuddyRex.Lib.Models.TokenModels;
 using System;
 using System.Collections.Generic;
+using System.Data;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -16,39 +18,72 @@ namespace RuddyRex.Tests
     public class ParserTests
     {
         [TestClass]
-        public class ParserSimpleTestCases
+        public class ParserShouldReturn
         {
-
             [TestMethod]
-            public void Parser_ShouldReturnNumberLiteralNode()
+            public void TrueWhenPassedParenthesisPair()
             {
+
                 List<IToken> tokens = new()
                 {
-                    new TokenNumber(){Type = TokenType.NumberLiteral, Value = 5}
+                    new TokenOperator(){ Type = TokenType.OpeningParenthesis, Value = "("},
+                    new TokenOperator(){ Type = TokenType.ClosingParenthesis, Value = ")"},
                 };
+                INode expected = new GroupNode() { Type = NodeType.GroupExpression, Nodes = new List<INode>() };
 
-                INode expected = new NumberNode() { Type = NodeTypes.NumberLiteral, Value = 5 };
+                AbstractTree ast = Parser.ParseAST(tokens);
+                NodeType actual = ast.Nodes.First().Type;
+                Assert.AreEqual(expected.Type, actual);
+            }
+            [TestMethod]
+            [DataRow("()", 1)]
+            [DataRow("(Between)", 1)]
+            [DataRow("(())", 2)]
+            [DataRow("((()))()()", 5)]
+            public void TrueWhenPassedEmptyNestedGroupExpression(string input, int expected)
+            {
+                var tokens = Lexer.Tokenize(input);
 
-                AbstractTree abstractTree = Parser.ParseAST(tokens);
+                AbstractTree ast = Parser.ParseAST(tokens);
 
-                CollectionAssert.Contains(abstractTree.Nodes, expected);
+                int actual = CountNodes(ast.Nodes);
 
+                Assert.AreEqual(expected, actual);
             }
 
+
+
+        }
+        [TestClass]
+        public class ParserThrowsException
+        {
             [TestMethod]
-            public void Parser_ShouldReturnStringLiteralNode()
+            [ExpectedException(typeof(UnbalancedBracketsException))]
+            [DataRow("(()")]
+            [DataRow("(()))")]
+            public void WhenPassedUnbalancedBrackets(string input)
             {
-                List<IToken> tokens = new()
-                {
-                    new TokenString(){Type = TokenType.StringLiteral, Value = "This is a test string"}
-                };
-                INode expected = new StringNode() { Type = NodeTypes.StringLiteral, Value = "This is a test string" };
+                var tokens = Lexer.Tokenize(input);
+                Parser.ParseAST(tokens);
 
-                AbstractTree abstractTree = Parser.ParseAST(tokens);
-
-                CollectionAssert.Contains(abstractTree.Nodes, expected);
             }
         }
-       
+
+        private static int CountNodes(List<INode> nodes)
+        {
+            int count = 0;
+            if (nodes.Count == 0)
+            {
+                return count;
+            }
+            count += nodes.Count;
+            foreach (GroupNode node in nodes)
+            {
+                count += CountNodes(node.Nodes);
+            }
+
+            return count;
+        }
+
     }
 }

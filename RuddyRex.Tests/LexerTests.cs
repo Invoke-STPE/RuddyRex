@@ -26,42 +26,39 @@ namespace RuddyRex.Tests
             [TestMethod]
             public void Lexer_ShouldTokenizeParenthesisPairs()
             {
-                Lexer lexer = new Lexer("()");
                 List<IToken> expected = new()
                 {
                     new TokenOperator() { Type = TokenType.OpeningParenthesis, Value = "(" },
                     new TokenOperator() { Type = TokenType.ClosingParenthesis, Value = ")" },
                 };
 
-                List<IToken> actual = lexer.Tokenize();
+                List<IToken> actual = Lexer.Tokenize("()");
 
                 CollectionAssert.AreEqual(expected, actual);
             }
             [TestMethod]
             public void Lexer_ShouldTokenizeCurlyBracketsPairs()
             {
-                Lexer lexer = new Lexer("{}");
                 List<IToken> expected = new()
                 {
                     new TokenOperator() { Type = TokenType.OpeningCurlyBracket, Value = "{" },
                     new TokenOperator() { Type = TokenType.ClosingCurlyBracket, Value = "}" },
                 };
 
-                List<IToken> actual = lexer.Tokenize();
+                List<IToken> actual = Lexer.Tokenize("{}");
 
                 CollectionAssert.AreEqual(expected, actual);
             }
             [TestMethod]
             public void Lexer_ShouldTokenizeSquareBracketsPairs()
             {
-                Lexer lexer = new Lexer("[]");
                 List<IToken> expected = new()
                 {
                     new TokenOperator() { Type = TokenType.OpeningSquareBracket, Value = "[" },
                     new TokenOperator() { Type = TokenType.ClosingSquareBracket, Value = "]" },
                 };
 
-                List<IToken> actual = lexer.Tokenize();
+                List<IToken> actual = Lexer.Tokenize("[]");
 
                 CollectionAssert.AreEqual(expected, actual);
             }
@@ -72,8 +69,7 @@ namespace RuddyRex.Tests
             [DataRow("\t")]
             public void Lexer_ShouldIgnoreWhiteSpaces(string input)
             {
-                Lexer lexer = new(input);
-                int actual = lexer.Tokenize().Count;
+                int actual = Lexer.Tokenize(input).Count;
                 Assert.AreEqual(0, actual);
             }
         }
@@ -84,7 +80,6 @@ namespace RuddyRex.Tests
             [TestMethod]
             public void Lexer_ShouldTokenizeExpressionBetweenBrackets()
             {
-                Lexer lexer = new Lexer("(Between { 1 Till 3} Digit)");
 
                 List<IToken> expected = new()
             {
@@ -99,7 +94,7 @@ namespace RuddyRex.Tests
                 new TokenOperator() { Type = TokenType.ClosingParenthesis, Value = ")" }
             };
 
-                List<IToken> actual = lexer.Tokenize();
+                List<IToken> actual = Lexer.Tokenize("(Between { 1 Till 3} Digit)");
 
                 CollectionAssert.AreEqual(expected, actual);
             }
@@ -107,7 +102,6 @@ namespace RuddyRex.Tests
             [TestMethod]
             public void Lexer_ShouldTokenizeExpressionBetweenWithoutBrackets()
             {
-                Lexer lexer = new Lexer("Between { 1 Till 3} Digit");
 
                 List<IToken> expected = new()
             {
@@ -120,20 +114,19 @@ namespace RuddyRex.Tests
                 new TokenKeyword() { Type = TokenType.KeywordIdentifier, Value = "Digit" },
             };
 
-                List<IToken> actual = lexer.Tokenize();
+                List<IToken> actual = Lexer.Tokenize("Between { 1 Till 3} Digit");
                 CollectionAssert.AreEqual(expected, actual);
             }
             [TestMethod]
             public void Lexer_ShouldTokenizeAString()
             {
-                Lexer lexer = new Lexer("\"This is pure text\"");
 
                 List<IToken> expected = new()
             {
                 new TokenString() { Type = TokenType.StringLiteral, Value = "This is pure text" },
             };
 
-                List<IToken> actual = lexer.Tokenize();
+                List<IToken> actual = Lexer.Tokenize("\"This is pure text\"");
 
                 CollectionAssert.AreEqual(expected, actual);
             }
@@ -150,8 +143,7 @@ namespace RuddyRex.Tests
             [DataRow("-")]
             public void Lexer_DoesNotRecognizeCharacter_ThrowsCharacterIsNotValidException(string invalid)
             {
-                Lexer lexer = new($"{invalid}Between {{ 1 Till 3}} Digit");
-                lexer.Tokenize();
+                Lexer.Tokenize($"{invalid}Between {{ 1 Till 3}} Digit");
             }
         }
     }
