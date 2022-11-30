@@ -20,11 +20,11 @@ namespace RuddyRex.Tests
     {
 
         [TestClass]
-        public class LexerCanTokenizeBasicCharacters
+        public class LexerShouldTokenize
         {
 
             [TestMethod]
-            public void Lexer_ShouldTokenizeParenthesisPairs()
+            public void WhenPassedParenthesisPairs()
             {
                 List<IToken> expected = new()
                 {
@@ -37,7 +37,7 @@ namespace RuddyRex.Tests
                 CollectionAssert.AreEqual(expected, actual);
             }
             [TestMethod]
-            public void Lexer_ShouldTokenizeCurlyBracketsPairs()
+            public void WhenPassedCurlyBracketsPairs()
             {
                 List<IToken> expected = new()
                 {
@@ -50,7 +50,7 @@ namespace RuddyRex.Tests
                 CollectionAssert.AreEqual(expected, actual);
             }
             [TestMethod]
-            public void Lexer_ShouldTokenizeSquareBracketsPairs()
+            public void WhenPassedSquareBracketsPairs()
             {
                 List<IToken> expected = new()
                 {
@@ -62,23 +62,8 @@ namespace RuddyRex.Tests
 
                 CollectionAssert.AreEqual(expected, actual);
             }
-
             [TestMethod]
-            [DataRow(" ")]
-            [DataRow("\n ")]
-            [DataRow("\t")]
-            public void Lexer_ShouldIgnoreWhiteSpaces(string input)
-            {
-                int actual = Lexer.Tokenize(input).Count;
-                Assert.AreEqual(0, actual);
-            }
-        }
-
-        [TestClass]
-        public class LexerTokenizeExpressionTests
-        {
-            [TestMethod]
-            public void Lexer_ShouldTokenizeExpressionBetweenBrackets()
+            public void WhenPassedExpressionBetweenParenthsis()
             {
 
                 List<IToken> expected = new()
@@ -100,7 +85,7 @@ namespace RuddyRex.Tests
             }
 
             [TestMethod]
-            public void Lexer_ShouldTokenizeExpressionBetweenWithoutBrackets()
+            public void WhenPassedExpressionWithoutParenthsis()
             {
 
                 List<IToken> expected = new()
@@ -118,7 +103,7 @@ namespace RuddyRex.Tests
                 CollectionAssert.AreEqual(expected, actual);
             }
             [TestMethod]
-            public void Lexer_ShouldTokenizeAString()
+            public void Lexer_WhenPassedAString()
             {
 
                 List<IToken> expected = new()
@@ -131,9 +116,22 @@ namespace RuddyRex.Tests
                 CollectionAssert.AreEqual(expected, actual);
             }
         }
+        [TestClass]
+        public class LexerShouldIgnore
+        {
+            [TestMethod]
+            [DataRow(" ")]
+            [DataRow("\n ")]
+            [DataRow("\t")]
+            public void WhenPassedWhiteSpaces(string input)
+            {
+                int actual = Lexer.Tokenize(input).Count;
+                Assert.AreEqual(0, actual);
+            }
+        }
 
         [TestClass]
-        public class LexerThrowsExceptionsTests
+        public class LexerThrowsException
         {
             [TestMethod]
             [ExpectedException(typeof(CharacterIsNotValidException))]
@@ -141,7 +139,7 @@ namespace RuddyRex.Tests
             [DataRow("-")]
             [DataRow("+")]
             [DataRow("-")]
-            public void Lexer_DoesNotRecognizeCharacter_ThrowsCharacterIsNotValidException(string invalid)
+            public void WhenPassedInvalidCharacters(string invalid)
             {
                 Lexer.Tokenize($"{invalid}Between {{ 1 Till 3}} Digit");
             }
