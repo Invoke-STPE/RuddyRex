@@ -2,7 +2,7 @@
 using Newtonsoft.Json.Linq;
 using RuddyRex.Lib;
 using RuddyRex.Lib.Enums;
-using RuddyRex.Lib.Exceptions;
+using RuddyRex.Lib.Exceptions.LexicalExceptions;
 using RuddyRex.Lib.Models;
 using RuddyRex.Lib.Models.TokenModels;
 using System;

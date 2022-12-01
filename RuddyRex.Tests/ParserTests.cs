@@ -1,7 +1,7 @@
 ﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
 using RuddyRex.Lib;
 using RuddyRex.Lib.Enums;
-using RuddyRex.Lib.Exceptions;
+using RuddyRex.Lib.Exceptions.SyntaxExceptions;
 using RuddyRex.Lib.Models;
 using RuddyRex.Lib.Models.NodeModels;
 using RuddyRex.Lib.Models.TokenModels;
@@ -59,6 +59,7 @@ namespace RuddyRex.Tests
             [TestMethod]
             public void WhenPassedBetweenExpression()
             {
+                // Todo: Implement proper list checking
                 List<IToken> input = Lexer.Tokenize("Match Between { 1 Till 2 } digit");
                 AbstractTree expected = new AbstractTree() { Type = "Match"};
                 KeywordNode keywordNode = new KeywordNode() { Type = NodeType.KeywordExpression, Keyword = "Between", ValueType = "digit"};
@@ -91,7 +92,7 @@ namespace RuddyRex.Tests
             [DataRow("Match (()")]
             [DataRow("Match (()))")]
             public void WhenPassedUnbalancedBrackets(string input)
-            {
+            { // Todo: Fix unit test number two
                 var tokens = Lexer.Tokenize(input);
                 Parser.ParseAST(tokens);
 
@@ -104,6 +105,28 @@ namespace RuddyRex.Tests
             {
                 var token = Lexer.Tokenize(input);
                 Parser.ParseAST(token);
+            }
+
+            [TestMethod]
+            [ExpectedException(typeof(InvalidRangeExpressionSyntax))]
+            [DataRow("Match Between 3 Till 4 } digit")]
+            [DataRow("Match Between { 3 Till 4  digit")]
+            [DataRow("Match Between { 3 between 4  digit")]
+            public void WhenPassedMissingCurlyBracket(string input)
+            {
+                var tokens = Lexer.Tokenize(input);
+
+                Parser.ParseAST(tokens);
+            }
+            [TestMethod]
+            [ExpectedException(typeof(InvalidKeywordException))]
+            [DataRow("atch Between 3 Till 4 } digit")]
+            [DataRow("Between { 3 Till 4  digit")]
+            [DataRow("Exactly Between { 3 between 4  digit")]
+            public void WhenPassedInvalidStartValue(string input)
+            {
+                var tokens = Lexer.Tokenize(input);
+                Parser.ParseAST(tokens);
             }
         }
 

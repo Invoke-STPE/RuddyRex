@@ -4,9 +4,9 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace RuddyRex.Lib.Exceptions
+namespace RuddyRex.Lib.Exceptions.SyntaxExceptions
 {
-    internal class InvalidRangeExpressionSyntax : Exception
+    public class InvalidRangeExpressionSyntax : Exception
     {
         public InvalidRangeExpressionSyntax(string? message) : base(message)
         {

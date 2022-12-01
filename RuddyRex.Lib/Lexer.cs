@@ -1,5 +1,5 @@
 ﻿using RuddyRex.Lib.Enums;
-using RuddyRex.Lib.Exceptions;
+using RuddyRex.Lib.Exceptions.LexicalExceptions;
 using RuddyRex.Lib.Models.TokenModels;
 using System;
 using System.Collections.Generic;

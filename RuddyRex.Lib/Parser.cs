@@ -1,5 +1,5 @@
 ﻿using RuddyRex.Lib.Enums;
-using RuddyRex.Lib.Exceptions;
+using RuddyRex.Lib.Exceptions.SyntaxExceptions;
 using RuddyRex.Lib.Models;
 using RuddyRex.Lib.Models.NodeModels;
 using RuddyRex.Lib.Models.TokenModels;
@@ -49,7 +49,7 @@ namespace RuddyRex.Lib
                     TokenKeyword keyword = (TokenKeyword)token;
                     if (RuddyRexDictionary.IsValidKeyword(keyword.Value))
                     {
-                        node = ParseExpression(keyword);
+                        node = ParseGroupExpression(keyword);
 
                     }
                     break;
@@ -57,7 +57,7 @@ namespace RuddyRex.Lib
             return node;
         }
 
-        private static KeywordNode ParseExpression(TokenKeyword keyword)
+        private static KeywordNode ParseGroupExpression(TokenKeyword keyword)
         {
             KeywordNode node = new KeywordNode() { Keyword = keyword.Value, Type = NodeType.KeywordExpression };
             IToken token = NextToken();
@@ -65,7 +65,7 @@ namespace RuddyRex.Lib
             {
                 RangeNode rangeNode = ParseRangeExpression();
                 node.Parameters.Add(rangeNode);
-                if (NextToken().Type != TokenType.ClosingCurlyBracket) throw new UnbalancedBracketsException("You're missing a '}' in your range expression."); // TODO: Test missing curly
+                if (NextToken().Type != TokenType.ClosingCurlyBracket) throw new InvalidRangeExpressionSyntax("You're missing a '}' in your range expression."); // TODO: Test missing curly
                 token = NextToken();
                 if (token.Type == TokenType.KeywordIdentifier)
                 {
@@ -88,7 +88,7 @@ namespace RuddyRex.Lib
 
         private static RangeNode ParseRangeExpression()
         {
-            MANGLER FEJL HÅNDTERING 
+            //MANGLER FEJL HÅNDTERING 
             RangeNode rangeNode = new RangeNode() { Type = NodeType.RangeExpression };
             for (int i = 0; i < 3; i++)
             {
@@ -101,10 +101,11 @@ namespace RuddyRex.Lib
                         break;
                     case TokenType.KeywordIdentifier:
                         TokenKeyword identifier = (TokenKeyword)token;
-                        if (identifier.Value != "Till" ) throw new InvalidKeywordException("A range expression can only contain the keyword 'Till'"); // Need to unit test
+                        if (identifier.Value != "Till" ) throw new InvalidRangeExpressionSyntax("A range expression can only contain the keyword 'Till'"); // Need to unit test
                         break;
                     default:
-                        throw new InvalidRangeExpressionSyntax("Range Expression contains invalid syntax.");
+                        break;
+                        //throw new InvalidRangeExpressionSyntax("Range Expression contains invalid syntax.");
                 }
             }
             return rangeNode;
