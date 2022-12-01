@@ -11,6 +11,8 @@ namespace RuddyRex.Lib.Enums
         NumberLiteral,
         StringLiteral,
         GroupExpression,
-        None
+        KeywordExpression,
+        None,
+        RangeExpression
     }
 }
