@@ -64,13 +64,15 @@ namespace RuddyRex.Lib
                     }
                     break;
                 case TokenType.OpeningSquareBracket: // Need to be incoorporate in other unit tests.
-                    CharacterNode characterNode = new() { Type = NodeType.CharacterNode };
+                    CharacterRangeNode characterRange = new() { Type = NodeType.CharacterRange };
                     while (PeekCharacter().Type == TokenType.CharacterLiteral)
                     {
-                        characterNode.Characters.Add(NextToken());
+                        TokenCharacter tokenCharacter = (TokenCharacter)NextToken();
+                         CharacterNode characterNode = new CharacterNode() { Type = NodeType.CharacterNode, Value = tokenCharacter.Character};
+                        characterRange.Characters.Add(characterNode);
                     }
                     NextToken();
-                    node = characterNode;
+                    node = characterRange;
                     break;
             }
             return node;
@@ -128,6 +130,9 @@ namespace RuddyRex.Lib
                         KeywordNode keywordNode = (KeywordNode)AnalyseToken(_token);
                         node.Nodes.Add(keywordNode);
                         continue;
+                    case TokenType.OpeningSquareBracket:
+                        node.Nodes.Add(AnalyseToken(_token));
+                        break;
                     default:
                         break;
                 }

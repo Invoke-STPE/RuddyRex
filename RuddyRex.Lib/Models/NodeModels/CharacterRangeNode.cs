@@ -1,4 +1,5 @@
 ﻿using RuddyRex.Lib.Enums;
+using RuddyRex.Lib.Models.TokenModels;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -7,9 +8,10 @@ using System.Threading.Tasks;
 
 namespace RuddyRex.Lib.Models.NodeModels
 {
-    public class CharacterNode : INode
+    public class CharacterRangeNode : INode
     {
         public NodeType Type { get; set; }
-        public char Value { get; set; }
+        public List<INode> Characters { get; set; } = new();
+
     }
 }

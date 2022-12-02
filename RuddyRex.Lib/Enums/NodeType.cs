@@ -14,6 +14,7 @@ namespace RuddyRex.Lib.Enums
         KeywordExpression,
         None,
         RangeExpression,
+        CharacterRange,
         CharacterNode
     }
 }

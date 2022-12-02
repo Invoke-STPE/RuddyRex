@@ -65,6 +65,20 @@ namespace RuddyRex.Tests
               
             }
             [TestMethod]
+            [DataRow("Match ([ abc])")]
+            [DataRow("Match ([abc])")]
+            [DataRow("Match ([abc123 ])")]
+            public void WhenPassedGroupBetweenExpression_ReturnsCharacterNode(string input)
+            {
+                List<IToken> tokens = Lexer.Tokenize(input);
+                KeywordNode expected = new KeywordNode() { Type = NodeType.CharacterRange};
+
+                GroupNode groupNode= (GroupNode)Parser.Parse(tokens).Nodes.First();
+                var actual = groupNode.Nodes.First();
+                Assert.AreEqual(expected.Type, actual.Type);
+
+            }
+            [TestMethod]
             [DataRow("Match (Between { 1 Till 2 } digit)", 2)]
             [DataRow("Match (Between { 1 Till 2 } letter)", 2)]
             [DataRow("Match (Exactly { 1 } letter)", 1)]
@@ -148,6 +162,21 @@ namespace RuddyRex.Tests
                 Assert.AreEqual(expected, actual);
                 Assert.AreEqual(2, actual.Values.Count);
             }
+
+            [TestMethod]
+            [DataRow("Match [ abc]")]
+            [DataRow("Match [abc]")]
+            [DataRow("Match [abc123 ]")]
+            public void WhenPassedGroupBetweenExpression_ReturnsCharacterNode(string input)
+            {
+                List<IToken> tokens = Lexer.Tokenize(input);
+                KeywordNode expected = new KeywordNode() { Type = NodeType.CharacterRange };
+
+                CharacterRangeNode actual = (CharacterRangeNode)Parser.Parse(tokens).Nodes.First();
+                
+                Assert.AreEqual(expected.Type, actual.Type);
+
+            }
         }
         [TestClass]
         public class ParserShouldParseSquareBrackets
@@ -156,13 +185,11 @@ namespace RuddyRex.Tests
             public void WhenPassedCharacterToken_ReturnsAnCharacterNode()
             {
                 var tokens = Lexer.Tokenize("Match [(abcd]");
-                AbstractTree ast = Parser.Parse(tokens);
-                CharacterNode expected = new() { Type = NodeType.CharacterNode, Characters = tokens.GetRange(2, 5) };
+                CharacterRangeNode expected = new() { Type = NodeType.CharacterRange };
 
-                CharacterNode actual = (CharacterNode)Parser.Parse(tokens).Nodes.First();
+                CharacterRangeNode actual = (CharacterRangeNode)Parser.Parse(tokens).Nodes.First();
 
                 Assert.AreEqual(expected.Type, actual.Type);
-                CollectionAssert.AreEqual(expected.Characters, actual.Characters);
 
             }
         }
