@@ -9,7 +9,7 @@ namespace RuddyRex.Lib
     public static class RuddyRexDictionary
     {
         private static List<string> _astDictionary= new() { "Match"};
-        private static List<string> _keyWorddictionary= new() { "Between"};
+        private static List<string> _keyWorddictionary= new() { "Between", "Exactly"};
         private static List<string> _returnValues = new() { "digit", "letter" };
         public static bool IsValidStartKeyword(string keyword)
         {
