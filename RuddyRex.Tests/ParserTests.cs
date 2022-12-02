@@ -18,7 +18,7 @@ namespace RuddyRex.Tests
     public class ParserTests
     {
         [TestClass]
-        public class ParserShouldParseGroupException
+        public class ParserShouldParseGroupExpression
         {
             [TestMethod]
             [DataRow("Match ()", 1)]
@@ -83,6 +83,24 @@ namespace RuddyRex.Tests
             }
         }
         [TestClass]
+        public class ParserShouldParseMultipleGroupExpressions
+        {
+            [TestMethod]
+            [DataRow("Match (Between { 1 Till 2 } digit) (Exactly { 12 Till 21 } digit)", 2)]
+            [DataRow("Match (Between { 1 Till 2 } letter) (Exactly { 23 } letter)", 2)]
+            [DataRow("Match (Exactly { 1 } letter) (Between { 23 } letter) (Between { 23 } letter)", 3)]
+            [DataRow("Match (Exactly { 1 } digit) (Between { 12 Till 21 } digit) (Between { 12 Till 21 } digit) (Between { 12 Till 21 } digit)", 4)]
+            public void WhenPassedMultiplyGroupExpression_ReturnsMultiplyGroupNodes(string input, int expectedCount)
+            {
+                List<IToken> tokens = Lexer.Tokenize(input);
+                int expected = expectedCount;
+
+                var actual = Parser.Parse(tokens);
+
+                Assert.AreEqual(expected, actual.Nodes.Count);
+            }
+        }
+        [TestClass]
         public class ParserShouldParseExpression
         {
             [TestMethod]
@@ -144,6 +162,18 @@ namespace RuddyRex.Tests
             [DataRow("Match Between { 3 Till 4  digit")]
             [DataRow("Match Between { 3 between 4  digit")]
             public void WhenPassedMissingCurlyBracket(string input)
+            {
+                var tokens = Lexer.Tokenize(input);
+
+                Parser.Parse(tokens);
+            }
+
+            [TestMethod]
+            [ExpectedException(typeof(InvalidRangeExpressionSyntax))]
+            [DataRow("Match Between { 3 Till 4 ) }  digit")]
+            [DataRow("Match Between { (3 Till 4 }  digit")]
+            [DataRow("Match Between { 3 Till 4 ] }  digit")]
+            public void WhenPassedInvalidCharacterInRangeExpression(string input)
             {
                 var tokens = Lexer.Tokenize(input);
 

@@ -90,7 +90,7 @@ namespace RuddyRex.Lib
                         if (identifier.Value != "Till" ) throw new InvalidRangeExpressionSyntax("A range expression can only contain the keyword 'Till'");
                         break;
                     default:
-                        throw new InvalidRangeExpressionSyntax("Unknown character in range expression."); // TODO: Needs an unit test cannot have ( in a range exprtession
+                        throw new InvalidRangeExpressionSyntax("Unknown character in range expression.");
                 }
             }
             return stack.Count == 0 ? rangeNode : throw new InvalidRangeExpressionSyntax("Unable to parse range syntax."); ;
