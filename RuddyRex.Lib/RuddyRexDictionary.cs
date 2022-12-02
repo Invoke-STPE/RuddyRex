@@ -10,7 +10,7 @@ namespace RuddyRex.Lib
     {
         private static List<string> _astDictionary= new() { "Match"};
         private static List<string> _keyWorddictionary= new() { "Between"};
-        private static List<string> _returnValues = new() { "digit" };
+        private static List<string> _returnValues = new() { "digit", "letter" };
         public static bool IsValidStartKeyword(string keyword)
         {
             return _astDictionary.Contains(keyword);

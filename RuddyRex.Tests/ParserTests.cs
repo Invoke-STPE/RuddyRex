@@ -21,25 +21,7 @@ namespace RuddyRex.Tests
         public class ParserShouldParseGroupException
         {
             [TestMethod]
-            public void WhenPassedParenthesisPair()
-            {
-
-                List<IToken> tokens = new()
-                {
-
-                    new TokenKeyword(){ Type = TokenType.KeywordIdentifier, Value = "Match"},
-                    new TokenOperator(){ Type = TokenType.OpeningParenthesis, Value = "("},
-                    new TokenOperator(){ Type = TokenType.ClosingParenthesis, Value = ")"},
-                };
-                INode expected = new GroupNode() { Type = NodeType.GroupExpression, Nodes = new List<INode>() };
-
-                AbstractTree ast = Parser.ParseAST(tokens);
-                NodeType actual = ast.Nodes.First().Type;
-                Assert.AreEqual(expected.Type, actual);
-            }
-            [TestMethod]
             [DataRow("Match ()", 1)]
-            [DataRow("Match (Between)", 1)]
             [DataRow("Match (())", 2)]
             [DataRow("Match ((()))()()", 5)]
             public void WhenPassedEmptyNestedGroupExpression(string input, int expected)
@@ -51,6 +33,49 @@ namespace RuddyRex.Tests
                 int actual = CountNodes(ast.Nodes);
 
                 Assert.AreEqual(expected, actual);
+            }
+
+            [TestMethod]
+            [DataRow("Match (Between { 1 Till 2 } digit)")]
+            [DataRow("Match (Between { 1 Till 2 } letter)")]
+            public void WhenPassedGroupBetweenExpression_ReturnsGroupNode(string input)
+            {
+                List<IToken> tokens = Lexer.Tokenize(input);
+                GroupNode expected = new GroupNode() { Type = NodeType.GroupExpression };
+
+                var actual = Parser.ParseAST(tokens).Nodes.First();
+
+                Assert.AreEqual(expected.Type, actual.Type);
+            }
+            [TestMethod]
+            [DataRow("Match (Between { 1 Till 2 } digit)")]
+            [DataRow("Match (Between { 1 Till 2 } letter)")]
+            public void WhenPassedGroupBetweenExpression_ReturnsKeywordNode(string input)
+            {
+                List<IToken> tokens = Lexer.Tokenize(input);
+                string valueType = input.Contains("digit") ? "digit" : "letter";
+                KeywordNode expected = new KeywordNode() { Type = NodeType.KeywordExpression, Keyword = "Between", ValueType = valueType };
+
+                GroupNode groupNode = (GroupNode)Parser.ParseAST(tokens).Nodes.First();
+                var actual = groupNode.Nodes.First();
+                Assert.AreEqual(expected, actual);
+              
+            }
+            [TestMethod]
+            [DataRow("Match (Between { 1 Till 2 } digit)")]
+            [DataRow("Match (Between { 1 Till 2 } letter)")]
+            public void WhenPassedGroupBetweenExpression_ReturnsRangeExpression(string input)
+            {
+                List<IToken> tokens = Lexer.Tokenize(input);
+
+                RangeNode expected = new RangeNode() { Type = NodeType.RangeExpression };
+
+                GroupNode groupNode = (GroupNode)Parser.ParseAST(tokens).Nodes.First();
+                KeywordNode keyword = (KeywordNode)groupNode.Nodes.First();
+                RangeNode actual = (RangeNode)keyword.Parameters.First();
+
+                Assert.AreEqual(expected, actual);
+                Assert.AreEqual(2, actual.Values.Count);
             }
         }
         [TestClass]
@@ -80,8 +105,35 @@ namespace RuddyRex.Tests
                 {
                     Assert.AreEqual(keywordExpected.Parameters[i], keywordActual.Parameters[i]);
                 }
-                
+            }
+            [TestMethod]
+            [DataRow("Match Between { 1 Till 2 } digit")]
+            [DataRow("Match Between { 1 Till 2 } letter")]
+            public void WhenPassedBetweenExpression_ReturnsKeywordNode(string input)
+            {
+                List<IToken> tokens = Lexer.Tokenize(input);
+                string valueType = input.Contains("digit") ? "digit" : "letter";
+                KeywordNode expected = new KeywordNode() { Type = NodeType.KeywordExpression, Keyword = "Between", ValueType = valueType };
 
+                KeywordNode actual = (KeywordNode)Parser.ParseAST(tokens).Nodes.First();
+                //var actual = keywordNode.Parameters.First();
+                Assert.AreEqual(expected, actual);
+
+            }
+            [TestMethod]
+            [DataRow("Match Between { 1 Till 2 } digit")]
+            [DataRow("Match Between { 1 Till 2 } letter")]
+            public void WhenPassedGroupBetweenExpression_ReturnsRangeExpression(string input)
+            {
+                List<IToken> tokens = Lexer.Tokenize(input);
+
+                RangeNode expected = new RangeNode() { Type = NodeType.RangeExpression };
+
+                KeywordNode keyword = (KeywordNode)Parser.ParseAST(tokens).Nodes.First();
+                RangeNode actual = (RangeNode)keyword.Parameters.First();
+
+                Assert.AreEqual(expected, actual);
+                Assert.AreEqual(2, actual.Values.Count);
             }
         }
         [TestClass]

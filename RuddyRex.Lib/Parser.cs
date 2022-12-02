@@ -49,7 +49,7 @@ namespace RuddyRex.Lib
                     TokenKeyword keyword = (TokenKeyword)token;
                     if (RuddyRexDictionary.IsValidKeyword(keyword.Value))
                     {
-                        node = ParseGroupExpression(keyword);
+                        node = ParseExpression(keyword);
 
                     }
                     break;
@@ -57,11 +57,11 @@ namespace RuddyRex.Lib
             return node;
         }
 
-        private static KeywordNode ParseGroupExpression(TokenKeyword keyword)
+        private static KeywordNode ParseExpression(TokenKeyword keyword)
         {
             KeywordNode node = new KeywordNode() { Keyword = keyword.Value, Type = NodeType.KeywordExpression };
             IToken token = NextToken();
-            if (token.Type == TokenType.OpeningCurlyBracket)
+            if (token.Type == TokenType.OpeningCurlyBracket) // Vil ikke virke med alternate
             {
                 RangeNode rangeNode = ParseRangeExpression();
                 node.Parameters.Add(rangeNode);
@@ -88,7 +88,6 @@ namespace RuddyRex.Lib
 
         private static RangeNode ParseRangeExpression()
         {
-            //MANGLER FEJL HÅNDTERING 
             RangeNode rangeNode = new RangeNode() { Type = NodeType.RangeExpression };
             for (int i = 0; i < 3; i++)
             {
@@ -127,6 +126,10 @@ namespace RuddyRex.Lib
                         break;
                     case TokenType.ClosingParenthesis:
                         if (stack.Count == 0 || stack.Pop().Type != TokenType.OpeningParenthesis) throw new UnbalancedBracketsException("Uneven pair of brackets!");
+                        break;
+                    case TokenType.KeywordIdentifier:
+                        KeywordNode keywordNode = ParseExpression((TokenKeyword)_token);
+                        node.Nodes.Add(keywordNode);
                         break;
                     default:
                         break;

@@ -11,5 +11,16 @@ namespace RuddyRex.Lib.Models.NodeModels
     {
         public NodeType Type { get; set; }
         public List<INode> Nodes { get; set; } = new List<INode>();
+
+        //public override bool Equals(object? obj)
+        //{
+        //    return obj is GroupNode node &&
+        //           Type == node.Type;
+        //}
+
+        public override int GetHashCode()
+        {
+            return HashCode.Combine(Type);
+        }
     }
 }
