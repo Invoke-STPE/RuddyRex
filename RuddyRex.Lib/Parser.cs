@@ -59,7 +59,7 @@ namespace RuddyRex.Lib
                     }
                     else
                     {
-                        throw new InvalidValueType($"{keywordToken.Value} is not a valid type"); // Test misspelled digit
+                        throw new InvalidValueType($"{keywordToken.Value} is not a valid type"); // TODO: Unit test misspelled return values 
                     }
                     break;
             }
@@ -87,10 +87,10 @@ namespace RuddyRex.Lib
                         break;
                     case TokenType.KeywordIdentifier:
                         TokenKeyword identifier = (TokenKeyword)_token;
-                        if (identifier.Value != "Till" ) throw new InvalidRangeExpressionSyntax("A range expression can only contain the keyword 'Till'"); // Need to unit test
+                        if (identifier.Value != "Till" ) throw new InvalidRangeExpressionSyntax("A range expression can only contain the keyword 'Till'");
                         break;
                     default:
-                        throw new InvalidRangeExpressionSyntax("Unknown character in range expression."); // Needs an unit test cannot have ( in a range exprtession
+                        throw new InvalidRangeExpressionSyntax("Unknown character in range expression."); // TODO: Needs an unit test cannot have ( in a range exprtession
                 }
             }
             return stack.Count == 0 ? rangeNode : throw new InvalidRangeExpressionSyntax("Unable to parse range syntax."); ;
@@ -106,7 +106,7 @@ namespace RuddyRex.Lib
             {
                 switch (_token?.Type)
                 {
-                    case TokenType.OpeningParenthesis: // Implement multiple groups
+                    case TokenType.OpeningParenthesis: // TODO: Implement multiple groups
                         stack.Push(_token);
                         node.Nodes.Add(new GroupNode() { Type = NodeType.GroupExpression});
                         break;

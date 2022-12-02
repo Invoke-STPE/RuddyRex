@@ -86,31 +86,6 @@ namespace RuddyRex.Tests
         public class ParserShouldParseExpression
         {
             [TestMethod]
-            public void WhenPassedBetweenExpression()
-            {
-                // Todo: Implement proper list checking
-                List<IToken> input = Lexer.Tokenize("Match Between { 1 Till 2 } digit");
-                AbstractTree expected = new AbstractTree() { Type = "Match"};
-                KeywordNode keywordNode = new KeywordNode() { Type = NodeType.KeywordExpression, Keyword = "Between", ValueType = "digit"};
-                RangeNode rangeNode = new RangeNode() { Type = NodeType.RangeExpression };
-                rangeNode.Values.Add(new TokenNumber() { Type = TokenType.NumberLiteral, Value = 1 });
-                rangeNode.Values.Add(new TokenNumber() { Type = TokenType.NumberLiteral, Value = 2 });
-                keywordNode.Parameters.Add(rangeNode);
-                expected.Nodes.Add(keywordNode);
-
-                var actual = Parser.Parse(input); // Skal laves efter frokost
-
-                Assert.AreEqual(expected.Type, actual.Type);
-
-                KeywordNode keywordExpected = (KeywordNode)expected.Nodes.First();
-                KeywordNode keywordActual = (KeywordNode)actual.Nodes.First();
-                Assert.AreEqual(keywordExpected, keywordActual);
-                for (int i = 0; i < keywordActual.Parameters.Count; i++)
-                {
-                    Assert.AreEqual(keywordExpected.Parameters[i], keywordActual.Parameters[i]);
-                }
-            }
-            [TestMethod]
             [DataRow("Match Between { 1 Till 2 } digit")]
             [DataRow("Match Between { 1 Till 2 } letter")]
             public void WhenPassedBetweenExpression_ReturnsKeywordNode(string input)
