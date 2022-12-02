@@ -13,6 +13,7 @@ namespace RuddyRex.Lib.Enums
         GroupExpression,
         KeywordExpression,
         None,
-        RangeExpression
+        RangeExpression,
+        CharacterNode
     }
 }

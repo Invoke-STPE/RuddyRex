@@ -25,7 +25,7 @@ namespace RuddyRex.Lib
             
             _tokenQueue = new Queue<IToken>(tokens);
             AbstractTree ast = CreateAST(NextToken());
-            IToken _token = NextToken();
+            _token = NextToken();
 
             while (_tokenQueue.Count() != 0)
             {
@@ -56,11 +56,21 @@ namespace RuddyRex.Lib
                             throw new InvalidValueType($"{keywordNode.ValueType} is not a valid type");
                         keywordNode.ValueType = keywordToken.Value;
                         node = keywordNode;
+                        _token = _token.Type == TokenType.ClosingCurlyBracket ? NextToken() : _token;
                     }
                     else
                     {
                         throw new InvalidValueType($"{keywordToken.Value} is not a valid type"); // TODO: Unit test misspelled return values 
                     }
+                    break;
+                case TokenType.OpeningSquareBracket: // Need to be incoorporate in other unit tests.
+                    CharacterNode characterNode = new() { Type = NodeType.CharacterNode };
+                    while (PeekCharacter().Type == TokenType.CharacterLiteral)
+                    {
+                        characterNode.Characters.Add(NextToken());
+                    }
+                    NextToken();
+                    node = characterNode;
                     break;
             }
             return node;
@@ -93,6 +103,7 @@ namespace RuddyRex.Lib
                         throw new InvalidRangeExpressionSyntax("Unknown character in range expression.");
                 }
             }
+            //NextToken();
             return stack.Count == 0 ? rangeNode : throw new InvalidRangeExpressionSyntax("Unable to parse range syntax."); ;
         }
 
@@ -106,7 +117,7 @@ namespace RuddyRex.Lib
             {
                 switch (_token?.Type)
                 {
-                    case TokenType.OpeningParenthesis: // TODO: Implement multiple groups
+                    case TokenType.OpeningParenthesis:
                         stack.Push(_token);
                         node.Nodes.Add(new GroupNode() { Type = NodeType.GroupExpression});
                         break;
@@ -116,7 +127,7 @@ namespace RuddyRex.Lib
                     case TokenType.KeywordIdentifier:
                         KeywordNode keywordNode = (KeywordNode)AnalyseToken(_token);
                         node.Nodes.Add(keywordNode);
-                        break;
+                        continue;
                     default:
                         break;
                 }
@@ -134,6 +145,10 @@ namespace RuddyRex.Lib
                 return result;
             }
             return null;
+        }
+        private static IToken PeekCharacter()
+        {
+            return _tokenQueue.TryPeek(out IToken result) ? result : null;
         }
 
         private static AbstractTree CreateAST(IToken? token)

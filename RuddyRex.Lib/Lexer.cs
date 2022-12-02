@@ -36,7 +36,7 @@ namespace RuddyRex.Lib
                         continue;
                     case '"':
                         string stringValue = "";
-                        while (PeekCharacer() is not '"' )
+                        while (PeekCharacter() is not '"' )
                         {
                             stringValue += NextCharacter();
                         }
@@ -46,6 +46,17 @@ namespace RuddyRex.Lib
                     case '[':
                         token = new TokenOperator() { Type = TokenType.OpeningSquareBracket, Value = character.ToString() };
                         tokens.Add(token);
+                        //if (PeekCharacter() is not ']' )
+                        //{
+                            while (PeekCharacter() is not ']')
+                            {
+                                TokenCharacter tokenCharacter = new() { Type = TokenType.CharacterLiteral, Character = NextCharacter() };
+                                tokens.Add(tokenCharacter);
+                            }
+                        //}
+                    
+                     
+                       
                         continue;
                     case ']':
                         token = new TokenOperator() { Type = TokenType.ClosingSquareBracket, Value = character.ToString() };
@@ -63,7 +74,7 @@ namespace RuddyRex.Lib
                         continue;
                     case var isLetter when new Regex("[a-zA-Z]").IsMatch(isLetter.ToString()):
                         string letters = character.ToString();
-                        while (char.IsLetter(PeekCharacer()))
+                        while (char.IsLetterOrDigit(PeekCharacter()))
                         {
                             letters += NextCharacter();
                         }
@@ -71,7 +82,7 @@ namespace RuddyRex.Lib
                         continue;
                     case var isNumber when new Regex("[0-9]").IsMatch(isNumber.ToString()):
                         string number = character.ToString();
-                        while (char.IsDigit(PeekCharacer()))
+                        while (char.IsDigit(PeekCharacter()))
                         {
                             number += NextCharacter(); ;
                         }
@@ -96,7 +107,7 @@ namespace RuddyRex.Lib
             return ' ';
         }
 
-        private static char PeekCharacer()
+        private static char PeekCharacter()
         {
             return _sourceCode.TryPeek(out char result) ? result : ' ';
         }

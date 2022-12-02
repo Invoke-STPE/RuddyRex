@@ -62,6 +62,28 @@ namespace RuddyRex.Tests
 
                 CollectionAssert.AreEqual(expected, actual);
             }
+
+            [TestMethod]
+            [DataRow("[abcd]", "abcd")]
+            [DataRow("[(abc]", "(abc")]
+            //[DataRow("[abc]]", "abc]")] leave this otu for now
+            public void WhenPassedAsCharacters(string input, string expected)
+            {
+                List<IToken> expectedTokens = new()
+                {
+                    new TokenOperator() { Type = TokenType.OpeningSquareBracket, Value = "[" },
+                    new TokenCharacter() {Type = TokenType.CharacterLiteral, Character = expected[0]},
+                    new TokenCharacter() {Type = TokenType.CharacterLiteral, Character = expected[1]},
+                    new TokenCharacter() {Type = TokenType.CharacterLiteral, Character = expected[2]},
+                    new TokenCharacter() {Type = TokenType.CharacterLiteral, Character = expected[3]},
+                    new TokenOperator() { Type = TokenType.ClosingSquareBracket, Value = "]" },
+                };
+                IToken expectedToken = new TokenString() { Type = TokenType.StringLiteral, Value = expected };
+                var tokens = Lexer.Tokenize(input);
+
+                //Assert.AreEqual(expectedToken, token);
+                CollectionAssert.AreEqual(expectedTokens, tokens);
+            }
             [TestMethod]
             public void WhenPassedExpressionBetweenParenthsis()
             {
@@ -103,15 +125,22 @@ namespace RuddyRex.Tests
                 CollectionAssert.AreEqual(expected, actual);
             }
             [TestMethod]
-            public void Lexer_WhenPassedAString()
+            [DataRow("This is pure text")]
+            [DataRow("This is pure text 12")]
+            [DataRow("This is pure-text")]
+            [DataRow("This `is pure+text")]
+            [DataRow("This `is pure+text)")]
+            [DataRow("This `is pure+text]")]
+            [DataRow("This `is pure+text}")]
+            public void Lexer_WhenPassedAString(string input)
             {
 
                 List<IToken> expected = new()
-            {
-                new TokenString() { Type = TokenType.StringLiteral, Value = "This is pure text" },
-            };
+                {
+                    new TokenString() { Type = TokenType.StringLiteral, Value = input },
+                };
 
-                List<IToken> actual = Lexer.Tokenize("\"This is pure text\"");
+                List<IToken> actual = Lexer.Tokenize($"\"{input}\"");
 
                 CollectionAssert.AreEqual(expected, actual);
             }

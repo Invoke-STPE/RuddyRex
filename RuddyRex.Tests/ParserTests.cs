@@ -1,4 +1,5 @@
 ﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
+using Newtonsoft.Json.Linq;
 using RuddyRex.Lib;
 using RuddyRex.Lib.Enums;
 using RuddyRex.Lib.Exceptions.SyntaxExceptions;
@@ -83,7 +84,7 @@ namespace RuddyRex.Tests
             }
         }
         [TestClass]
-        public class ParserShouldParseMultipleGroupExpressions
+        public class ParserShouldParseMultipleExpressions
         {
             [TestMethod]
             [DataRow("Match (Between { 1 Till 2 } digit) (Exactly { 12 Till 21 } digit)", 2)]
@@ -91,6 +92,21 @@ namespace RuddyRex.Tests
             [DataRow("Match (Exactly { 1 } letter) (Between { 23 } letter) (Between { 23 } letter)", 3)]
             [DataRow("Match (Exactly { 1 } digit) (Between { 12 Till 21 } digit) (Between { 12 Till 21 } digit) (Between { 12 Till 21 } digit)", 4)]
             public void WhenPassedMultiplyGroupExpression_ReturnsMultiplyGroupNodes(string input, int expectedCount)
+            {
+                List<IToken> tokens = Lexer.Tokenize(input);
+                int expected = expectedCount;
+
+                var actual = Parser.Parse(tokens);
+
+                Assert.AreEqual(expected, actual.Nodes.Count);
+            }
+
+            [TestMethod]
+            [DataRow("Match Between { 1 Till 2 } digit Exactly { 12 Till 21 } digit", 2)]
+            [DataRow("Match Between { 1 Till 2 } letter Exactly { 23 } letter", 2)]
+            [DataRow("Match Exactly { 1 } letter Between { 23 } letter Between { 23 } letter", 3)]
+            [DataRow("Match Exactly { 1 } digit Between { 12 Till 21 } digit Between { 12 Till 21 } digit Between { 12 Till 21 } digit", 4)]
+            public void WhenPassedMultiplyExpression_ReturnsMultiplyNodes(string input, int expectedCount)
             {
                 List<IToken> tokens = Lexer.Tokenize(input);
                 int expected = expectedCount;
@@ -131,6 +147,23 @@ namespace RuddyRex.Tests
 
                 Assert.AreEqual(expected, actual);
                 Assert.AreEqual(2, actual.Values.Count);
+            }
+        }
+        [TestClass]
+        public class ParserShouldParseSquareBrackets
+        {
+            [TestMethod]
+            public void WhenPassedCharacterToken_ReturnsAnCharacterNode()
+            {
+                var tokens = Lexer.Tokenize("Match [(abcd]");
+                AbstractTree ast = Parser.Parse(tokens);
+                CharacterNode expected = new() { Type = NodeType.CharacterNode, Characters = tokens.GetRange(2, 5) };
+
+                CharacterNode actual = (CharacterNode)Parser.Parse(tokens).Nodes.First();
+
+                Assert.AreEqual(expected.Type, actual.Type);
+                CollectionAssert.AreEqual(expected.Characters, actual.Characters);
+
             }
         }
         [TestClass]
