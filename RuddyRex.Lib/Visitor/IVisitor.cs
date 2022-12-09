@@ -13,5 +13,6 @@ namespace RuddyRex.Lib.Visitor
         IRegexNode ConvertGroup(GroupNode groupNode);
         IRegexNode ConvertKeyword(KeywordNode keywordNode);
         IRegexNode ConvertRange(RangeNode rangeNode);
+        IRegexNode ConvertString(StringNode stringNode);
     }
 }

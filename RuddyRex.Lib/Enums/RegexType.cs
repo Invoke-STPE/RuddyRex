@@ -12,6 +12,7 @@ namespace RuddyRex.Lib.Enums
         CharacterClass,
         Char,
         Repetition,
-        Quantifier
+        Quantifier,
+        Alternative
     }
 }

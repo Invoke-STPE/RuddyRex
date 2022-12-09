@@ -16,7 +16,7 @@ namespace RuddyRex.Lib.Models.NodeModels
 
         public IRegexNode OnEnter(IVisitor visitor)
         {
-            throw new NotImplementedException();
+            return visitor.ConvertString(this);
         }
     }
 }

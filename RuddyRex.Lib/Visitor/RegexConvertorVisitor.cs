@@ -81,5 +81,25 @@ namespace RuddyRex.Lib.Visitor
 
             return quantifier;
         }
+
+        public IRegexNode ConvertString(StringNode node)
+        {
+            RegexAlternative regexAlternative = new() { Type = RegexType.Alternative };
+            char[] charArray = node.Value.ToCharArray();
+
+            if (charArray.Length > 0)
+            {
+                CharacterRangeNode characterRangeNode = new CharacterRangeNode() { Type = NodeType.CharacterRange };
+                foreach (var c in charArray)
+                {
+                    characterRangeNode.Characters.Add(new CharacterNode() { Type = NodeType.CharacterNode, Value = c });
+                }
+                regexAlternative.Expressions = RuddyToRegexConvertor.TraverseArray(characterRangeNode.Characters);
+            }
+
+            return regexAlternative;
+            
+        }
     }
+    MANGLER FLERE TEST CASES SVÆRER UDTRYK
 }

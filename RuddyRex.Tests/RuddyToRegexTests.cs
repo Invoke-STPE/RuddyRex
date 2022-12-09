@@ -41,7 +41,6 @@ namespace RuddyRex.Tests
                 groupNode.Nodes.Add(new CharacterRangeNode() { Type = NodeType.CharacterRange });
                 abstractTree.Nodes.Add(groupNode);
                 RegexType expectedType = RegexType.CharacterClass;
-                //int expectedCount = 1;
 
                 RegexGroup regexGroup = (RegexGroup)RuddyToRegexConvertor.ConvertTree(abstractTree).First();
                 RegexType actual = regexGroup.Expressions.First().Type;
@@ -180,6 +179,37 @@ namespace RuddyRex.Tests
                 var actual = (RegexRepetition)RuddyToRegexConvertor.ConvertTree(abstractTree).First();
 
                 Assert.AreEqual(expected, actual);
+            }
+
+            [TestMethod]
+            public void WhenPassedEmptyStringLiteral()
+            {
+                AbstractTree abstractTree = new AbstractTree();
+                var stringNode = new StringNode() { Type = NodeType.StringLiteral, Value = "abc"};
+                abstractTree.Nodes.Add(stringNode);
+                RegexAlternative expected = new RegexAlternative() { Type = RegexType.Alternative };
+
+                var actual = (RegexAlternative)RuddyToRegexConvertor.ConvertTree(abstractTree).First();
+
+                Assert.AreEqual(expected.Type, actual.Type);
+            }
+
+            [TestMethod]
+            public void WhenPassedStringLiteral()
+            {
+                AbstractTree abstractTree = new AbstractTree();
+                var stringNode = new StringNode() { Type = NodeType.StringLiteral, Value = "abc" };
+                abstractTree.Nodes.Add(stringNode);
+                List<RegexChar> expected = new List<RegexChar>() 
+                {
+                    new RegexChar() { Type = RegexType.Char, Kind = "simple", Value = "a", Symbol = 'a' },
+                    new RegexChar() { Type = RegexType.Char, Kind = "simple", Value = "b", Symbol = 'b' },
+                    new RegexChar() { Type = RegexType.Char, Kind = "simple", Value = "c", Symbol = 'c' },
+                };
+
+                var actual = (RegexAlternative)RuddyToRegexConvertor.ConvertTree(abstractTree).First();
+
+                CollectionAssert.AreEqual(expected, actual.Expressions);
             }
         }
 
