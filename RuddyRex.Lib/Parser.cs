@@ -1,6 +1,7 @@
 ﻿using RuddyRex.Lib.Enums;
 using RuddyRex.Lib.Exceptions.SyntaxExceptions;
 using RuddyRex.Lib.Models;
+using RuddyRex.Lib.Models.Interfaces;
 using RuddyRex.Lib.Models.NodeModels;
 using RuddyRex.Lib.Models.TokenModels;
 using System;
@@ -22,13 +23,14 @@ namespace RuddyRex.Lib
 
         public static AbstractTree Parse(List<IToken> tokens)
         {
-            
+            bool firstTime = true;
             _tokenQueue = new Queue<IToken>(tokens);
             AbstractTree ast = CreateAST(NextToken());
-            _token = NextToken();
+             _token = NextToken();
 
-            while (_tokenQueue.Count() != 0)
+            while (_tokenQueue.Count() != 0 || firstTime)
             {
+                firstTime = false;
                 var node = AnalyseToken(_token);
                 ast.Nodes.Add(node);
             }
@@ -50,7 +52,7 @@ namespace RuddyRex.Lib
                     if (RuddyRexDictionary.IsValidKeyword(keywordToken.Value))
                     {
                         KeywordNode keywordNode = new KeywordNode() { Keyword = keywordToken.Value, Type = NodeType.KeywordExpression };
-                        keywordNode.Parameters.Add(ParseRangeExpression());
+                        keywordNode.Parameter = ParseRangeExpression();
                         keywordToken = (TokenKeyword)NextToken();
                         if (!RuddyRexDictionary.IsValidReturnValue(keywordNode.ValueType) && keywordToken.Type != TokenType.KeywordIdentifier)
                             throw new InvalidValueType($"{keywordNode.ValueType} is not a valid type");
@@ -65,14 +67,23 @@ namespace RuddyRex.Lib
                     break;
                 case TokenType.OpeningSquareBracket: // Need to be incoorporate in other unit tests.
                     CharacterRangeNode characterRange = new() { Type = NodeType.CharacterRange };
-                    while (PeekCharacter().Type == TokenType.CharacterLiteral)
+                    while (PeekToken().Type != TokenType.ClosingSquareBracket)
                     {
                         TokenCharacter tokenCharacter = (TokenCharacter)NextToken();
                          CharacterNode characterNode = new CharacterNode() { Type = NodeType.CharacterNode, Value = tokenCharacter.Character};
                         characterRange.Characters.Add(characterNode);
                     }
-                    NextToken();
+                    if (PeekToken().Type == TokenType.ClosingSquareBracket)
+                    {
+                        NextToken();
+                    } else { throw new UnbalancedBracketsException("Missing closing ']' character"); } // TODO: Skal unit testes
                     node = characterRange;
+                    break;
+                case TokenType.StringLiteral:
+                    StringNode stringNode = new() { Type = NodeType.StringLiteral };
+                    TokenString tokenString = (TokenString)_token; 
+                    stringNode.Value = tokenString.Value;
+                    node= stringNode;
                     break;
             }
             return node;
@@ -81,7 +92,7 @@ namespace RuddyRex.Lib
         private static RangeNode ParseRangeExpression()
         {
             _token = NextToken();
-            if (_token.Type != TokenType.OpeningCurlyBracket) throw new InvalidRangeExpressionSyntax("Syntax Error: Invalid range syntax.");
+            if (_token.Type != TokenType.OpeningCurlyBracket) throw new InvalidRangeExpression("Syntax Error: Invalid range syntax.");
             Stack<IToken> stack = new Stack<IToken>();
             stack.Push(_token);
             RangeNode rangeNode = new RangeNode() { Type = NodeType.RangeExpression };
@@ -91,7 +102,7 @@ namespace RuddyRex.Lib
                 switch (_token.Type)
                 {
                     case TokenType.ClosingCurlyBracket:
-                        if (stack.Count == 0 || stack.Pop().Type != TokenType.OpeningCurlyBracket) throw new InvalidRangeExpressionSyntax($"Missing a closing }}");
+                        if (stack.Count == 0 || stack.Pop().Type != TokenType.OpeningCurlyBracket) throw new InvalidRangeExpression($"Missing a closing }}");
                         break;
                     case TokenType.NumberLiteral:
                         TokenNumber tokenNumber = (TokenNumber)_token;
@@ -99,18 +110,19 @@ namespace RuddyRex.Lib
                         break;
                     case TokenType.KeywordIdentifier:
                         TokenKeyword identifier = (TokenKeyword)_token;
-                        if (identifier.Value != "Till" ) throw new InvalidRangeExpressionSyntax("A range expression can only contain the keyword 'Till'");
+                        if (identifier.Value != "Till" ) throw new InvalidRangeExpression("A range expression can only contain the keyword 'Till'");
                         break;
                     default:
-                        throw new InvalidRangeExpressionSyntax("Unknown character in range expression.");
+                        throw new InvalidRangeExpression("Unknown character in range expression.");
                 }
             }
             //NextToken();
-            return stack.Count == 0 ? rangeNode : throw new InvalidRangeExpressionSyntax("Unable to parse range syntax."); ;
+            return stack.Count == 0 ? rangeNode : throw new InvalidRangeExpression("Unable to parse range syntax."); ;
         }
 
         private static INode ParseGroupExpression(IToken token)
         {
+            
             Stack<IToken> stack = new Stack<IToken>();
             stack.Push(token);
             _token = NextToken();
@@ -151,7 +163,7 @@ namespace RuddyRex.Lib
             }
             return null;
         }
-        private static IToken PeekCharacter()
+        private static IToken PeekToken()
         {
             return _tokenQueue.TryPeek(out IToken result) ? result : null;
         }

@@ -1,4 +1,6 @@
 ﻿using RuddyRex.Lib.Enums;
+using RuddyRex.Lib.Models.Interfaces;
+using RuddyRex.Lib.Visitor;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -11,7 +13,7 @@ namespace RuddyRex.Lib.Models.NodeModels
     {
         public NodeType Type { get; set; }
         public string Keyword { get; set; }
-        public List<INode> Parameters { get; set; } = new List<INode>();
+        public INode Parameter { get; set; }
         public string ValueType { get; set; } = "";
 
         public override bool Equals(object? obj)
@@ -25,6 +27,11 @@ namespace RuddyRex.Lib.Models.NodeModels
         public override int GetHashCode()
         {
             return HashCode.Combine(Type, Keyword, ValueType);
+        }
+
+        public IRegexNode OnEnter(IVisitor visitor)
+        {
+            return visitor.ConvertKeyword(this);
         }
     }
 }

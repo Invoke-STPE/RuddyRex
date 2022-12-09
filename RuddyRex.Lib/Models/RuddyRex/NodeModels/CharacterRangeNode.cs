@@ -1,5 +1,7 @@
 ﻿using RuddyRex.Lib.Enums;
+using RuddyRex.Lib.Models.Interfaces;
 using RuddyRex.Lib.Models.TokenModels;
+using RuddyRex.Lib.Visitor;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -13,5 +15,9 @@ namespace RuddyRex.Lib.Models.NodeModels
         public NodeType Type { get; set; }
         public List<INode> Characters { get; set; } = new();
 
+        public IRegexNode OnEnter(IVisitor visitor)
+        {
+            return visitor.ConvertCharacterClass(this);
+        }
     }
 }

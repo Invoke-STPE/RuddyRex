@@ -1,4 +1,4 @@
-﻿using RuddyRex.Lib.Models.NodeModels;
+﻿using RuddyRex.Lib.Models.Interfaces;
 using System;
 using System.Collections.Generic;
 using System.Linq;

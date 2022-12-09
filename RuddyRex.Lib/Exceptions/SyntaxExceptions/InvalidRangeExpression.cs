@@ -6,9 +6,9 @@ using System.Threading.Tasks;
 
 namespace RuddyRex.Lib.Exceptions.SyntaxExceptions
 {
-    public class InvalidRangeExpressionSyntax : Exception
+    public class InvalidRangeExpression : Exception
     {
-        public InvalidRangeExpressionSyntax(string? message) : base(message)
+        public InvalidRangeExpression(string? message) : base(message)
         {
         }
     }

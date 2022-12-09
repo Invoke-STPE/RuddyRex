@@ -46,17 +46,11 @@ namespace RuddyRex.Lib
                     case '[':
                         token = new TokenOperator() { Type = TokenType.OpeningSquareBracket, Value = character.ToString() };
                         tokens.Add(token);
-                        //if (PeekCharacter() is not ']' )
-                        //{
-                            while (PeekCharacter() is not ']')
-                            {
-                                TokenCharacter tokenCharacter = new() { Type = TokenType.CharacterLiteral, Character = NextCharacter() };
-                                tokens.Add(tokenCharacter);
-                            }
-                        //}
-                    
-                     
-                       
+                        while (PeekCharacter() is not ']')
+                        {
+                            TokenCharacter tokenCharacter = new() { Type = TokenType.CharacterLiteral, Character = NextCharacter() };
+                            tokens.Add(tokenCharacter);
+                        }    
                         continue;
                     case ']':
                         token = new TokenOperator() { Type = TokenType.ClosingSquareBracket, Value = character.ToString() };

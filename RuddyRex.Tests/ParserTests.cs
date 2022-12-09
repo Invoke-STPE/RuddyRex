@@ -4,6 +4,7 @@ using RuddyRex.Lib;
 using RuddyRex.Lib.Enums;
 using RuddyRex.Lib.Exceptions.SyntaxExceptions;
 using RuddyRex.Lib.Models;
+using RuddyRex.Lib.Models.Interfaces;
 using RuddyRex.Lib.Models.NodeModels;
 using RuddyRex.Lib.Models.TokenModels;
 using System;
@@ -62,7 +63,7 @@ namespace RuddyRex.Tests
                 GroupNode groupNode = (GroupNode)Parser.Parse(tokens).Nodes.First();
                 var actual = groupNode.Nodes.First();
                 Assert.AreEqual(expected, actual);
-              
+              // Code removed
             }
             [TestMethod]
             [DataRow("Match ([ abc])")]
@@ -91,7 +92,7 @@ namespace RuddyRex.Tests
 
                 GroupNode groupNode = (GroupNode)Parser.Parse(tokens).Nodes.First();
                 KeywordNode keyword = (KeywordNode)groupNode.Nodes.First();
-                RangeNode actual = (RangeNode)keyword.Parameters.First();
+                RangeNode actual = (RangeNode)keyword.Parameter;
 
                 Assert.AreEqual(expected, actual);
                 Assert.AreEqual(expectedCount, actual.Values.Count);
@@ -157,7 +158,7 @@ namespace RuddyRex.Tests
                 RangeNode expected = new RangeNode() { Type = NodeType.RangeExpression };
 
                 KeywordNode keyword = (KeywordNode)Parser.Parse(tokens).Nodes.First();
-                RangeNode actual = (RangeNode)keyword.Parameters.First();
+                RangeNode actual = (RangeNode)keyword.Parameter;
 
                 Assert.AreEqual(expected, actual);
                 Assert.AreEqual(2, actual.Values.Count);
@@ -193,6 +194,21 @@ namespace RuddyRex.Tests
 
             }
         }
+
+        [TestClass]
+        public class ParserShouldParseStringLiterals
+        {
+            [TestMethod]
+            public void WhenPassedStringToken_ReturnsAnStringNode()
+            {
+                var tokens = Lexer.Tokenize("Match \"This is a string node\"");
+                StringNode expected = new() { Type = NodeType.StringLiteral, Value = "This is a string node" };
+
+                StringNode actual = (StringNode)Parser.Parse(tokens).Nodes.First();
+
+                Assert.AreEqual(expected, actual);
+            }
+        }
         [TestClass]
         public class ParserShouldThrowException
         {
@@ -217,11 +233,11 @@ namespace RuddyRex.Tests
             }
 
             [TestMethod]
-            [ExpectedException(typeof(InvalidRangeExpressionSyntax))]
+            [ExpectedException(typeof(InvalidRangeExpression))]
             [DataRow("Match Between 3 Till 4 } digit")]
             [DataRow("Match Between { 3 Till 4  digit")]
-            [DataRow("Match Between { 3 between 4  digit")]
-            public void WhenPassedMissingCurlyBracket(string input)
+            [DataRow("Match Between { 3 between } 4  digit")]
+            public void WhenPassedInvalidRangeExpression(string input)
             {
                 var tokens = Lexer.Tokenize(input);
 
@@ -229,7 +245,7 @@ namespace RuddyRex.Tests
             }
 
             [TestMethod]
-            [ExpectedException(typeof(InvalidRangeExpressionSyntax))]
+            [ExpectedException(typeof(InvalidRangeExpression))]
             [DataRow("Match Between { 3 Till 4 ) }  digit")]
             [DataRow("Match Between { (3 Till 4 }  digit")]
             [DataRow("Match Between { 3 Till 4 ] }  digit")]
@@ -266,6 +282,8 @@ namespace RuddyRex.Tests
 
             return count;
         }
+
+
 
     }
 }

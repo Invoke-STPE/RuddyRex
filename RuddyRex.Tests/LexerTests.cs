@@ -89,17 +89,17 @@ namespace RuddyRex.Tests
             {
 
                 List<IToken> expected = new()
-            {
-                new TokenOperator() { Type = TokenType.OpeningParenthesis, Value = "(" },
-                new TokenKeyword() { Type = TokenType.KeywordIdentifier, Value = "Between"},
-                new TokenOperator() { Type = TokenType.OpeningCurlyBracket, Value = "{" },
-                new TokenNumber() {Type = TokenType.NumberLiteral, Value = 1},
-                new TokenKeyword() { Type = TokenType.KeywordIdentifier, Value = "Till" },
-                new TokenNumber() {Type = TokenType.NumberLiteral, Value = 3},
-                new TokenOperator() { Type = TokenType.ClosingCurlyBracket, Value = "}" },
-                new TokenKeyword() { Type = TokenType.KeywordIdentifier, Value = "Digit" },
-                new TokenOperator() { Type = TokenType.ClosingParenthesis, Value = ")" }
-            };
+                {
+                    new TokenOperator() { Type = TokenType.OpeningParenthesis, Value = "(" },
+                    new TokenKeyword() { Type = TokenType.KeywordIdentifier, Value = "Between"},
+                    new TokenOperator() { Type = TokenType.OpeningCurlyBracket, Value = "{" },
+                    new TokenNumber() {Type = TokenType.NumberLiteral, Value = 1},
+                    new TokenKeyword() { Type = TokenType.KeywordIdentifier, Value = "Till" },
+                    new TokenNumber() {Type = TokenType.NumberLiteral, Value = 3},
+                    new TokenOperator() { Type = TokenType.ClosingCurlyBracket, Value = "}" },
+                    new TokenKeyword() { Type = TokenType.KeywordIdentifier, Value = "Digit" },
+                    new TokenOperator() { Type = TokenType.ClosingParenthesis, Value = ")" }
+                };
 
                 List<IToken> actual = Lexer.Tokenize("(Between { 1 Till 3} Digit)");
 
