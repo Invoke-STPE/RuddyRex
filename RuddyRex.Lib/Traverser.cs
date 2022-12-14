@@ -10,19 +10,21 @@ using System.Threading.Tasks;
 
 namespace RuddyRex.Lib
 {
-    public static class RuddyToRegexConvertor
+    public static class Traverser
     {
+        // NEED TO RETURN AN AST
         private static RegexConvertorVisitor _regexConvertor = new RegexConvertorVisitor();
-        public static List<IRegexNode> ConvertTree(AbstractTree tree)
+        public static AbstractTree<IRegexNode> ConvertTree(AbstractTree<INode> tree)
         {
+            AbstractTree<IRegexNode> abstractTree = new() { Type = "RegExp" };
             List<IRegexNode> regexNodes = new();
             foreach (var node in tree.Nodes)
             {
                 IRegexNode regexNode = TraverseNode(node);
                 regexNodes.Add(regexNode);
             }
-
-            return regexNodes;
+            abstractTree.Nodes = regexNodes;
+            return abstractTree;
         }
 
         public static List<IRegexNode> TraverseArray(List<INode> nodes)
@@ -39,7 +41,6 @@ namespace RuddyRex.Lib
         public static IRegexNode TraverseNode(INode node)
         {
             IRegexNode regexNode = node.OnEnter(_regexConvertor);
-            //if (node.)
             return regexNode;
         }
     }

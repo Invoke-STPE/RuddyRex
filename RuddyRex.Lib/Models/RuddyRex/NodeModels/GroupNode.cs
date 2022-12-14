@@ -27,7 +27,7 @@ namespace RuddyRex.Lib.Models.NodeModels
 
         public IRegexNode OnEnter(IVisitor visitor)
         {
-            return visitor.ConvertGroup(this);
+            return visitor.ConvertToGroup(this);
         }
     }
 }

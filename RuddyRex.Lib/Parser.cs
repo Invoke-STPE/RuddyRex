@@ -21,11 +21,11 @@ namespace RuddyRex.Lib
         static private Queue<IToken> _tokenQueue;
         static private IToken _token;
 
-        public static AbstractTree Parse(List<IToken> tokens)
+        public static AbstractTree<INode> Parse(List<IToken> tokens)
         {
             bool firstTime = true;
             _tokenQueue = new Queue<IToken>(tokens);
-            AbstractTree ast = CreateAST(NextToken());
+            AbstractTree<INode> ast = CreateAST(NextToken());
              _token = NextToken();
 
             while (_tokenQueue.Count() != 0 || firstTime)
@@ -168,12 +168,12 @@ namespace RuddyRex.Lib
             return _tokenQueue.TryPeek(out IToken result) ? result : null;
         }
 
-        private static AbstractTree CreateAST(IToken? token)
+        private static AbstractTree<INode> CreateAST(IToken? token)
         {
             TokenKeyword keyword = (TokenKeyword)token;
             if (RuddyRexDictionary.IsValidStartKeyword((keyword.Value)))
             {
-                return new AbstractTree() { Type = keyword.Value };
+                return new AbstractTree<INode>() { Type = keyword.Value };
             }
             throw new InvalidKeywordException($"{keyword.Value} Is not a valid keyword Identifier");
         }

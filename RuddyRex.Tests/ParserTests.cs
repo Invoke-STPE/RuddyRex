@@ -30,7 +30,7 @@ namespace RuddyRex.Tests
             {
                 var tokens = Lexer.Tokenize(input);
 
-                AbstractTree ast = Parser.Parse(tokens);
+                AbstractTree<INode> ast = Parser.Parse(tokens);
 
                 int actual = CountNodes(ast.Nodes);
 

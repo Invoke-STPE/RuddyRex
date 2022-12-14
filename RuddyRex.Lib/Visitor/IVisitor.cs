@@ -5,12 +5,9 @@ namespace RuddyRex.Lib.Visitor
 {
     public interface IVisitor
     {
-        IRegexNode ConvertChar(CharacterNode characterNode);
-        IRegexNode ConvertCharacterClass(CharacterRangeNode rangeNode);
-
-        //IRegexNode ConvertGroup();
-        //IRegexNode ConvertGroup(INode node);
-        IRegexNode ConvertGroup(GroupNode groupNode);
+        IRegexNode ConvertToChar(CharacterNode characterNode);
+        IRegexNode ConvertToCharacterClass(CharacterRangeNode rangeNode);
+        IRegexNode ConvertToGroup(GroupNode groupNode);
         IRegexNode ConvertKeyword(KeywordNode keywordNode);
         IRegexNode ConvertRange(RangeNode rangeNode);
         IRegexNode ConvertString(StringNode stringNode);

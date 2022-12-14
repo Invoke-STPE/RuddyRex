@@ -17,7 +17,7 @@ namespace RuddyRex.Lib.Models.NodeModels
 
         public IRegexNode OnEnter(IVisitor visitor)
         {
-            return visitor.ConvertChar(this);
+            return visitor.ConvertToChar(this);
         }
     }
 }

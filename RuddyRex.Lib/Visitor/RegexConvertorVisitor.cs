@@ -14,27 +14,27 @@ namespace RuddyRex.Lib.Visitor
 {
     public class RegexConvertorVisitor : IVisitor
     {
-        public IRegexNode ConvertGroup(GroupNode groupNode)
+        public IRegexNode ConvertToGroup(GroupNode groupNode)
         {
             var regexGroup = new RegexGroup() { Type = RegexType.Group };
             if (groupNode.Nodes.Count > 0)
             {
-                regexGroup.Expressions = RuddyToRegexConvertor.TraverseArray(groupNode.Nodes);
+                regexGroup.Expressions = Traverser.TraverseArray(groupNode.Nodes);
             }
             return regexGroup;
         }
 
-        public IRegexNode ConvertCharacterClass(CharacterRangeNode rangeNode)
+        public IRegexNode ConvertToCharacterClass(CharacterRangeNode rangeNode)
         {
             var regexCharacterClass = new RegexCharacterClass() { Type = RegexType.CharacterClass };
             if (rangeNode.Characters.Count > 0)
             {
-                regexCharacterClass.Expressions = RuddyToRegexConvertor.TraverseArray(rangeNode.Characters);
+                regexCharacterClass.Expressions = Traverser.TraverseArray(rangeNode.Characters);
             }
             return regexCharacterClass;
         }
 
-        public IRegexNode ConvertChar(CharacterNode characterNode)
+        public IRegexNode ConvertToChar(CharacterNode characterNode)
         {
             return new RegexChar() { Type = RegexType.Char, Kind = "simple", Symbol = characterNode.Value, Value = characterNode.Value.ToString() };
         }
@@ -55,7 +55,7 @@ namespace RuddyRex.Lib.Visitor
                 }
                 if (keywordNode.Parameter is not null)
                 {
-                    regexRepetition.Quantifier = (RegexQuantifier)RuddyToRegexConvertor.TraverseNode(keywordNode.Parameter);
+                    regexRepetition.Quantifier = (RegexQuantifier)Traverser.TraverseNode(keywordNode.Parameter);
                     if (keywordNode.Keyword.ToLower() == "between")
                     {
                         RangeNode rangeNode = (RangeNode)keywordNode.Parameter;
@@ -94,12 +94,12 @@ namespace RuddyRex.Lib.Visitor
                 {
                     characterRangeNode.Characters.Add(new CharacterNode() { Type = NodeType.CharacterNode, Value = c });
                 }
-                regexAlternative.Expressions = RuddyToRegexConvertor.TraverseArray(characterRangeNode.Characters);
+                regexAlternative.Expressions = Traverser.TraverseArray(characterRangeNode.Characters);
             }
 
             return regexAlternative;
             
         }
     }
-    MANGLER FLERE TEST CASES SVÆRER UDTRYK
+    //MANGLER FLERE TEST CASES SVÆRER UDTRYK
 }
