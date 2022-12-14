@@ -151,6 +151,7 @@ namespace RuddyRex.Tests
             [TestMethod]
             [DataRow("Match Between { 1 Till 2 } digit")]
             [DataRow("Match Between { 1 Till 2 } letter")]
+            [DataRow("Match Between { 0 Till 1 }  digit")]
             public void WhenPassedGroupBetweenExpression_ReturnsRangeExpression(string input)
             {
                 List<IToken> tokens = Lexer.Tokenize(input);
@@ -162,6 +163,22 @@ namespace RuddyRex.Tests
 
                 Assert.AreEqual(expected, actual);
                 Assert.AreEqual(2, actual.Values.Count);
+            }
+            [TestMethod]
+            [DataRow("Match Between { 1 Till  } digit")]
+            [DataRow("Match Between { 2 Till  } letter")]
+            [DataRow("Match Between { 0 Till  }  digit")]
+            public void WhenPassedGroupBetweenExpression_ReturnsRangeExpressionOneDigit(string input)
+            {
+                List<IToken> tokens = Lexer.Tokenize(input);
+
+                RangeNode expected = new RangeNode() { Type = NodeType.RangeExpression };
+
+                KeywordNode keyword = (KeywordNode)Parser.Parse(tokens).Nodes.First();
+                RangeNode actual = (RangeNode)keyword.Parameter;
+
+                Assert.AreEqual(expected, actual);
+                Assert.AreEqual(1, actual.Values.Count);
             }
 
             [TestMethod]
@@ -193,6 +210,7 @@ namespace RuddyRex.Tests
                 Assert.AreEqual(expected.Type, actual.Type);
 
             }
+
         }
 
         [TestClass]
@@ -237,6 +255,7 @@ namespace RuddyRex.Tests
             [DataRow("Match Between 3 Till 4 } digit")]
             [DataRow("Match Between { 3 Till 4  digit")]
             [DataRow("Match Between { 3 between } 4  digit")]
+            [DataRow("Match Between { 1 Till 0 }  digit")]
             public void WhenPassedInvalidRangeExpression(string input)
             {
                 var tokens = Lexer.Tokenize(input);
@@ -249,7 +268,7 @@ namespace RuddyRex.Tests
             [DataRow("Match Between { 3 Till 4 ) }  digit")]
             [DataRow("Match Between { (3 Till 4 }  digit")]
             [DataRow("Match Between { 3 Till 4 ] }  digit")]
-            [DataRow("Match Between { 0 Till 4 }  digit")]
+            
             public void WhenPassedInvalidCharacterInRangeExpression(string input)
             {
                 var tokens = Lexer.Tokenize(input);
