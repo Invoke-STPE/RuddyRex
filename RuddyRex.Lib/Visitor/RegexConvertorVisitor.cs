@@ -59,7 +59,7 @@ namespace RuddyRex.Lib.Visitor
                     if (keywordNode.Keyword.ToLower() == "between")
                     {
                         RangeNode rangeNode = (RangeNode)keywordNode.Parameter;
-                        if (rangeNode.Values.Count is 1) // If only one number in rangeNode from must be infinite
+                        if (rangeNode.Values.Count is 1) // If only one number in rangeNode from must be infinity
                         {
                             regexRepetition.Quantifier.To = 0;
                         }
@@ -101,5 +101,4 @@ namespace RuddyRex.Lib.Visitor
             
         }
     }
-    //MANGLER FLERE TEST CASES SVÆRER UDTRYK
 }
