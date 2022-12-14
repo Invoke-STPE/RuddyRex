@@ -249,6 +249,7 @@ namespace RuddyRex.Tests
             [DataRow("Match Between { 3 Till 4 ) }  digit")]
             [DataRow("Match Between { (3 Till 4 }  digit")]
             [DataRow("Match Between { 3 Till 4 ] }  digit")]
+            [DataRow("Match Between { 0 Till 4 }  digit")]
             public void WhenPassedInvalidCharacterInRangeExpression(string input)
             {
                 var tokens = Lexer.Tokenize(input);

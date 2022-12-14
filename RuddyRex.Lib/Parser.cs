@@ -106,6 +106,7 @@ namespace RuddyRex.Lib
                         break;
                     case TokenType.NumberLiteral:
                         TokenNumber tokenNumber = (TokenNumber)_token;
+                        if (tokenNumber.Value == 0) throw new InvalidRangeExpression("Zero is not a valid number in an range expression");
                         rangeNode.Values.Add(tokenNumber);
                         break;
                     case TokenType.KeywordIdentifier:

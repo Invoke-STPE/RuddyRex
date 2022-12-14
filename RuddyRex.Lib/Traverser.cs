@@ -12,8 +12,7 @@ namespace RuddyRex.Lib
 {
     public static class Traverser
     {
-        // NEED TO RETURN AN AST
-        private static RegexConvertorVisitor _regexConvertor = new RegexConvertorVisitor();
+        private static RegexConvertorVisitor _regexConvertor = new();
         public static AbstractTree<IRegexNode> ConvertTree(AbstractTree<INode> tree)
         {
             AbstractTree<IRegexNode> abstractTree = new() { Type = "RegExp" };
