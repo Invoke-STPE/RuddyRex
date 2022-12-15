@@ -129,7 +129,7 @@ namespace RuddyRex.Tests
             string input = "Match [a]{0 Till}";
             var tokens = Lexer.Tokenize(input);
 
-            var ast = Parser.Parse(tokens);
+            var ast = Parser.ParseTree(tokens);
 
             Assert.IsTrue(true);
 

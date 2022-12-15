@@ -17,7 +17,7 @@ namespace RuddyRex.Lib.Models
         {
             return obj is AbstractTree<T> tree &&
                    Type == tree.Type &&
-                   EqualityComparer<List<T>>.Default.Equals(Nodes, tree.Nodes);
+                   Nodes.SequenceEqual(tree.Nodes);
         }
 
         public override int GetHashCode()

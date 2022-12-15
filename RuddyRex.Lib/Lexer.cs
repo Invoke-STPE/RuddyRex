@@ -46,7 +46,7 @@ namespace RuddyRex.Lib
                     case '[':
                         token = new TokenOperator() { Type = TokenType.OpeningSquareBracket, Value = character.ToString() };
                         tokens.Add(token);
-                        while (PeekCharacter() is not ']')
+                        while (PeekCharacter() is not ']' && Char.IsWhiteSpace(PeekCharacter()) == false)
                         {
                             TokenCharacter tokenCharacter = new() { Type = TokenType.CharacterLiteral, Character = NextCharacter() };
                             tokens.Add(tokenCharacter);

@@ -17,173 +17,92 @@ namespace RuddyRex.Lib
 {
     public class Parser
     {
-       
-        static private Queue<IToken> _tokenQueue;
-        static private IToken _token;
+        private static Queue<IToken> _tokens;
+        //private static IToken _currentToken = null;
+        static Stack<IToken> brackets;
 
-        public static AbstractTree<INode> Parse(List<IToken> tokens)
+        public static AbstractTree<INode> ParseTree(List<IToken> tokens)
         {
-            bool firstTime = true;
-            _tokenQueue = new Queue<IToken>(tokens);
-            AbstractTree<INode> ast = CreateAST(NextToken());
-             _token = NextToken();
-
-            while (_tokenQueue.Count() != 0 || firstTime)
+            _tokens = new Queue<IToken>(tokens);
+            brackets = new Stack<IToken>();
+            AbstractTree<INode> tree = CreateAST(NextToken());
+            while (PeekToken() is not null)
             {
-                firstTime = false;
-                var node = AnalyseToken(_token);
-                ast.Nodes.Add(node);
+                IToken _currentToken = NextToken();
+                INode node = AnalyseToken(_currentToken);
+                if (node is not null)
+                {
+                    tree.Nodes.Add(node); 
+                }
+
             }
-            return ast;
+            if (brackets.Count > 0) throw new InvalidRangeExpression("Test");
+            return tree;
         }
 
         private static INode AnalyseToken(IToken token)
         {
             INode node = null;
-
-            switch (token.Type)
+            switch (token?.Type)
             {
                 case TokenType.OpeningParenthesis:
-                    GroupNode group = (GroupNode)ParseGroupExpression(token);
-                    node = group;
-                    break;
-                case TokenType.KeywordIdentifier:
-                    TokenKeyword keywordToken = (TokenKeyword)token;
-                    if (RuddyRexDictionary.IsValidKeyword(keywordToken.Value))
+                    brackets.Push(token);
+                    GroupNode groupNode = new GroupNode() { Type = NodeType.GroupExpression };
+                    INode analysedNode = AnalyseToken(NextToken());
+                    if (analysedNode != null)
                     {
-                        KeywordNode keywordNode = new KeywordNode() { Keyword = keywordToken.Value, Type = NodeType.KeywordExpression };
-                        _token = NextToken();
-                        keywordNode.Parameter = AnalyseToken(_token);
-                        keywordToken = (TokenKeyword)NextToken();
-                        if (!RuddyRexDictionary.IsValidReturnValue(keywordNode.ValueType) && keywordToken.Type != TokenType.KeywordIdentifier)
-                            throw new InvalidValueType($"{keywordNode.ValueType} is not a valid type");
-                        keywordNode.ValueType = keywordToken.Value;
-                        node = keywordNode;
-                        _token = _token.Type == TokenType.ClosingCurlyBracket ? NextToken() : _token;
+                        groupNode.Nodes.Add(analysedNode);
                     }
-                    else
-                    {
-                        if (keywordToken.Value.ToLower() == "till")
-                        {
-                            throw new InvalidRangeExpression("Missing { at the start of range expression");
-                        }
-                        throw new InvalidValueType($"{keywordToken.Value} is not a valid type");
-                    }
+                    node = groupNode;
                     break;
-                case TokenType.OpeningSquareBracket: // Need to be incoorporate in other unit tests.
-                    CharacterRangeNode characterRange = new() { Type = NodeType.CharacterRange };
-                    while (PeekToken().Type != TokenType.ClosingSquareBracket)
-                    {
-                        _token = NextToken();
-                        TokenCharacter tokenCharacter = (TokenCharacter)_token;
-                        CharacterNode characterNode = new CharacterNode() { Type = NodeType.CharacterNode, Value = tokenCharacter.Character};
-                        characterRange.Characters.Add(characterNode);
-                    }
-                    if (PeekToken().Type == TokenType.ClosingSquareBracket)
-                    {
-                        _token = NextToken();
-                    } else { throw new UnbalancedBracketsException("Missing closing ']' character"); } // TODO: Skal unit testes
-                    node = characterRange;
+                case TokenType.ClosingParenthesis:
+                    if (brackets.Count == 0 || brackets.Pop().Type != TokenType.OpeningParenthesis) throw new InvalidRangeExpression("Missing bracket");
                     break;
-                case TokenType.StringLiteral:
-                    StringNode stringNode = new() { Type = NodeType.StringLiteral };
-                    TokenString tokenString = (TokenString)_token; 
-                    stringNode.Value = tokenString.Value;
-                    node= stringNode;
+                case TokenType.OpeningSquareBracket:
+                    brackets.Push(token);
+                    CharacterRangeNode characterRangeNode = new CharacterRangeNode() { Type = NodeType.CharacterRange };
+                    while (PeekToken()?.Type == TokenType.CharacterLiteral)
+                    {
+                        characterRangeNode.Characters.Add(AnalyseToken(NextToken()));
+                    }
+                    node = characterRangeNode;
+                    break;
+                case TokenType.ClosingSquareBracket:
+                    if (brackets.Count == 0 || brackets.Pop().Type != TokenType.OpeningSquareBracket) throw new InvalidRangeExpression("Missing bracket");
                     break;
                 case TokenType.OpeningCurlyBracket:
-                    node = ParseRangeExpression();
+                    break;
+                case TokenType.ClosingCurlyBracket:
+                    break;
+                case TokenType.AlternateOperator:
+                    break;
+                case TokenType.KeywordIdentifier:
+                    break;
+                case TokenType.NumberLiteral:
+                    break;
+                case TokenType.CharacterLiteral:
+                    TokenCharacter tokenCharacter = (TokenCharacter)token;
+                    node = new CharacterNode() { Type = NodeType.CharacterNode, Value = tokenCharacter.Character };
+                    break;
+                case TokenType.StringLiteral:
                     break;
                 default:
-                    _token = NextToken();
-                    if (_token is not null)
-                    {
-                        node = AnalyseToken(_token);
-                    }
                     break;
-
             }
             return node;
         }
 
-        private static RangeNode ParseRangeExpression()
-        {
-            //_token = NextToken();
-            if (_token.Type != TokenType.OpeningCurlyBracket) throw new InvalidRangeExpression("Syntax Error: Invalid range syntax.");
-            Stack<IToken> stack = new Stack<IToken>();
-            stack.Push(_token);
-            RangeNode rangeNode = new RangeNode() { Type = NodeType.RangeExpression };
-            while(stack.Count > 0)
-            {
-                _token = NextToken();
-                switch (_token.Type)
-                {
-                    case TokenType.ClosingCurlyBracket:
-                        if (stack.Count == 0 || stack.Pop().Type != TokenType.OpeningCurlyBracket) throw new InvalidRangeExpression($"Missing a closing }}");
-                        break;
-                    case TokenType.NumberLiteral:
-                        TokenNumber tokenNumber = (TokenNumber)_token;
-                        if (rangeNode.Values.Count > 0 && tokenNumber.Value == 0) throw new InvalidRangeExpression("Zero is not a valid number in an range expression");
-                        rangeNode.Values.Add(tokenNumber);
-                        break;
-                    case TokenType.KeywordIdentifier:
-                        TokenKeyword identifier = (TokenKeyword)_token;
-                        if (identifier.Value != "Till" ) throw new InvalidRangeExpression("A range expression can only contain the keyword 'Till'");
-                        break;
-                    default:
-                        throw new InvalidRangeExpression("Unknown character in range expression.");
-                }
-            }
-            //NextToken();
-            return stack.Count == 0 ? rangeNode : throw new InvalidRangeExpression("Unable to parse range syntax."); ;
-        }
-
-        private static INode ParseGroupExpression(IToken token)
-        {
-            
-            Stack<IToken> stack = new Stack<IToken>();
-            stack.Push(token);
-            _token = NextToken();
-            GroupNode node = new GroupNode() { Type = NodeType.GroupExpression};
-            while (stack.Count != 0)
-            {
-                switch (_token?.Type)
-                {
-                    case TokenType.OpeningParenthesis:
-                        stack.Push(_token);
-                        node.Nodes.Add(new GroupNode() { Type = NodeType.GroupExpression});
-                        break;
-                    case TokenType.ClosingParenthesis:
-                        if (stack.Count == 0 || stack.Pop().Type != TokenType.OpeningParenthesis) throw new UnbalancedBracketsException("Uneven pair of parenthesis!");
-                        break;
-                    case TokenType.KeywordIdentifier:
-                        KeywordNode keywordNode = (KeywordNode)AnalyseToken(_token);
-                        node.Nodes.Add(keywordNode);
-                        continue;
-                    case TokenType.OpeningSquareBracket:
-                        node.Nodes.Add(AnalyseToken(_token));
-                        break;
-                    default:
-                        break;
-                }
-                if (_tokenQueue.Count == 0) break; // If token queue is empty, no reason to try and fetch the next one. 
-                _token = NextToken();
-               
-            }
-            return stack.Count == 0 ? node : throw new UnbalancedBracketsException("Uneven pair of parenthesis!");
-        }
-
         static IToken? NextToken()
         {
-            if (_tokenQueue.TryDequeue(out IToken result))
+            if (_tokens.TryDequeue(out IToken result))
             {
                 return result;
             }
             return null;
         }
-        private static IToken PeekToken()
+        private static IToken? PeekToken()
         {
-            return _tokenQueue.TryPeek(out IToken result) ? result : null;
+            return _tokens.TryPeek(out IToken result) ? result : null;
         }
 
         private static AbstractTree<INode> CreateAST(IToken? token)

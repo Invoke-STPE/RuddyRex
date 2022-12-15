@@ -7,6 +7,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Xml.Linq;
 
 namespace RuddyRex.Lib.Models.NodeModels
 {
@@ -14,6 +15,13 @@ namespace RuddyRex.Lib.Models.NodeModels
     {
         public NodeType Type { get; set; }
         public List<INode> Characters { get; set; } = new();
+
+        public override bool Equals(object? obj)
+        {
+            return obj is CharacterRangeNode node &&
+                   Type == node.Type &&
+                   Characters.SequenceEqual(node.Characters); ;
+        }
 
         public IRegexNode OnEnter(IVisitor visitor)
         {
