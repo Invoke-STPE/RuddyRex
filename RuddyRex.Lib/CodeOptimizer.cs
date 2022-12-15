@@ -1,4 +1,5 @@
-﻿using RuddyRex.Lib.Models;
+﻿using RuddyRex.Lib.Enums;
+using RuddyRex.Lib.Models;
 using RuddyRex.Lib.Models.Interfaces;
 using System;
 using System.Collections.Generic;
@@ -12,7 +13,11 @@ namespace RuddyRex.Lib
     {
         //public static AbstractTree<IRegexNode> OptimizeRegularExpression(AbstractTree<IRegexNode> abstractTree)
         //{
-
+        //    bool optimizing = true;
+        //    while (abstractTree.Nodes.Count != 0)
+        //    {
+                
+        //    }
         //}
     }
 }

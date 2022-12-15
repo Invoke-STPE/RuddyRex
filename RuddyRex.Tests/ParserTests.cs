@@ -97,6 +97,17 @@ namespace RuddyRex.Tests
                 Assert.AreEqual(expected, actual);
                 Assert.AreEqual(expectedCount, actual.Values.Count);
             }
+            [TestMethod]
+            [DataRow("Match (\"abc\"){0 Till 1}")]
+            [DataRow("Match [abc]{0 Till 1}")]
+            public void WhenPassedGroupBetweenExpressionWithRange_ReturnsRangeExpression(string input)
+            {
+                List<IToken> tokens = Lexer.Tokenize(input);
+                RangeNode expected = new RangeNode() { Type = NodeType.RangeExpression };
+                AbstractTree<INode> root = Parser.Parse(tokens);
+                RangeNode actual = (RangeNode)root.Nodes[1];
+                Assert.AreEqual(expected, actual);
+            }
         }
         [TestClass]
         public class ParserShouldParseMultipleExpressions
@@ -144,7 +155,6 @@ namespace RuddyRex.Tests
                 KeywordNode expected = new KeywordNode() { Type = NodeType.KeywordExpression, Keyword = "Between", ValueType = valueType };
 
                 KeywordNode actual = (KeywordNode)Parser.Parse(tokens).Nodes.First();
-                //var actual = keywordNode.Parameters.First();
                 Assert.AreEqual(expected, actual);
 
             }
@@ -284,6 +294,21 @@ namespace RuddyRex.Tests
             {
                 var tokens = Lexer.Tokenize(input);
                 Parser.Parse(tokens);
+            }
+        }
+
+        [TestClass]
+        public class ParserManualTest
+        {
+            [TestMethod]
+            public void JustATest()
+            {
+                string input = "Match ([a]{0 Till})";
+                var tokens = Lexer.Tokenize(input);
+
+                var ast = Parser.Parse(tokens);
+
+                Assert.IsTrue(true);
             }
         }
 

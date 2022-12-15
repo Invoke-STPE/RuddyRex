@@ -7,6 +7,7 @@ using RuddyRex.Lib.Models.NodeModels;
 using RuddyRex.Lib.Models.RegexModels;
 using RuddyRex.Lib.Models.TokenModels;
 using RuddyRex.Lib.Visitor;
+using System.Linq.Expressions;
 
 namespace RuddyRex.Tests
 {
@@ -72,6 +73,7 @@ namespace RuddyRex.Tests
 
                 CollectionAssert.AreEqual(expected, actual.Expressions);
             }
+
 
             [TestMethod]
             public void WhenPassedEmptyKeywordExpression()

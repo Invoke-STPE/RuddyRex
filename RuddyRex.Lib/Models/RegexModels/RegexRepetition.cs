@@ -11,7 +11,7 @@ namespace RuddyRex.Lib.Models.RegexModels
     public record RegexRepetition : IRegexNode
     {
         public RegexType Type { get; set; }
-        public RegexChar Expression { get; set; }
+        public IRegexNode Expression { get; set; }
         public RegexQuantifier Quantifier { get; set; }
     }
 }

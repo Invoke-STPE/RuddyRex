@@ -5,6 +5,7 @@ using RuddyRex.Lib.Models.RegexModels;
 using RuddyRex.Lib.Models.TokenModels;
 using RuddyRex.Lib.Models;
 using RuddyRex.Lib;
+using System;
 
 
 namespace RuddyRex.Tests
@@ -120,6 +121,49 @@ namespace RuddyRex.Tests
             // Assert RegexRepetition
             Assert.AreEqual(expected.Nodes[0].Type, actual.Nodes[0].Type); // First element
             Assert.AreEqual(expected.Nodes[1].Type, actual.Nodes[1].Type); // Second element 
+        }
+
+        [TestMethod]
+        public void WhenPassedGroupAndRange()
+        {
+            string input = "Match [a]{0 Till}";
+            var tokens = Lexer.Tokenize(input);
+
+            var ast = Parser.Parse(tokens);
+
+            Assert.IsTrue(true);
+
+            var expected = new RegexGroup()
+            {
+                Type = RegexType.Group,
+                Expressions = new List<IRegexNode>()
+                {
+                    new RegexRepetition()
+                    {
+                        Type = RegexType.Repetition,
+                        Expression = new RegexCharacterClass()
+                        {
+                            Type = RegexType.CharacterClass,
+                            Expressions = new List<IRegexNode>()
+                            {
+                                new RegexChar() { Kind = "simple", Symbol = 'a', Type = RegexType.Char, Value = "a" },
+                            }
+                        },
+                        Quantifier = new RegexQuantifier() { Type = RegexType.Quantifier, Kind = "*", From = 0, To = 0 },
+                    }
+                }
+            };
+            
+
+            //var actualTree = Traverser.ConvertTree(abstractTree);
+
+            //RegexGroup actualGroup = (RegexGroup)actualTree.Nodes[0];
+            //Assert.AreEqual(expected.Type, actualGroup.Type);
+
+            //RegexRepetition actualRepetition = (RegexRepetition)actualGroup.Expressions[0];
+            //RegexRepetition expectedRepetition = (RegexRepetition)expected.Expressions[0];
+            //Assert.AreEqual(expectedRepetition.Expression, actualRepetition.Expression);
+            //Assert.AreEqual(expectedRepetition.Quantifier, actualTypes.Quantifier);
         }
 
         private static RangeNode GenerateRangeNode()

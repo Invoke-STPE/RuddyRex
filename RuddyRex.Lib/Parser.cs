@@ -52,7 +52,8 @@ namespace RuddyRex.Lib
                     if (RuddyRexDictionary.IsValidKeyword(keywordToken.Value))
                     {
                         KeywordNode keywordNode = new KeywordNode() { Keyword = keywordToken.Value, Type = NodeType.KeywordExpression };
-                        keywordNode.Parameter = ParseRangeExpression();
+                        _token = NextToken();
+                        keywordNode.Parameter = AnalyseToken(_token);
                         keywordToken = (TokenKeyword)NextToken();
                         if (!RuddyRexDictionary.IsValidReturnValue(keywordNode.ValueType) && keywordToken.Type != TokenType.KeywordIdentifier)
                             throw new InvalidValueType($"{keywordNode.ValueType} is not a valid type");
@@ -62,20 +63,25 @@ namespace RuddyRex.Lib
                     }
                     else
                     {
-                        throw new InvalidValueType($"{keywordToken.Value} is not a valid type"); // TODO: Unit test misspelled return values 
+                        if (keywordToken.Value.ToLower() == "till")
+                        {
+                            throw new InvalidRangeExpression("Missing { at the start of range expression");
+                        }
+                        throw new InvalidValueType($"{keywordToken.Value} is not a valid type");
                     }
                     break;
                 case TokenType.OpeningSquareBracket: // Need to be incoorporate in other unit tests.
                     CharacterRangeNode characterRange = new() { Type = NodeType.CharacterRange };
                     while (PeekToken().Type != TokenType.ClosingSquareBracket)
                     {
-                        TokenCharacter tokenCharacter = (TokenCharacter)NextToken();
-                         CharacterNode characterNode = new CharacterNode() { Type = NodeType.CharacterNode, Value = tokenCharacter.Character};
+                        _token = NextToken();
+                        TokenCharacter tokenCharacter = (TokenCharacter)_token;
+                        CharacterNode characterNode = new CharacterNode() { Type = NodeType.CharacterNode, Value = tokenCharacter.Character};
                         characterRange.Characters.Add(characterNode);
                     }
                     if (PeekToken().Type == TokenType.ClosingSquareBracket)
                     {
-                        NextToken();
+                        _token = NextToken();
                     } else { throw new UnbalancedBracketsException("Missing closing ']' character"); } // TODO: Skal unit testes
                     node = characterRange;
                     break;
@@ -85,13 +91,24 @@ namespace RuddyRex.Lib
                     stringNode.Value = tokenString.Value;
                     node= stringNode;
                     break;
+                case TokenType.OpeningCurlyBracket:
+                    node = ParseRangeExpression();
+                    break;
+                default:
+                    _token = NextToken();
+                    if (_token is not null)
+                    {
+                        node = AnalyseToken(_token);
+                    }
+                    break;
+
             }
             return node;
         }
 
         private static RangeNode ParseRangeExpression()
         {
-            _token = NextToken();
+            //_token = NextToken();
             if (_token.Type != TokenType.OpeningCurlyBracket) throw new InvalidRangeExpression("Syntax Error: Invalid range syntax.");
             Stack<IToken> stack = new Stack<IToken>();
             stack.Push(_token);
@@ -171,12 +188,19 @@ namespace RuddyRex.Lib
 
         private static AbstractTree<INode> CreateAST(IToken? token)
         {
-            TokenKeyword keyword = (TokenKeyword)token;
-            if (RuddyRexDictionary.IsValidStartKeyword((keyword.Value)))
+            try
             {
-                return new AbstractTree<INode>() { Type = keyword.Value };
+                TokenKeyword keyword = (TokenKeyword)token;
+                if (RuddyRexDictionary.IsValidStartKeyword((keyword.Value)))
+                {
+                    return new AbstractTree<INode>() { Type = keyword.Value };
+                }
+                throw new InvalidKeywordException($"{keyword.Value} Is not a valid keyword Identifier");
             }
-            throw new InvalidKeywordException($"{keyword.Value} Is not a valid keyword Identifier");
+            catch (InvalidCastException ex)
+            {
+                throw ex;
+            }
         }
     }
 }
