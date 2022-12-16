@@ -40,7 +40,7 @@ namespace RuddyRex.Lib
                         {
                             stringValue += NextCharacter();
                         }
-                        tokens.Add(new TokenString() { Type = TokenType.StringLiteral, Value = stringValue });
+                        tokens.Add(new TokenString() { Value = stringValue });
                         NextCharacter();
                         continue;
                     case '[':
@@ -48,7 +48,7 @@ namespace RuddyRex.Lib
                         tokens.Add(token);
                         while (PeekCharacter() is not ']' && Char.IsWhiteSpace(PeekCharacter()) == false)
                         {
-                            TokenCharacter tokenCharacter = new() { Type = TokenType.CharacterLiteral, Character = NextCharacter() };
+                            TokenCharacter tokenCharacter = new() { Character = NextCharacter() };
                             tokens.Add(tokenCharacter);
                         }    
                         continue;
@@ -72,7 +72,7 @@ namespace RuddyRex.Lib
                         {
                             letters += NextCharacter();
                         }
-                        tokens.Add(new TokenKeyword() { Type = TokenType.KeywordIdentifier, Value = letters });
+                        tokens.Add(new TokenKeyword() { Value = letters });
                         continue;
                     case var isNumber when new Regex("[0-9]").IsMatch(isNumber.ToString()):
                         string number = character.ToString();
@@ -80,7 +80,7 @@ namespace RuddyRex.Lib
                         {
                             number += NextCharacter(); ;
                         }
-                        tokens.Add(new TokenNumber() { Type = TokenType.NumberLiteral, Value = Int32.Parse(number) });
+                        tokens.Add(new TokenNumber() { Value = Int32.Parse(number) });
                         continue;
                     default:
                         throw new CharacterIsNotValidException($"{character} Is not a valid character");

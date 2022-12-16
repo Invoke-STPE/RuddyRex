@@ -72,12 +72,11 @@ namespace RuddyRex.Tests
                     {
                         new CharacterRangeNode()
                         {
-                            Type = NodeType.CharacterRange,
                             Characters = new List<INode>()
                             {
-                                new CharacterNode(){ Type = NodeType.CharacterNode, Value = 'a' },
-                                new CharacterNode(){ Type = NodeType.CharacterNode, Value = 'b' },
-                                new CharacterNode(){ Type = NodeType.CharacterNode, Value = 'c' },
+                                new CharacterNode(){ Value = 'a' },
+                                new CharacterNode(){ Value = 'b' },
+                                new CharacterNode(){ Value = 'c' },
                             }
                         }
                     }
@@ -96,10 +95,9 @@ namespace RuddyRex.Tests
                     {
                         new GroupNode()
                         {
-                            Type = NodeType.GroupExpression,
                             Nodes = new List<INode>()
                             {
-                                new CharacterRangeNode(){ Type = NodeType.CharacterRange },
+                                new CharacterRangeNode(),
                             }
                         }
                     }
@@ -118,11 +116,10 @@ namespace RuddyRex.Tests
                     {
                         new CharacterRangeNode()
                         {
-                            Type = NodeType.CharacterRange,
                             Characters = new List<INode>()
                             {
-                                new CharacterNode(){ Type = NodeType.CharacterNode, Value = '(' },
-                                new CharacterNode(){ Type = NodeType.CharacterNode, Value = ')' },
+                                new CharacterNode(){ Value = '(' },
+                                new CharacterNode(){ Value = ')' },
                              
                             }
                         }
@@ -149,16 +146,15 @@ namespace RuddyRex.Tests
                     {
                         new KeywordNode()
                         {
-                            Type = NodeType.KeywordExpression,
                             Keyword = "Between",
                             ValueType = valueType,
                             Parameter = new RangeNode()
                             {
-                                Type = NodeType.RangeExpression,
+                             
                                 Values = new List<INode>()
                                 {
-                                    new NumberNode(){ Type = NodeType.NumberLiteral, Value = 1},
-                                    new NumberNode(){ Type = NodeType.NumberLiteral, Value = 2}
+                                    new NumberNode(){ Value = 1},
+                                    new NumberNode(){ Value = 2}
                                 }
                             }
                         },
@@ -188,11 +184,10 @@ namespace RuddyRex.Tests
                     {
                         new RangeNode()
                         {
-                            Type = NodeType.RangeExpression,
                             Values = new List<INode>()
                             {
-                                new NumberNode(){ Type = NodeType.NumberLiteral, Value = numberA},
-                                new NumberNode(){ Type = NodeType.NumberLiteral, Value = numberB}
+                                new NumberNode(){ Value = numberA},
+                                new NumberNode(){ Value = numberB}
                             }
                         }
                     }
@@ -216,10 +211,9 @@ namespace RuddyRex.Tests
                     {
                         new RangeNode()
                         {
-                            Type = NodeType.RangeExpression,
                             Values = new List<INode>()
                             {
-                                new NumberNode(){ Type = NodeType.NumberLiteral, Value = numberA},
+                                new NumberNode(){ Value = numberA},
                             }
                         }
                     }
@@ -243,10 +237,9 @@ namespace RuddyRex.Tests
                     {
                         new RangeNode()
                         {
-                            Type = NodeType.RangeExpression,
                             Values = new List<INode>()
                             {
-                                new NumberNode(){ Type = NodeType.NumberLiteral, Value = numberA},
+                                new NumberNode(){ Value = numberA},
                             }
                         }
                     }
@@ -265,14 +258,13 @@ namespace RuddyRex.Tests
                     Type = "Match",
                     Nodes = new List<INode>()
                     {
-                        new CharacterRangeNode(){ Type = NodeType.CharacterRange},
+                        new CharacterRangeNode(),
                         new RangeNode()
                         { 
-                            Type = NodeType.RangeExpression,
                             Values = new List<INode>()
                             {
-                                new NumberNode(){ Type = NodeType.NumberLiteral, Value = 1},
-                                new NumberNode(){ Type = NodeType.NumberLiteral, Value = 2}
+                                new NumberNode(){ Value = 1},
+                                new NumberNode(){ Value = 2}
                             }
                         }
                     }

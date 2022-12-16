@@ -24,7 +24,6 @@ namespace RuddyRex.Lib
     public class Parser
     {
         private static Queue<IToken> _tokens;
-        //private static IToken _currentToken = null;
         static Stack<IToken> brackets;
 
         public static AbstractTree<INode> ParseTree(List<IToken> tokens)
@@ -36,7 +35,7 @@ namespace RuddyRex.Lib
             {
                 IToken _currentToken = NextToken();
                 INode node = AnalyseToken(_currentToken);
-                if (node is not null)
+                if (node.Type is not NodeType.None)
                 {
                     tree.Nodes.Add(node); 
                 }
@@ -50,14 +49,14 @@ namespace RuddyRex.Lib
         {
         // Possible refactoring ? https://refactoring.guru/smells/switch-statements
         // https://refactoring.guru/replace-conditional-with-polymorphism
-            INode node = null;
-            switch (token?.Type)
+            INode node = new NullNode();
+            switch (token.Type)
             {
                 case TokenType.OpeningParenthesis:
                     brackets.Push(token);
-                    GroupNode groupNode = new GroupNode() { Type = NodeType.GroupExpression };
+                    GroupNode groupNode = new GroupNode();
                     INode analysedNode = AnalyseToken(NextToken());
-                    if (analysedNode != null)
+                    if (analysedNode.Type != NodeType.None)
                     {
                         groupNode.Nodes.Add(analysedNode);
                     }
@@ -68,7 +67,7 @@ namespace RuddyRex.Lib
                     break;
                 case TokenType.OpeningSquareBracket:
                     brackets.Push(token);
-                    CharacterRangeNode characterRangeNode = new CharacterRangeNode() { Type = NodeType.CharacterRange };
+                    CharacterRangeNode characterRangeNode = new CharacterRangeNode();
                     while (PeekToken()?.Type == TokenType.CharacterLiteral)
                     {
                         characterRangeNode.Characters.Add(AnalyseToken(NextToken()));
@@ -80,7 +79,7 @@ namespace RuddyRex.Lib
                     break;
                 case TokenType.OpeningCurlyBracket:
                     brackets.Push(token);
-                    RangeNode rangeNode = new RangeNode() { Type = NodeType.RangeExpression };
+                    RangeNode rangeNode = new RangeNode();
                     KeywordNode tillKeyword = null;
                     while (PeekToken()?.Type != TokenType.ClosingCurlyBracket)
                     {
@@ -116,7 +115,7 @@ namespace RuddyRex.Lib
                     TokenKeyword tokenKeyword = (TokenKeyword)token;
                     if (tokenKeyword.Value.ToLower() == "till")
                     {
-                        node = new KeywordNode() { Keyword = tokenKeyword.Value, Type = NodeType.KeywordExpression };
+                        node = new KeywordNode() { Keyword = tokenKeyword.Value };
                         break;
                     }
                     if(RuddyRexDictionary.IsValidKeyword(tokenKeyword.Value))
@@ -124,7 +123,6 @@ namespace RuddyRex.Lib
                         KeywordNode keywordNode = new KeywordNode()
                         {
                             Keyword = tokenKeyword.Value,
-                            Type = NodeType.KeywordExpression,
                             Parameter = AnalyseToken(NextToken()),
                         };
                         if (PeekToken().Type == TokenType.ClosingCurlyBracket)
@@ -140,16 +138,16 @@ namespace RuddyRex.Lib
 
                     if (RuddyRexDictionary.IsValidReturnValue(tokenKeyword.Value))
                     {
-                        node = new KeywordNode() { Keyword = tokenKeyword.Value, Type = NodeType.KeywordExpression };
+                        node = new KeywordNode() { Keyword = tokenKeyword.Value };
                     }
                     break;
                 case TokenType.NumberLiteral:
                     TokenNumber tokenNumber = (TokenNumber)token;
-                    node = new NumberNode() { Type = NodeType.NumberLiteral, Value = tokenNumber.Value };
+                    node = new NumberNode() {  Value = tokenNumber.Value };
                     break;
                 case TokenType.CharacterLiteral:
                     TokenCharacter tokenCharacter = (TokenCharacter)token;
-                    node = new CharacterNode() { Type = NodeType.CharacterNode, Value = tokenCharacter.Character };
+                    node = new CharacterNode() { Value = tokenCharacter.Character };
                     break;
                 case TokenType.StringLiteral:
                     break;
@@ -190,3 +188,4 @@ namespace RuddyRex.Lib
         }
     }
 }
+

@@ -17,13 +17,12 @@ namespace RuddyRex.Tests
         public void WhenPassedBetweenOneNumberExpression()
         {
             AbstractTree<INode> abstractTree = new();
-            var keywordNode = new KeywordNode() { Type = NodeType.KeywordExpression, Keyword = "Between", ValueType = "letter" };
+            var keywordNode = new KeywordNode() { Keyword = "Between", ValueType = "letter" };
             var rangeExpression = new RangeNode()
             {
-                Type = NodeType.RangeExpression,
                 Values = new List<INode>()
                 {
-                    new NumberNode() { Type = NodeType.NumberLiteral, Value = 1},
+                    new NumberNode() { Value = 1},
                 }
             };
             keywordNode.Parameter = rangeExpression;
@@ -44,14 +43,13 @@ namespace RuddyRex.Tests
         public void WhenPassedBetweenNumbersExpression()
         {
             AbstractTree<INode> abstractTree = new();
-            var keywordNode = new KeywordNode() { Type = NodeType.KeywordExpression, Keyword = "Between", ValueType = "letter" };
+            var keywordNode = new KeywordNode() { Keyword = "Between", ValueType = "letter" };
             var rangeExpression = new RangeNode()
             {
-                Type = NodeType.RangeExpression,
                 Values = new List<INode>()
                 {
-                    new NumberNode() { Type = NodeType.NumberLiteral, Value = 1},
-                    new NumberNode() { Type = NodeType.NumberLiteral, Value = 3},
+                    new NumberNode() { Value = 1},
+                    new NumberNode() { Value = 3},
                 }
             };
             keywordNode.Parameter = rangeExpression;
@@ -71,7 +69,7 @@ namespace RuddyRex.Tests
         public void WhenPassedExactlyExpression()
         {
             AbstractTree<INode> abstractTree = new();
-            var keywordNode = new KeywordNode() { Type = NodeType.KeywordExpression, Keyword = "Exactly", ValueType = "letter" };
+            var keywordNode = new KeywordNode() { Keyword = "Exactly", ValueType = "letter" };
             var rangeExpression = GenerateRangeNode();
             keywordNode.Parameter = rangeExpression;
             abstractTree.Nodes.Add(keywordNode);
@@ -170,16 +168,15 @@ namespace RuddyRex.Tests
         {
             return new RangeNode()
             {
-                Type = NodeType.RangeExpression,
                 Values = new List<INode>()
                 {
-                    new NumberNode() { Type = NodeType.NumberLiteral, Value = 1},
+                    new NumberNode(),
                 }
             };
         }
         private static KeywordNode GenerateKeywordNode()
         {
-            return new KeywordNode() { Type = NodeType.KeywordExpression, Keyword = "Between", ValueType = "letter" };
+            return new KeywordNode() { Keyword = "Between", ValueType = "letter" };
         }
     }
 

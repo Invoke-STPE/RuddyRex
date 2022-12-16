@@ -13,7 +13,7 @@ namespace RuddyRex.Lib.Models.NodeModels
 {
     public class CharacterRangeNode : INode
     {
-        public NodeType Type { get; set; }
+        public NodeType Type { get; } = NodeType.CharacterRange;
         public List<INode> Characters { get; set; } = new();
 
         public override bool Equals(object? obj)

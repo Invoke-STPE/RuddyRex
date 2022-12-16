@@ -28,7 +28,7 @@ namespace RuddyRex.Tests
             [TestMethod]
             public void WhenPassedEmptyGroupExpression()
             {
-                var groupNode = new GroupNode() { Type = NodeType.GroupExpression };
+                var groupNode = new GroupNode();
                 RegexType expected = RegexType.Group;
                 RegexGroup actual = (RegexGroup)_convertor.ConvertToGroup(groupNode);
                 Assert.AreEqual(expected, actual.Type);
@@ -36,7 +36,7 @@ namespace RuddyRex.Tests
             [TestMethod]
             public void WhenPassedRangeNode()
             {
-                var characterRange = new RangeNode() { Type = NodeType.CharacterRange};
+                var characterRange = new RangeNode();
                 RegexType expectedType = RegexType.Quantifier;
                 var regexRange = (RegexQuantifier)_convertor.ConvertRange(characterRange);
                 RegexType actual = regexRange.Type;
@@ -47,7 +47,7 @@ namespace RuddyRex.Tests
             [TestMethod]
             public void WhenPassedEmptyCharacterRange()
             {
-                var characterRange = new CharacterRangeNode() { Type = NodeType.CharacterRange};
+                var characterRange = new CharacterRangeNode();
                 RegexType expected = RegexType.CharacterClass;
 
                 RegexCharacterClass actual = (RegexCharacterClass)_convertor.ConvertToCharacterClass(characterRange);
@@ -56,11 +56,11 @@ namespace RuddyRex.Tests
             [TestMethod]
             public void WhenPassedCharacterRange()
             {
-                var characterRange = new CharacterRangeNode() { Type = NodeType.CharacterRange };
+                var characterRange = new CharacterRangeNode();
                 characterRange.Characters = new List<INode>
                 {
-                    new CharacterNode() { Type = NodeType.CharacterNode, Value = 'a' },
-                    new CharacterNode() { Type = NodeType.CharacterNode, Value = 'b' }
+                    new CharacterNode() { Value = 'a' },
+                    new CharacterNode() { Value = 'b' }
                 };
 
                 var expected = new List<IRegexNode>()
@@ -79,7 +79,7 @@ namespace RuddyRex.Tests
             [TestMethod]
             public void WhenPassedEmptyKeywordExpression()
             {
-                var keywordNode = new KeywordNode() { Type = NodeType.KeywordExpression, Keyword = "Between", ValueType = "letter" };
+                var keywordNode = new KeywordNode() { Keyword = "Between", ValueType = "letter" };
                 RegexRepetition expected = new()
                 {
                     Type = RegexType.Repetition,
@@ -92,14 +92,13 @@ namespace RuddyRex.Tests
             public void WhenPassedBetweenTwoNumbersExpression()
             {
                 AbstractTree<INode> abstractTree = new();
-                var keywordNode = new KeywordNode() { Type = NodeType.KeywordExpression, Keyword = "Between", ValueType = "letter" };
+                var keywordNode = new KeywordNode() { Keyword = "Between", ValueType = "letter" };
                 var rangeExpression = new RangeNode()
                 {
-                    Type = NodeType.RangeExpression,
                     Values = new List<INode>()
                     { 
-                        new NumberNode() { Type = NodeType.NumberLiteral, Value = 1},
-                        new NumberNode() { Type = NodeType.NumberLiteral, Value = 2},
+                        new NumberNode() { Value = 1},
+                        new NumberNode() { Value = 2},
                     }
                 };
                 keywordNode.Parameter = rangeExpression;
@@ -118,7 +117,7 @@ namespace RuddyRex.Tests
             [TestMethod]
             public void WhenPassedStringLiteral()
             {
-                var stringNode = new StringNode() { Type = NodeType.StringLiteral, Value = "abc" };
+                var stringNode = new StringNode();
                 List<RegexChar> expected = new List<RegexChar>()
                 {
                     new RegexChar() { Type = RegexType.Char, Kind = "simple", Value = "a", Symbol = 'a' },
@@ -133,7 +132,7 @@ namespace RuddyRex.Tests
             [TestMethod]
             public void WhenPassedEmptyStringLiteral()
             {
-                var stringNode = new StringNode() { Type = NodeType.StringLiteral, Value = "abc" };
+                var stringNode = new StringNode();
                 RegexAlternative expected = new RegexAlternative() { Type = RegexType.Alternative };
 
                 var actual = (RegexAlternative)_convertor.ConvertString(stringNode);

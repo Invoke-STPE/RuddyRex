@@ -10,7 +10,7 @@ namespace RuddyRex.Lib.Models.Interfaces
 {
     public interface INode
     {
-        public NodeType Type { get; set; }
+        public NodeType Type { get; }
         IRegexNode OnEnter(IVisitor visitor);
     }
 }

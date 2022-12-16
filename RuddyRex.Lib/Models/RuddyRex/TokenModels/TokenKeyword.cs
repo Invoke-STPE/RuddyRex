@@ -9,7 +9,7 @@ namespace RuddyRex.Lib.Models.TokenModels
 {
     public record TokenKeyword : IToken
     {
-        public TokenType Type { get; set; }
+        public TokenType Type { get; } = TokenType.KeywordIdentifier;
         public string Value { get; set; }
     }
 }

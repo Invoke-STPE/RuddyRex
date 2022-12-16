@@ -89,10 +89,10 @@ namespace RuddyRex.Lib.Visitor
 
             if (charArray.Length > 0)
             {
-                CharacterRangeNode characterRangeNode = new CharacterRangeNode() { Type = NodeType.CharacterRange };
+                CharacterRangeNode characterRangeNode = new CharacterRangeNode();
                 foreach (var c in charArray)
                 {
-                    characterRangeNode.Characters.Add(new CharacterNode() { Type = NodeType.CharacterNode, Value = c });
+                    characterRangeNode.Characters.Add(new CharacterNode());
                 }
                 regexAlternative.Expressions = Traverser.TraverseArray(characterRangeNode.Characters);
             }

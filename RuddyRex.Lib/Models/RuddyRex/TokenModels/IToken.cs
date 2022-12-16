@@ -9,6 +9,6 @@ namespace RuddyRex.Lib.Models.TokenModels
 {
     public interface IToken
     {
-        public TokenType Type { get; set; }
+        public TokenType Type { get; }
     }
 }

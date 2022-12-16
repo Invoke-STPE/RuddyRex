@@ -12,7 +12,7 @@ namespace RuddyRex.Lib.Models.RuddyRex.NodeModels
 {
     public record NumberNode : INode
     {
-        public NodeType Type { get; set; }
+        public NodeType Type { get; } = NodeType.NumberLiteral;
         public int Value { get; set; }
 
         public IRegexNode OnEnter(IVisitor visitor)

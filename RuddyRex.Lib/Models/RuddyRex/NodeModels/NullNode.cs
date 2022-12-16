@@ -7,17 +7,16 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace RuddyRex.Lib.Models.NodeModels
+namespace RuddyRex.Lib.Models.RuddyRex.NodeModels
 {
-    public record CharacterNode : INode
+    public class NullNode : INode
     {
-        public NodeType Type { get; } = NodeType.CharacterNode;
-        public char Value { get; set; }
-
+        public NodeType Type { get; } = NodeType.None;
+        // Forkortet
 
         public IRegexNode OnEnter(IVisitor visitor)
         {
-            return visitor.ConvertToChar(this);
+            throw new NotImplementedException();
         }
     }
 }

@@ -9,7 +9,7 @@ namespace RuddyRex.Lib.Models.TokenModels
 {
     public record TokenOperator : IToken
     {
-        public TokenType Type { get; set; }
+        public TokenType Type { get; init; } 
         public string Value { get; set; }
     }
 }

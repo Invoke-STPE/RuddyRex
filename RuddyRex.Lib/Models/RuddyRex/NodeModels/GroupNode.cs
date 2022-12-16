@@ -11,7 +11,7 @@ namespace RuddyRex.Lib.Models.NodeModels
 {
     public class GroupNode : INode
     {
-        public NodeType Type { get; set; }
+        public NodeType Type { get; } = NodeType.GroupExpression;
         public List<INode> Nodes { get; set; } = new List<INode>();
 
         public override bool Equals(object? obj)

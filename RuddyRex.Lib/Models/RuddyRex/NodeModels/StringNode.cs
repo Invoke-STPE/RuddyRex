@@ -11,7 +11,7 @@ namespace RuddyRex.Lib.Models.NodeModels
 {
     public record StringNode : INode
     {
-        public NodeType Type { get; set; }
+        public NodeType Type { get; } = NodeType.StringLiteral;
         public string Value { get; set; }
 
         public IRegexNode OnEnter(IVisitor visitor)

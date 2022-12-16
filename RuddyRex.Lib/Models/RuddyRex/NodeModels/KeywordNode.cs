@@ -11,7 +11,7 @@ namespace RuddyRex.Lib.Models.NodeModels
 {
     public class KeywordNode : INode
     {
-        public NodeType Type { get; set; }
+        public NodeType Type { get; } = NodeType.KeywordExpression;
         public string Keyword { get; set; }
         public INode Parameter { get; set; }
         public string ValueType { get; set; } = "";

@@ -9,7 +9,7 @@ namespace RuddyRex.Lib.Models.TokenModels
 {
     public record TokenCharacter : IToken
     {
-        public TokenType Type { get; set; }
+        public TokenType Type { get; } = TokenType.CharacterLiteral;
         public char Character { get; set; }
     }
 }

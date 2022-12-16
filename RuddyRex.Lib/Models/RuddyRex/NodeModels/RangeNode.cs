@@ -12,7 +12,7 @@ namespace RuddyRex.Lib.Models.NodeModels
 {
     public class RangeNode : INode
     {
-        public NodeType Type { get; set; }
+        public NodeType Type { get; } = NodeType.RangeExpression;
         public List<INode> Values { get; set; } = new List<INode>();
 
         public override bool Equals(object? obj)
