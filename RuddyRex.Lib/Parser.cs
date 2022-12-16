@@ -3,18 +3,24 @@ using RuddyRex.Lib.Exceptions.SyntaxExceptions;
 using RuddyRex.Lib.Models;
 using RuddyRex.Lib.Models.Interfaces;
 using RuddyRex.Lib.Models.NodeModels;
+using RuddyRex.Lib.Models.RuddyRex.NodeModels;
 using RuddyRex.Lib.Models.TokenModels;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Runtime.CompilerServices;
 using System.Security;
 using System.Security.Cryptography;
+using System.Security.Cryptography.X509Certificates;
 using System.Text;
 using System.Threading.Tasks;
 using System.Xml.Linq;
 
 namespace RuddyRex.Lib
 {
+    /// <summary>
+    /// Refactor IDEA, https://stackoverflow.com/questions/7377344/how-to-write-a-parser-in-c
+    /// </summary>
     public class Parser
     {
         private static Queue<IToken> _tokens;
@@ -42,6 +48,8 @@ namespace RuddyRex.Lib
 
         private static INode AnalyseToken(IToken token)
         {
+        // Possible refactoring ? https://refactoring.guru/smells/switch-statements
+        // https://refactoring.guru/replace-conditional-with-polymorphism
             INode node = null;
             switch (token?.Type)
             {
@@ -71,14 +79,73 @@ namespace RuddyRex.Lib
                     if (brackets.Count == 0 || brackets.Pop().Type != TokenType.OpeningSquareBracket) throw new InvalidRangeExpression("Missing bracket");
                     break;
                 case TokenType.OpeningCurlyBracket:
+                    brackets.Push(token);
+                    RangeNode rangeNode = new RangeNode() { Type = NodeType.RangeExpression };
+                    KeywordNode tillKeyword = null;
+                    while (PeekToken()?.Type != TokenType.ClosingCurlyBracket)
+                    {
+                        if (PeekToken()?.Type == TokenType.NumberLiteral)
+                        {
+                            rangeNode.Values.Add(AnalyseToken(NextToken())); 
+                        }
+                        else if (PeekToken()?.Type == TokenType.KeywordIdentifier)
+                        {
+                            tillKeyword = (KeywordNode)AnalyseToken(NextToken());
+                            if (tillKeyword.Keyword.ToLower() != "till")
+                            {
+                                throw new InvalidRangeExpression("Invalid keyword in range expression");
+                            }
+                        }
+                    }
+                    if (rangeNode.Values.Count == 2)
+                    {
+                        if (tillKeyword?.Keyword.ToLower() != "till")
+                        {
+                            throw new InvalidRangeExpression("Invalid keyword in range expression");
+                        }
+                    }
+                    if (rangeNode.Values.Count == 0) throw new InvalidRangeExpression("Range expression cannot contain 0 numbers");
+                    node = rangeNode;
                     break;
                 case TokenType.ClosingCurlyBracket:
+                    if (brackets.Count == 0 || brackets.Pop().Type != TokenType.OpeningCurlyBracket) throw new InvalidRangeExpression("Missing bracket");
                     break;
                 case TokenType.AlternateOperator:
                     break;
                 case TokenType.KeywordIdentifier:
+                    TokenKeyword tokenKeyword = (TokenKeyword)token;
+                    if (tokenKeyword.Value.ToLower() == "till")
+                    {
+                        node = new KeywordNode() { Keyword = tokenKeyword.Value, Type = NodeType.KeywordExpression };
+                        break;
+                    }
+                    if(RuddyRexDictionary.IsValidKeyword(tokenKeyword.Value))
+                    {
+                        KeywordNode keywordNode = new KeywordNode()
+                        {
+                            Keyword = tokenKeyword.Value,
+                            Type = NodeType.KeywordExpression,
+                            Parameter = AnalyseToken(NextToken()),
+                        };
+                        if (PeekToken().Type == TokenType.ClosingCurlyBracket)
+                        {
+                            AnalyseToken(NextToken());
+                        }
+                        // I NEED A BETTER WAY THAN THIS
+                        KeywordNode keywordNode2 = (KeywordNode)AnalyseToken(NextToken());
+                        keywordNode.ValueType = keywordNode2.Keyword;
+                        node = keywordNode;
+                        break;
+                    }
+
+                    if (RuddyRexDictionary.IsValidReturnValue(tokenKeyword.Value))
+                    {
+                        node = new KeywordNode() { Keyword = tokenKeyword.Value, Type = NodeType.KeywordExpression };
+                    }
                     break;
                 case TokenType.NumberLiteral:
+                    TokenNumber tokenNumber = (TokenNumber)token;
+                    node = new NumberNode() { Type = NodeType.NumberLiteral, Value = tokenNumber.Value };
                     break;
                 case TokenType.CharacterLiteral:
                     TokenCharacter tokenCharacter = (TokenCharacter)token;
@@ -91,7 +158,7 @@ namespace RuddyRex.Lib
             }
             return node;
         }
-
+        // https://refactoring.guru/introduce-null-object
         static IToken? NextToken()
         {
             if (_tokens.TryDequeue(out IToken result))

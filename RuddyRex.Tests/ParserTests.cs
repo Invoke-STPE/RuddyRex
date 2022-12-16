@@ -1,4 +1,5 @@
-﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
+﻿using Microsoft.VisualStudio.TestPlatform.ObjectModel;
+using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Newtonsoft.Json.Linq;
 using RuddyRex.Lib;
 using RuddyRex.Lib.Enums;
@@ -6,6 +7,7 @@ using RuddyRex.Lib.Exceptions.SyntaxExceptions;
 using RuddyRex.Lib.Models;
 using RuddyRex.Lib.Models.Interfaces;
 using RuddyRex.Lib.Models.NodeModels;
+using RuddyRex.Lib.Models.RuddyRex.NodeModels;
 using RuddyRex.Lib.Models.TokenModels;
 using System;
 using System.Collections.Generic;
@@ -132,7 +134,158 @@ namespace RuddyRex.Tests
         }
 
         [TestClass]
-        public class ParserShouldThrowException // Spell it correctly.
+        public class ParserShouldParseKeywordExpressions
+        {
+            [TestMethod]
+            [DataRow("Match Between {1 Till 2} letter", "letter")]
+            [DataRow("Match Between {1 Till 2} digit", "digit")]
+            public void WhenPassedBetweenExpression(string input, string valueType)
+            {
+                var tokens = Lexer.Tokenize(input);
+                AbstractTree<INode> expectedTree = new AbstractTree<INode>()
+                {
+                    Type = "Match",
+                    Nodes = new List<INode>()
+                    {
+                        new KeywordNode()
+                        {
+                            Type = NodeType.KeywordExpression,
+                            Keyword = "Between",
+                            ValueType = valueType,
+                            Parameter = new RangeNode()
+                            {
+                                Type = NodeType.RangeExpression,
+                                Values = new List<INode>()
+                                {
+                                    new NumberNode(){ Type = NodeType.NumberLiteral, Value = 1},
+                                    new NumberNode(){ Type = NodeType.NumberLiteral, Value = 2}
+                                }
+                            }
+                        },
+                    }
+                };
+                var actualTree = Parser.ParseTree(tokens);
+
+                Assert.AreEqual(expectedTree, actualTree);
+
+            }
+        }
+
+        [TestClass]
+        public class ParserShouldParseRangeException
+        {
+            [TestMethod]
+            [DataRow("Match {1 Till 2}", 1, 2)]
+            [DataRow("Match {12 Till 23}", 12, 23)]
+            [DataRow("Match {0 Till 1}", 0, 1)]
+            public void WhenPassedValidRangeExpression(string input, int numberA, int numberB)
+            {
+                var tokens = Lexer.Tokenize(input);
+                AbstractTree<INode> expectedTree = new AbstractTree<INode>()
+                {
+                    Type = "Match",
+                    Nodes = new List<INode>()
+                    {
+                        new RangeNode()
+                        {
+                            Type = NodeType.RangeExpression,
+                            Values = new List<INode>()
+                            {
+                                new NumberNode(){ Type = NodeType.NumberLiteral, Value = numberA},
+                                new NumberNode(){ Type = NodeType.NumberLiteral, Value = numberB}
+                            }
+                        }
+                    }
+                };
+
+                var actualTree = Parser.ParseTree(tokens);
+
+                Assert.AreEqual(expectedTree, actualTree);
+            }
+            [TestMethod]
+            [DataRow("Match {1 Till }", 1)]
+            [DataRow("Match {12 Till }", 12)]
+            [DataRow("Match {0 Till }", 0)]
+            public void WhenPassedValidRangeExpressionNumberToInfinity(string input, int numberA)
+            {
+                var tokens = Lexer.Tokenize(input);
+                AbstractTree<INode> expectedTree = new AbstractTree<INode>()
+                {
+                    Type = "Match",
+                    Nodes = new List<INode>()
+                    {
+                        new RangeNode()
+                        {
+                            Type = NodeType.RangeExpression,
+                            Values = new List<INode>()
+                            {
+                                new NumberNode(){ Type = NodeType.NumberLiteral, Value = numberA},
+                            }
+                        }
+                    }
+                };
+
+                var actualTree = Parser.ParseTree(tokens);
+
+                Assert.AreEqual(expectedTree, actualTree);
+            }
+            [TestMethod]
+            [DataRow("Match {1}", 1)]
+            [DataRow("Match {12}", 12)]
+            [DataRow("Match {0}", 0)]
+            public void WhenPassedValidRangeExpressionExactly1Number(string input, int numberA)
+            {
+                var tokens = Lexer.Tokenize(input);
+                AbstractTree<INode> expectedTree = new AbstractTree<INode>()
+                {
+                    Type = "Match",
+                    Nodes = new List<INode>()
+                    {
+                        new RangeNode()
+                        {
+                            Type = NodeType.RangeExpression,
+                            Values = new List<INode>()
+                            {
+                                new NumberNode(){ Type = NodeType.NumberLiteral, Value = numberA},
+                            }
+                        }
+                    }
+                };
+
+                var actualTree = Parser.ParseTree(tokens);
+
+                Assert.AreEqual(expectedTree, actualTree);
+            }
+            [TestMethod]
+            public void WhenPassedTwoDifferentRanges()
+            {
+                var tokens = Lexer.Tokenize("Match []{1 Till 2}");
+                AbstractTree<INode> expectedTree = new AbstractTree<INode>()
+                {
+                    Type = "Match",
+                    Nodes = new List<INode>()
+                    {
+                        new CharacterRangeNode(){ Type = NodeType.CharacterRange},
+                        new RangeNode()
+                        { 
+                            Type = NodeType.RangeExpression,
+                            Values = new List<INode>()
+                            {
+                                new NumberNode(){ Type = NodeType.NumberLiteral, Value = 1},
+                                new NumberNode(){ Type = NodeType.NumberLiteral, Value = 2}
+                            }
+                        }
+                    }
+                };
+
+                var actualTree = Parser.ParseTree(tokens);
+
+                Assert.AreEqual(expectedTree, actualTree);
+            }
+        }
+
+        [TestClass]
+        public class ParserShouldThrowException 
         {
             [TestMethod]
             [ExpectedException(typeof(InvalidRangeExpression))]
@@ -141,7 +294,7 @@ namespace RuddyRex.Tests
             [DataRow("Match ((())")]
             [DataRow("Match ()(")]
             [DataRow("Match (()")]
-            public void WhenPassedUnevenParenthis(string input)
+            public void WhenPassedUnevenParenthis(string input) // Spell it correctly.
             {
                 var tokens = Lexer.Tokenize(input);
                 Parser.ParseTree(tokens);
@@ -151,7 +304,35 @@ namespace RuddyRex.Tests
             [DataRow("Match [")]
             [DataRow("Match ]")]
             [DataRow("Match []]")]
+            [DataRow("Match [abc]]")]
             public void WhenPassedUnevenSqaureBrackets(string input)
+            {
+                var tokens = Lexer.Tokenize(input);
+                Parser.ParseTree(tokens);
+            }
+
+            [TestMethod]
+            [ExpectedException(typeof(InvalidRangeExpression))]
+            [DataRow("Match {1 beteen }")]
+            [DataRow("Match {1 exctly }")]
+            public void WhenPassedInvalidRangeExpressionKeyword(string input)
+            {
+                var tokens = Lexer.Tokenize(input);
+                Parser.ParseTree(tokens);
+            }
+            [TestMethod]
+            [ExpectedException(typeof(InvalidRangeExpression))]
+            [DataRow("Match Between { }")]
+            [DataRow("Match exactly { }")]
+            public void WhenPassedEmptyRangeExpressionKeyword(string input)
+            {
+                var tokens = Lexer.Tokenize(input);
+                Parser.ParseTree(tokens);
+            }
+            [TestMethod]
+            [ExpectedException(typeof(InvalidRangeExpression))]
+            [DataRow("Match Between {1 2}")]
+            public void WhenPassedTwoNumberRangeExpressionWithoutKeyword(string input)
             {
                 var tokens = Lexer.Tokenize(input);
                 Parser.ParseTree(tokens);

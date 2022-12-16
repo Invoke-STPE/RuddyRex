@@ -5,6 +5,7 @@ using RuddyRex.Lib.Models;
 using RuddyRex.Lib.Models.Interfaces;
 using RuddyRex.Lib.Models.NodeModels;
 using RuddyRex.Lib.Models.RegexModels;
+using RuddyRex.Lib.Models.RuddyRex.NodeModels;
 using RuddyRex.Lib.Models.TokenModels;
 using RuddyRex.Lib.Visitor;
 using System.Linq.Expressions;
@@ -95,10 +96,10 @@ namespace RuddyRex.Tests
                 var rangeExpression = new RangeNode()
                 {
                     Type = NodeType.RangeExpression,
-                    Values = new List<IToken>()
+                    Values = new List<INode>()
                     { 
-                        new TokenNumber() { Type = TokenType.NumberLiteral, Value = 1},
-                        new TokenNumber() { Type = TokenType.NumberLiteral, Value = 2},
+                        new NumberNode() { Type = NodeType.NumberLiteral, Value = 1},
+                        new NumberNode() { Type = NodeType.NumberLiteral, Value = 2},
                     }
                 };
                 keywordNode.Parameter = rangeExpression;

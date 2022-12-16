@@ -6,7 +6,7 @@ using RuddyRex.Lib.Models.TokenModels;
 using RuddyRex.Lib.Models;
 using RuddyRex.Lib;
 using System;
-
+using RuddyRex.Lib.Models.RuddyRex.NodeModels;
 
 namespace RuddyRex.Tests
 {
@@ -21,9 +21,9 @@ namespace RuddyRex.Tests
             var rangeExpression = new RangeNode()
             {
                 Type = NodeType.RangeExpression,
-                Values = new List<IToken>()
+                Values = new List<INode>()
                 {
-                    new TokenNumber() { Type = TokenType.NumberLiteral, Value = 1},
+                    new NumberNode() { Type = NodeType.NumberLiteral, Value = 1},
                 }
             };
             keywordNode.Parameter = rangeExpression;
@@ -48,10 +48,10 @@ namespace RuddyRex.Tests
             var rangeExpression = new RangeNode()
             {
                 Type = NodeType.RangeExpression,
-                Values = new List<IToken>()
+                Values = new List<INode>()
                 {
-                    new TokenNumber() { Type = TokenType.NumberLiteral, Value = 1},
-                    new TokenNumber() { Type = TokenType.NumberLiteral, Value = 3},
+                    new NumberNode() { Type = NodeType.NumberLiteral, Value = 1},
+                    new NumberNode() { Type = NodeType.NumberLiteral, Value = 3},
                 }
             };
             keywordNode.Parameter = rangeExpression;
@@ -171,9 +171,9 @@ namespace RuddyRex.Tests
             return new RangeNode()
             {
                 Type = NodeType.RangeExpression,
-                Values = new List<IToken>()
+                Values = new List<INode>()
                 {
-                    new TokenNumber() { Type = TokenType.NumberLiteral, Value = 1},
+                    new NumberNode() { Type = NodeType.NumberLiteral, Value = 1},
                 }
             };
         }
