@@ -83,7 +83,7 @@ namespace RuddyRex.Lib
             }
             return output;
         }
-
+        // Change the name of Keyword node, make more sub classes why should Till have a class with empty properties?
         private static INode CreateKeywordTill()
         {
             return new KeywordNode() { Keyword = "till" };
@@ -136,7 +136,7 @@ namespace RuddyRex.Lib
                 }
                 else if (PeekToken()?.Type == TokenType.KeywordIdentifier)
                 {
-                    tillKeyword = (KeywordNode)AnalyseToken(NextToken()); // Umuligt at arbejde med
+                    tillKeyword = (KeywordNode)AnalyseToken(NextToken()); // Umuligt at arbejde med <--- WILL HOPEFULLY FIX THIS 
                     if (tillKeyword.Keyword.ToLower() != "till")
                     {
                         throw new InvalidRangeExpression("Invalid keyword in range expression");
