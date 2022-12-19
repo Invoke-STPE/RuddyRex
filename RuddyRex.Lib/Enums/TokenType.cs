@@ -21,5 +21,6 @@ namespace RuddyRex.Lib.Enums
         NumberLiteral,
         CharacterLiteral,
         StringLiteral,
+        None,
     }
 }
