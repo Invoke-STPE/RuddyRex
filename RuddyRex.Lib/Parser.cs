@@ -36,6 +36,12 @@ namespace RuddyRex.Lib
 
         private static INode AnalyseToken(IToken token)
         {
+            Type convertor = token.GetType();
+            //if (convertor.IsAssignableFrom(typeof(TokenType)) == false)
+            //    throw new ArgumentException("Must inplement");
+
+            INode node = (INode)Activator.CreateInstance(convertor);
+
             return token.Type switch
             {
                 TokenType.OpeningParenthesis => AnalyseOpeningParenthesis(token),
