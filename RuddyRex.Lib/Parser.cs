@@ -83,7 +83,7 @@ namespace RuddyRex.Lib
             
             return tokenKeyword.Value.Length == 0 ? throw new InvalidRangeExpression("Invalid range") : throw new InvalidKeywordException("Keyword not regonized");
         }
-
+        // Change the name of Keyword node, make more sub classes why should Till have a class with empty properties?
         private static INode CreateKeywordTill()
         {
             return new KeywordNode() { Value = "till" };
