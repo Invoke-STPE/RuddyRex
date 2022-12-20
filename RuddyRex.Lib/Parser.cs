@@ -10,7 +10,7 @@ using RuddyRex.Lib.Models.TokenModels;
 
 namespace RuddyRex.Lib
 {
-    public class Parser
+    public static class Parser
     {
         private static Queue<IToken> _tokens;
         static Stack<IToken> brackets;
