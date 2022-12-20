@@ -8,7 +8,7 @@ namespace RuddyRex.Lib.Visitor
         IRegexNode ConvertToChar(CharacterNode characterNode);
         IRegexNode ConvertToCharacterClass(CharacterRangeNode rangeNode);
         IRegexNode ConvertToGroup(GroupNode groupNode);
-        IRegexNode ConvertKeyword(KeywordNode keywordNode);
+        IRegexNode ConvertKeyword(KeywordExpressionNode keywordNode);
         IRegexNode ConvertRange(RangeNode rangeNode);
         IRegexNode ConvertString(StringNode stringNode);
     }

@@ -79,7 +79,7 @@ namespace RuddyRex.Tests
             [TestMethod]
             public void WhenPassedEmptyKeywordExpression()
             {
-                var keywordNode = new KeywordNode() { Keyword = "Between", ValueType = "letter" };
+                var keywordNode = new KeywordExpressionNode() { Keyword = "Between", ValueType = new KeywordNode() { Value = "Letter" } };
                 RegexRepetition expected = new()
                 {
                     Type = RegexType.Repetition,
@@ -92,7 +92,7 @@ namespace RuddyRex.Tests
             public void WhenPassedBetweenTwoNumbersExpression()
             {
                 AbstractTree<INode> abstractTree = new();
-                var keywordNode = new KeywordNode() { Keyword = "Between", ValueType = "letter" };
+                var keywordNode = new KeywordExpressionNode() { Keyword = "Between", ValueType = new KeywordNode() };
                 var rangeExpression = new RangeNode()
                 {
                     Values = new List<INode>()

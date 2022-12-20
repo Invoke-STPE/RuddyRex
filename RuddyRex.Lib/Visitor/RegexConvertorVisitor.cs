@@ -39,13 +39,13 @@ namespace RuddyRex.Lib.Visitor
             return new RegexChar() { Type = RegexType.Char, Kind = "simple", Symbol = characterNode.Value, Value = characterNode.Value.ToString() };
         }
 
-        public IRegexNode ConvertKeyword(KeywordNode keywordNode)
+        public IRegexNode ConvertKeyword(KeywordExpressionNode keywordNode)
         {
             RegexRepetition regexRepetition = new RegexRepetition() { Type = RegexType.Repetition };
 
             if (RuddyRexDictionary.IsValidKeyword(keywordNode.Keyword))
             {
-                if (keywordNode.ValueType == "letter")
+                if (keywordNode.ValueType.Value == "letter")
                 {
                     regexRepetition.Expression = new RegexChar() { Type = RegexType.Char, Kind = "meta", Value = "[a-zA-Z]" };
                 }

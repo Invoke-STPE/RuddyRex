@@ -7,31 +7,16 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace RuddyRex.Lib.Models.NodeModels
+namespace RuddyRex.Lib.Models.RuddyRex.NodeModels
 {
-    public class KeywordNode : INode
+    public record KeywordNode : INode
     {
-        public NodeType Type { get; } = NodeType.KeywordExpression;
-        public string Keyword { get; set; }
-        public INode Parameter { get; set; }
-        public string ValueType { get; set; } = "";
-
-        public override bool Equals(object? obj)
-        {
-            return obj is KeywordNode node &&
-                   Type == node.Type &&
-                   Keyword == node.Keyword &&
-                   ValueType == node.ValueType;
-        }
-
-        public override int GetHashCode()
-        {
-            return HashCode.Combine(Type, Keyword, ValueType);
-        }
+        public NodeType Type => NodeType.Keyword;
+        public string Value { get; set; }
 
         public IRegexNode OnEnter(IVisitor visitor)
         {
-            return visitor.ConvertKeyword(this);
+            throw new NotImplementedException();
         }
     }
 }

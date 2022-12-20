@@ -144,10 +144,10 @@ namespace RuddyRex.Tests
                     Type = "Match",
                     Nodes = new List<INode>()
                     {
-                        new KeywordNode()
+                        new KeywordExpressionNode()
                         {
                             Keyword = "Between",
-                            ValueType = valueType,
+                            ValueType = new KeywordNode() { Value = valueType},
                             Parameter = new RangeNode()
                             {
                              
@@ -304,7 +304,7 @@ namespace RuddyRex.Tests
             }
 
             [TestMethod]
-            [ExpectedException(typeof(InvalidRangeExpression))]
+            [ExpectedException(typeof(InvalidKeywordException))]
             [DataRow("Match {1 beteen }")]
             [DataRow("Match {1 exctly }")]
             public void WhenPassedInvalidRangeExpressionKeyword(string input)
@@ -315,7 +315,7 @@ namespace RuddyRex.Tests
             [TestMethod]
             [ExpectedException(typeof(InvalidRangeExpression))]
             [DataRow("Match Between { }")]
-            [DataRow("Match exactly { }")]
+            [DataRow("Match Exactly { }")]
             public void WhenPassedEmptyRangeExpressionKeyword(string input)
             {
                 var tokens = Lexer.Tokenize(input);

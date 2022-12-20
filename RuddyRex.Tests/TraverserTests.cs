@@ -7,6 +7,7 @@ using RuddyRex.Lib.Models;
 using RuddyRex.Lib;
 using System;
 using RuddyRex.Lib.Models.RuddyRex.NodeModels;
+using Newtonsoft.Json.Linq;
 
 namespace RuddyRex.Tests
 {
@@ -17,7 +18,7 @@ namespace RuddyRex.Tests
         public void WhenPassedBetweenOneNumberExpression()
         {
             AbstractTree<INode> abstractTree = new();
-            var keywordNode = new KeywordNode() { Keyword = "Between", ValueType = "letter" };
+            var keywordNode = new KeywordExpressionNode() { Keyword = "Between", ValueType = new KeywordNode() { Value = "Letter" } };
             var rangeExpression = new RangeNode()
             {
                 Values = new List<INode>()
@@ -43,7 +44,7 @@ namespace RuddyRex.Tests
         public void WhenPassedBetweenNumbersExpression()
         {
             AbstractTree<INode> abstractTree = new();
-            var keywordNode = new KeywordNode() { Keyword = "Between", ValueType = "letter" };
+            var keywordNode = new KeywordExpressionNode() { Keyword = "Between", ValueType = new KeywordNode() { Value = "Letter" } };
             var rangeExpression = new RangeNode()
             {
                 Values = new List<INode>()
@@ -69,7 +70,7 @@ namespace RuddyRex.Tests
         public void WhenPassedExactlyExpression()
         {
             AbstractTree<INode> abstractTree = new();
-            var keywordNode = new KeywordNode() { Keyword = "Exactly", ValueType = "letter" };
+            var keywordNode = new KeywordExpressionNode() { Keyword = "Exactly", ValueType = new KeywordNode() { Value = "Letter" } };
             var rangeExpression = GenerateRangeNode();
             keywordNode.Parameter = rangeExpression;
             abstractTree.Nodes.Add(keywordNode);
@@ -90,7 +91,7 @@ namespace RuddyRex.Tests
             AbstractTree<INode> abstractTree = new();
             for (int i = 0; i < 2; i++) // Generate two between expressions
             {
-                KeywordNode keywordNode = GenerateKeywordNode();
+                KeywordExpressionNode keywordNode = GenerateKeywordNode();
                 keywordNode.Parameter = GenerateRangeNode();
                 abstractTree.Nodes.Add(keywordNode); 
             }
@@ -174,9 +175,9 @@ namespace RuddyRex.Tests
                 }
             };
         }
-        private static KeywordNode GenerateKeywordNode()
+        private static KeywordExpressionNode GenerateKeywordNode()
         {
-            return new KeywordNode() { Keyword = "Between", ValueType = "letter" };
+            return new KeywordExpressionNode() { Keyword = "Between", ValueType = new KeywordNode() { Value = "Letter" } };
         }
     }
 

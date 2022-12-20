@@ -26,7 +26,7 @@ namespace RuddyRex.Lib
                 INode node = AnalyseToken(_currentToken);
                 if (node.Type is not NodeType.None)
                 {
-                    tree.Nodes.Add(node); 
+                    tree.Nodes.Add(node);
                 }
 
             }
@@ -36,12 +36,6 @@ namespace RuddyRex.Lib
 
         private static INode AnalyseToken(IToken token)
         {
-            Type convertor = token.GetType();
-            //if (convertor.IsAssignableFrom(typeof(TokenType)) == false)
-            //    throw new ArgumentException("Must inplement");
-
-            INode node = (INode)Activator.CreateInstance(convertor);
-
             return token.Type switch
             {
                 TokenType.OpeningParenthesis => AnalyseOpeningParenthesis(token),
@@ -74,43 +68,37 @@ namespace RuddyRex.Lib
         private static INode AnalyseKeywordIdentifier(IToken token)
         {
             TokenKeyword tokenKeyword = (TokenKeyword)token;
-            INode output = new NullNode();
             if (tokenKeyword.Value.ToLower() == "till")
             {
-                output = CreateKeywordTill();
+                return CreateKeywordTill();
             }
             if (RuddyRexDictionary.IsValidKeyword(tokenKeyword.Value))
             {
-                output = CreateKeywordExpression(token);
+                return CreateKeywordExpression(token);
             }
             if (RuddyRexDictionary.IsValidReturnValue(tokenKeyword.Value))
             {
-                output = CreateValueType(token);
+                return CreateValueType(token);
             }
-            return output;
+            
+            return tokenKeyword.Value.Length == 0 ? throw new InvalidRangeExpression("Invalid range") : throw new InvalidKeywordException("Keyword not regonized");
         }
 
         private static INode CreateKeywordTill()
         {
-            return new KeywordNode() { Keyword = "till" };
+            return new KeywordNode() { Value = "till" };
         }
         private static INode CreateKeywordExpression(IToken token)
         {
             TokenKeyword tokenKeyword = (TokenKeyword)token;
     
-            KeywordNode keywordNode = new KeywordNode()
+            KeywordExpressionNode keywordNode = new KeywordExpressionNode()
             {
                 Keyword = tokenKeyword.Value,
                 Parameter = AnalyseToken(NextToken()),
+                ValueType = (KeywordNode)AnalyseToken(NextToken())
             };
-            if (PeekToken().Type == TokenType.ClosingCurlyBracket)
-            {
-                AnalyseToken(NextToken());
-            }
-            // I NEED A BETTER WAY THAN THIS
-            KeywordNode keywordNode2 = (KeywordNode)AnalyseToken(NextToken());
-            keywordNode.ValueType = keywordNode2.Keyword;
-            
+
             return keywordNode;
         }
 
@@ -118,7 +106,7 @@ namespace RuddyRex.Lib
         {
             TokenKeyword tokenKeyword = (TokenKeyword)token;
            
-            return new KeywordNode() { Keyword = tokenKeyword.Value };
+            return new KeywordNode() { Value = tokenKeyword.Value };
            
         }
         private static INode AnalyseClosingCurlyBracket()
@@ -126,14 +114,14 @@ namespace RuddyRex.Lib
             if (brackets.Count == 0 || brackets.Pop().Type != TokenType.OpeningCurlyBracket) 
                 throw new InvalidRangeExpression("Missing bracket");
 
-            return new NullNode();
+            return AnalyseToken(NextToken());
         }
 
         private static INode AnalyseOpeningCurlyBracket(IToken token)
         {
             brackets.Push(token);
             RangeNode rangeNode = new RangeNode();
-            KeywordNode tillKeyword = null;
+            KeywordNode keyword = null;
             while (PeekToken()?.Type != TokenType.ClosingCurlyBracket)
             {
                 if (PeekToken()?.Type == TokenType.NumberLiteral)
@@ -142,8 +130,8 @@ namespace RuddyRex.Lib
                 }
                 else if (PeekToken()?.Type == TokenType.KeywordIdentifier)
                 {
-                    tillKeyword = (KeywordNode)AnalyseToken(NextToken()); // Umuligt at arbejde med
-                    if (tillKeyword.Keyword.ToLower() != "till")
+                    keyword = (KeywordNode)AnalyseToken(NextToken());
+                    if (keyword.Value.ToLower() != "till")
                     {
                         throw new InvalidRangeExpression("Invalid keyword in range expression");
                     }
@@ -151,7 +139,7 @@ namespace RuddyRex.Lib
             }
             if (rangeNode.Values.Count == 2)
             {
-                if (tillKeyword?.Keyword.ToLower() != "till")
+                if (keyword?.Value.ToLower() != "till")
                 {
                     throw new InvalidRangeExpression("Invalid keyword in range expression");
                 }
