@@ -1,20 +1,10 @@
-﻿using Microsoft.VisualStudio.TestPlatform.ObjectModel;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
+﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Newtonsoft.Json.Linq;
-using RuddyRex.Lib;
-using RuddyRex.Lib.Enums;
-using RuddyRex.Lib.Exceptions.SyntaxExceptions;
-using RuddyRex.Lib.Models;
-using RuddyRex.Lib.Models.Interfaces;
-using RuddyRex.Lib.Models.NodeModels;
-using RuddyRex.Lib.Models.RuddyRex.NodeModels;
-using RuddyRex.Lib.Models.TokenModels;
-using System;
-using System.Collections.Generic;
+using RuddyRex.LexerLayer;
+using RuddyRex.ParserLayer;
+using RuddyRex.ParserLayer.Exceptions;
+using RuddyRex.ParserLayer.Models;
 using System.Data;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace RuddyRex.Tests
 {
@@ -273,6 +263,21 @@ namespace RuddyRex.Tests
                 var actualTree = Parser.ParseTree(tokens);
 
                 Assert.AreEqual(expectedTree, actualTree);
+            }
+        }
+
+        [TestClass]
+        public class ParserShouldParseStringLiterals
+        {
+            [TestMethod]
+            [DataRow("Match \"Test\"", "Test")]
+            [DataRow("Match \"\\Test\"", @"\Test")]
+            public void WhenPassedStringTokenString_ReturnsStringNode(string input, string expectedText)
+            {
+                var tokens = Lexer.Tokenize(input);
+                StringNode expected = new StringNode() { Value = expectedText };
+                StringNode actual = (StringNode)Parser.ParseTree(tokens).Nodes.First();
+                Assert.AreEqual(expected, actual);
             }
         }
 

@@ -1,17 +1,6 @@
-﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
-using Newtonsoft.Json.Linq;
-using RuddyRex.Lib;
-using RuddyRex.Lib.Enums;
-using RuddyRex.Lib.Exceptions.LexicalExceptions;
-using RuddyRex.Lib.Models;
-using RuddyRex.Lib.Models.TokenModels;
-using System;
-using System.Collections.Generic;
-using System.ComponentModel;
-using System.Linq;
-using System.Runtime.InteropServices;
-using System.Text;
-using System.Threading.Tasks;
+﻿using RuddyRex.LexerLayer;
+using RuddyRex.LexerLayer.Models;
+using RuddyRex.LexerLayer.Exceptions;
 
 namespace RuddyRex.Tests
 {
