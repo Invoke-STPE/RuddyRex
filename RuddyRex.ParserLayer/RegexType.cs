@@ -7,5 +7,6 @@ public enum RegexType
     Char,
     Repetition,
     Quantifier,
-    Alternative
+    Alternative,
+    ClassRange
 }

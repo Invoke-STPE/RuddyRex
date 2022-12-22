@@ -161,7 +161,7 @@ namespace RuddyRex.Tests
             [TestMethod]
             public void WhenPassedBetweenExpressionLetterType_ReturnsRepetition()
             {
-                KeywordExpressionNode expression = new KeywordExpressionNode()
+                KeywordExpressionNode betweenExpression = new KeywordExpressionNode()
                 {
                     Keyword = "Between",
                     ValueType = new KeywordNode() { Value = "letter" },
@@ -182,11 +182,149 @@ namespace RuddyRex.Tests
                         To = 2,
                         Kind = "Range"
                     },
-                    Expression = new RegexChar() { Symbol = 'a', Value = "a"}
+                    Expression = new RegexCharacterClass() 
+                    {
+                        Expressions = new List<IRegexNode>()
+                        {
+                            new RegexClassRange()
+                            {
+                                From = new RegexChar() { Value = "a", Symbol = 'a'},
+                                To = new RegexChar() {Value = "z", Symbol = 'z'},
+                            },
+                            new RegexClassRange()
+                            {
+                                From = new RegexChar() { Value = "A", Symbol = 'A'},
+                                To = new RegexChar() {Value = "Z", Symbol = 'Z'},
+                            }
+                        }
+                    }
                 };
 
-                RegexRepetition actual = (RegexRepetition)_convertor.ConvertKeyword(expression);
-                Assert.AreEqual(expected, true);
+                RegexRepetition actual = (RegexRepetition)_convertor.ConvertKeyword(betweenExpression);
+                Assert.AreEqual(expected, actual);
+            }
+            [TestMethod]
+            public void WhenPassedBetweenExpressionDigitType_ReturnsRepetition()
+            {
+                KeywordExpressionNode betweenExpression = new KeywordExpressionNode()
+                {
+                    Keyword = "Between",
+                    ValueType = new KeywordNode() { Value = "digit" },
+                    Parameter = new RangeNode()
+                    {
+                        Values = new List<INode>()
+                        {
+                            new NumberNode() { Value = 1},
+                            new NumberNode() { Value = 2}
+                        }
+                    }
+                };
+                RegexRepetition expected = new()
+                {
+                    Quantifier = new RegexQuantifier()
+                    {
+                        From = 1,
+                        To = 2,
+                        Kind = "Range"
+                    },
+                    Expression = new RegexCharacterClass()
+                    {
+                        Expressions = new List<IRegexNode>()
+                        {
+                            new RegexClassRange()
+                            {
+                                From = new RegexChar() { Value = "1", Symbol = '1'},
+                                To = new RegexChar() {Value = "9", Symbol = '9'},
+                            }
+                        }
+                    }
+                };
+
+                RegexRepetition actual = (RegexRepetition)_convertor.ConvertKeyword(betweenExpression);
+                Assert.AreEqual(expected, actual);
+            }
+            [TestMethod]
+            public void WhenPassedExactlyExpressionLetterType_ReturnsRepetition()
+            {
+                KeywordExpressionNode betweenExpression = new KeywordExpressionNode()
+                {
+                    Keyword = "Exactly",
+                    ValueType = new KeywordNode() { Value = "letter" },
+                    Parameter = new RangeNode()
+                    {
+                        Values = new List<INode>()
+                        {
+                            new NumberNode() { Value = 1}
+                        }
+                    }
+                };
+                RegexRepetition expected = new()
+                {
+                    Quantifier = new RegexQuantifier()
+                    {
+                        From = 1,
+                        To = 1,
+                        Kind = "Range"
+                    },
+                    Expression = new RegexCharacterClass()
+                    {
+                        Expressions = new List<IRegexNode>()
+                        {
+                            new RegexClassRange()
+                            {
+                                From = new RegexChar() { Value = "a", Symbol = 'a'},
+                                To = new RegexChar() {Value = "z", Symbol = 'z'},
+                            },
+                            new RegexClassRange()
+                            {
+                                From = new RegexChar() { Value = "A", Symbol = 'A'},
+                                To = new RegexChar() {Value = "Z", Symbol = 'Z'},
+                            }
+                        }
+                    }
+                };
+
+                RegexRepetition actual = (RegexRepetition)_convertor.ConvertKeyword(betweenExpression);
+                Assert.AreEqual(expected, actual);
+            }
+            [TestMethod]
+            public void WhenPassedExactlyExpressionDigitType_ReturnsRepetition()
+            {
+                KeywordExpressionNode betweenExpression = new KeywordExpressionNode()
+                {
+                    Keyword = "Exactly",
+                    ValueType = new KeywordNode() { Value = "digit" },
+                    Parameter = new RangeNode()
+                    {
+                        Values = new List<INode>()
+                        {
+                            new NumberNode() { Value = 1}
+                        }
+                    }
+                };
+                RegexRepetition expected = new()
+                {
+                    Quantifier = new RegexQuantifier()
+                    {
+                        From = 1,
+                        To = 1,
+                        Kind = "Range"
+                    },
+                    Expression = new RegexCharacterClass()
+                    {
+                        Expressions = new List<IRegexNode>()
+                        {
+                            new RegexClassRange()
+                            {
+                                From = new RegexChar() { Value = "1", Symbol = '1'},
+                                To = new RegexChar() {Value = "9", Symbol = '9'},
+                            }
+                        }
+                    }
+                };
+
+                RegexRepetition actual = (RegexRepetition)_convertor.ConvertKeyword(betweenExpression);
+                Assert.AreEqual(expected, actual);
             }
         }
 

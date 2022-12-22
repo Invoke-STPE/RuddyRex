@@ -10,7 +10,12 @@ namespace RuddyRex.Transformation
         
         public IRegexNode ConvertKeyword(KeywordExpressionNode keywordNode)
         {
-            throw new NotImplementedException();
+            RegexRepetition repetition = new();
+
+            repetition.Quantifier = (RegexQuantifier)keywordNode.Parameter.Accept(this);
+            repetition.Expression = new RegexCharacterClass(keywordNode);
+
+            return repetition;
         }
 
         public IRegexNode ConvertRange(RangeNode rangeNode)
