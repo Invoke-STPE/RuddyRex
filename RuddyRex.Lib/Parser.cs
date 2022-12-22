@@ -83,7 +83,6 @@ namespace RuddyRex.Lib
             
             return tokenKeyword.Value.Length == 0 ? throw new InvalidRangeExpression("Invalid range") : throw new InvalidKeywordException("Keyword not regonized");
         }
-        // Change the name of Keyword node, make more sub classes why should Till have a class with empty properties?
         private static INode CreateKeywordTill()
         {
             return new KeywordNode() { Value = "till" };
@@ -187,7 +186,6 @@ namespace RuddyRex.Lib
             return groupNode;
         }
 
-        // https://refactoring.guru/introduce-null-object
         static IToken? NextToken()
         {
             if (_tokens.TryDequeue(out IToken result))
@@ -203,19 +201,12 @@ namespace RuddyRex.Lib
 
         private static AbstractTree<INode> CreateAST(IToken? token)
         {
-            try
+            TokenKeyword keyword = (TokenKeyword)token;
+            if (RuddyRexDictionary.IsValidStartKeyword((keyword.Value)))
             {
-                TokenKeyword keyword = (TokenKeyword)token;
-                if (RuddyRexDictionary.IsValidStartKeyword((keyword.Value)))
-                {
-                    return new AbstractTree<INode>() { Type = keyword.Value };
-                }
-                throw new InvalidKeywordException($"{keyword.Value} Is not a valid keyword Identifier");
+                return new AbstractTree<INode>() { Type = keyword.Value };
             }
-            catch (InvalidCastException ex)
-            {
-                throw ex;
-            }
+            throw new InvalidKeywordException($"{keyword.Value} Is not a valid keyword Identifier");
         }
     }
 }

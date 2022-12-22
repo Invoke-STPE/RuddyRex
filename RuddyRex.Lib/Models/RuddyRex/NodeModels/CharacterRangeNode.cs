@@ -23,7 +23,7 @@ namespace RuddyRex.Lib.Models.NodeModels
                    Characters.SequenceEqual(node.Characters); ;
         }
 
-        public IRegexNode OnEnter(IVisitor visitor)
+        public IRegexNode Accept(IConvorterVisitor visitor)
         {
             return visitor.ConvertToCharacterClass(this);
         }

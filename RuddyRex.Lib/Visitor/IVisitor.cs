@@ -3,7 +3,7 @@ using RuddyRex.Lib.Models.NodeModels;
 
 namespace RuddyRex.Lib.Visitor
 {
-    public interface IVisitor
+    public interface IConvorterVisitor
     {
         IRegexNode ConvertToChar(CharacterNode characterNode);
         IRegexNode ConvertToCharacterClass(CharacterRangeNode rangeNode);

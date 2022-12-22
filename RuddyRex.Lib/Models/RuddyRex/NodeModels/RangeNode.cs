@@ -27,7 +27,7 @@ namespace RuddyRex.Lib.Models.NodeModels
             return HashCode.Combine(Type);
         }
 
-        public IRegexNode OnEnter(IVisitor visitor)
+        public IRegexNode Accept(IConvorterVisitor visitor)
         {
             return visitor.ConvertRange(this);
         }

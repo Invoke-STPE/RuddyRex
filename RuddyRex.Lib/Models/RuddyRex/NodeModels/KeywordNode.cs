@@ -14,7 +14,7 @@ namespace RuddyRex.Lib.Models.RuddyRex.NodeModels
         public NodeType Type => NodeType.Keyword;
         public string Value { get; set; }
 
-        public IRegexNode OnEnter(IVisitor visitor)
+        public IRegexNode Accept(IConvorterVisitor visitor)
         {
             throw new NotImplementedException();
         }

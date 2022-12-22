@@ -15,7 +15,7 @@ namespace RuddyRex.Lib.Models.RuddyRex.NodeModels
         public NodeType Type { get; } = NodeType.NumberLiteral;
         public int Value { get; set; }
 
-        public IRegexNode OnEnter(IVisitor visitor)
+        public IRegexNode Accept(IConvorterVisitor visitor)
         {
             throw new NotImplementedException();
         }

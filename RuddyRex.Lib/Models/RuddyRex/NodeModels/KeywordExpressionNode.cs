@@ -30,7 +30,7 @@ namespace RuddyRex.Lib.Models.NodeModels
             return HashCode.Combine(Type, Keyword, ValueType);
         }
 
-        public IRegexNode OnEnter(IVisitor visitor)
+        public IRegexNode Accept(IConvorterVisitor visitor)
         {
             return visitor.ConvertKeyword(this);
         }

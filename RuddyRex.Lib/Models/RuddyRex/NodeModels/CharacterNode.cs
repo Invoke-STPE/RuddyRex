@@ -15,7 +15,7 @@ namespace RuddyRex.Lib.Models.NodeModels
         public char Value { get; set; }
 
 
-        public IRegexNode OnEnter(IVisitor visitor)
+        public IRegexNode Accept(IConvorterVisitor visitor)
         {
             return visitor.ConvertToChar(this);
         }
