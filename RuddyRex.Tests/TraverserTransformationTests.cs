@@ -13,13 +13,13 @@ namespace RuddyRex.Tests
     public class TraverserShouldReturnChainedExpression
     {
         private RegexConvertorVisitor _convertor;
-        private Traverser _traverser;
+        private Transformer _traverser;
 
         [TestInitialize]
         public void InitializeTest()
         {
             _convertor = new RegexConvertorVisitor();
-            _traverser = new Traverser(_convertor);
+            _traverser = new Transformer(_convertor);
         }
 
         [TestMethod]

@@ -3,11 +3,11 @@ using RuddyRex.ParserLayer.Models;
 using RuddyRex.Transformation.Models;
 
 namespace RuddyRex.Transformation;
-public class Traverser
+public class Transformer
 {
 	private readonly IConvorterVisitor _visitor;
 
-	public Traverser(IConvorterVisitor visitor)
+	public Transformer(IConvorterVisitor visitor)
 	{
 		_visitor = visitor;
 	}
