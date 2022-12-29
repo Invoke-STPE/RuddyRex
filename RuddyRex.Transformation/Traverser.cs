@@ -1,46 +1,46 @@
-﻿//using RuddyRex.Lib.Models;
-//using RuddyRex.Lib.Models.Interfaces;
-//using RuddyRex.Lib.Models.RegexModels;
-//using RuddyRex.Lib.Visitor;
-//using System;
-//using System.Collections.Generic;
-//using System.Linq;
-//using System.Text;
-//using System.Threading.Tasks;
+﻿using RuddyRex.ParserLayer.Interfaces;
+using RuddyRex.ParserLayer.Models;
+using RuddyRex.Transformation.Models;
 
-//namespace RuddyRex.Transformation
-//{
-//    public static class Traverser
-//    {
-//        private static RegexConvertorVisitor _regexConvertor = new();
-//        public static AbstractTree<IRegexNode> ConvertTree(AbstractTree<INode> tree)
-//        {
-//            AbstractTree<IRegexNode> abstractTree = new() { Type = "RegExp" };
-//            List<IRegexNode> regexNodes = new();
-//            foreach (var node in tree.Nodes)
-//            {
-//                IRegexNode regexNode = TraverseNode(node);
-//                regexNodes.Add(regexNode);
-//            }
-//            abstractTree.Nodes = regexNodes;
-//            return abstractTree;
-//        }
+namespace RuddyRex.Transformation;
+public class Traverser
+{
+	private readonly IConvorterVisitor _visitor;
 
-//        public static List<IRegexNode> TraverseArray(List<INode> nodes)
-//        {
-//            List<IRegexNode> regexNodes = new();
-//            foreach (var node in nodes)
-//            {
-//                regexNodes.Add(node.OnEnter(_regexConvertor));
-//            }
+	public Traverser(IConvorterVisitor visitor)
+	{
+		_visitor = visitor;
+	}
 
-//            return regexNodes;
-//        }
-
-//        public static IRegexNode TraverseNode(INode node)
-//        {
-//            IRegexNode regexNode = node.OnEnter(_regexConvertor);
-//            return regexNode;
-//        }
-//    }
-//}
+	public AbstractTree<IRegexNode> TransformTree(AbstractTree<INode> tree)
+	{
+		AbstractTree<IRegexNode> output = new AbstractTree<IRegexNode>() { Type = "RegExp" };
+		if (tree.Nodes.Count > 1)
+		{
+			bool isRepetition = tree.Nodes.ToList().Any(n => n.GetType() == typeof(RangeNode));
+			if (isRepetition)
+			{
+				RegexRepetition regexRepetition = new RegexRepetition();
+				regexRepetition.Expression = tree.Nodes[0].Accept(_visitor);
+				regexRepetition.Quantifier = (RegexQuantifier)tree.Nodes[1].Accept(_visitor);
+                output.Nodes.Add(regexRepetition);
+            }
+			else
+			{
+                RegexAlternative regexNode = new RegexAlternative();
+                foreach (var node in tree.Nodes)
+                {
+                    regexNode.Expressions.Add(node.Accept(_visitor));
+                }
+                output.Nodes.Add(regexNode);
+            }
+            
+        }
+        else
+		{
+            IRegexNode regexNode = tree.Nodes.First().Accept(_visitor);
+            output.Nodes.Add(regexNode);
+        }
+		return output;
+	}
+}

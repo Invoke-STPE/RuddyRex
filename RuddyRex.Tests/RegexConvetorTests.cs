@@ -4,7 +4,9 @@ using RuddyRex.ParserLayer;
 using RuddyRex.ParserLayer.Interfaces;
 using RuddyRex.ParserLayer.Models;
 using RuddyRex.Transformation;
+using RuddyRex.Transformation.Exceptions;
 using RuddyRex.Transformation.Models;
+using System.Data;
 using System.Linq.Expressions;
 
 namespace RuddyRex.Tests
@@ -112,6 +114,8 @@ namespace RuddyRex.Tests
             [TestMethod]
             public void WhenPassedTwoNumberRangeExpression_ReturnsQuantifier()
             {
+                RegexConvertorVisitor convertor = new RegexConvertorVisitor(new KeywordExpressionNode() { Keyword = "Between"});
+                
                 RangeNode rangeNode = new RangeNode()
                 {
                     Values = new List<INode>()
@@ -127,13 +131,14 @@ namespace RuddyRex.Tests
                     Kind = "Range"
                 };
 
-                RegexQuantifier actual = (RegexQuantifier)_convertor.ConvertRange(rangeNode);
+                RegexQuantifier actual = (RegexQuantifier)convertor.ConvertRange(rangeNode);
 
                 Assert.AreEqual(expected, actual);
             }
             [TestMethod]
             public void WhenPassedOneNumberRangeExpression_ReturnsQuantifier()
             {
+                RegexConvertorVisitor convertor = new RegexConvertorVisitor(new KeywordExpressionNode() { Keyword = "Exactly" });
                 RangeNode rangeNode = new RangeNode()
                 {
                     Values = new List<INode>()
@@ -148,7 +153,75 @@ namespace RuddyRex.Tests
                     Kind = "Range"
                 };
 
-                RegexQuantifier actual = (RegexQuantifier)_convertor.ConvertRange(rangeNode);
+                RegexQuantifier actual = (RegexQuantifier)convertor.ConvertRange(rangeNode);
+
+                Assert.AreEqual(expected, actual);
+            }
+
+            [TestMethod]
+            public void WhenPassedReservedNumbers_ReturnsAsteriskQuantifier()
+            {
+                RegexConvertorVisitor convertor = new RegexConvertorVisitor(new KeywordExpressionNode() { Keyword = "Between" });
+                RangeNode input = new RangeNode()
+                {
+                    Values = new List<INode>()
+                    {
+                        new NumberNode() { Value = 0 }
+                    }
+                };
+
+                RegexQuantifier expected = new RegexQuantifier()
+                {
+                    Kind = "*"
+                };
+
+                RegexQuantifier actual = (RegexQuantifier)convertor.ConvertRange(input);
+
+                Assert.AreEqual(expected, actual);
+            }
+            [TestMethod]
+            public void WhenPassedReservedNumbers_ReturnsPlusQuantifier()
+            {
+                RegexConvertorVisitor convertor = new RegexConvertorVisitor(new KeywordExpressionNode() { Keyword = "Between" });
+
+                RangeNode input = new RangeNode()
+                {
+                    Values = new List<INode>()
+                    {
+                        new NumberNode() { Value = 1 }
+                    }
+                };
+
+                RegexQuantifier expected = new RegexQuantifier()
+                {
+                    Kind = "+"
+                };
+
+                RegexQuantifier actual = (RegexQuantifier)convertor.ConvertRange(input);
+
+                Assert.AreEqual(expected, actual);
+            }
+            [TestMethod]
+            public void WhenPassedReservedNumbers_ReturnsQuestionMarkQuantifier()
+            {
+                RegexConvertorVisitor convertor = new RegexConvertorVisitor(new KeywordExpressionNode() { Keyword = "Between" });
+
+                RangeNode input = new RangeNode()
+                {
+                    Values = new List<INode>()
+                    {
+                        new NumberNode() { Value = 0 },
+                        new NumberNode() { Value = 1 },
+
+                    }
+                };
+
+                RegexQuantifier expected = new RegexQuantifier()
+                {
+                    Kind = "?"
+                };
+
+                RegexQuantifier actual = (RegexQuantifier)convertor.ConvertRange(input);
 
                 Assert.AreEqual(expected, actual);
             }
@@ -368,6 +441,26 @@ namespace RuddyRex.Tests
                 RegexCharacterClass actual = (RegexCharacterClass)_convertor.ConvertToCharacterClass(characterRange);
 
                 Assert.AreEqual(expected, actual);
+            }
+        }
+
+        [TestClass]
+        public class ConvertorShouldThrowException : RegexConvetorTests
+        {
+            [TestMethod]
+            [ExpectedException(typeof(InvalidSemanticException))]
+            public void WhenPassedLoneRangeExpression()
+            {
+                RangeNode input = new RangeNode()
+                {
+                    Values = new List<INode>()
+                    {
+                        new NumberNode() { Value = 1 }
+                    }
+                };
+
+                _convertor.ConvertRange(input);
+
             }
         }
 

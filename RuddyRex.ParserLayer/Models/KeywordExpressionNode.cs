@@ -5,7 +5,7 @@ namespace RuddyRex.ParserLayer.Models;
 public class KeywordExpressionNode : INode
 {
     public NodeType Type { get; } = NodeType.KeywordExpression;
-    public string Keyword { get; set; }
+    public string Keyword { get; set; } = "";
     public INode Parameter { get; set; }
     public KeywordNode ValueType { get; set; } = new();
 
@@ -25,5 +25,10 @@ public class KeywordExpressionNode : INode
     public IRegexNode Accept(IConvorterVisitor visitor)
     {
         return visitor.ConvertKeyword(this);
+    }
+
+    public bool IsExactlyKeyword()
+    {
+        return Keyword.ToLower() == "exactly";
     }
 }

@@ -1,5 +1,7 @@
-﻿using RuddyRex.ParserLayer.Interfaces;
+﻿using RuddyRex.ParserLayer;
+using RuddyRex.ParserLayer.Interfaces;
 using RuddyRex.ParserLayer.Models;
+using RuddyRex.Transformation.Exceptions;
 using RuddyRex.Transformation.Models;
 using System.Linq;
 
@@ -7,10 +9,19 @@ namespace RuddyRex.Transformation
 {
     public class RegexConvertorVisitor : IConvorterVisitor
     {
-        
+        public static Stack<INode> Stack { get; set; } = new Stack<INode>();
+        public RegexConvertorVisitor()
+        {
+            Stack = new Stack<INode>();
+        }
+        public RegexConvertorVisitor(KeywordExpressionNode keyword)
+        {
+            Stack.Push(keyword);
+        }
         public IRegexNode ConvertKeyword(KeywordExpressionNode keywordNode)
         {
             RegexRepetition repetition = new();
+            Stack.Push(keywordNode);
 
             repetition.Quantifier = (RegexQuantifier)keywordNode.Parameter.Accept(this);
             repetition.Expression = new RegexCharacterClass(keywordNode);
@@ -21,12 +32,33 @@ namespace RuddyRex.Transformation
         public IRegexNode ConvertRange(RangeNode rangeNode)
         {
             RegexQuantifier quantifier = new RegexQuantifier();
+            Stack.TryPeek(out INode result);
+            if (Stack.Count == 0)
+                throw new InvalidSemanticException("Range expression cannot stand alone");
+            KeywordExpressionNode? keyword = result?.Type == NodeType.KeywordExpression ? (KeywordExpressionNode)Stack.Pop() : new KeywordExpressionNode();
             if (rangeNode.Values.Count == 1)
             {
                 var numbers = rangeNode.Values.Select(x => (NumberNode)x);
                 quantifier.From = numbers.Min(x => x.Value);
                 quantifier.To = numbers.Min(x => x.Value);
                 quantifier.Kind = "Range";
+
+                if (keyword.IsExactlyKeyword())
+                {
+                    return quantifier;
+                }
+
+                if (quantifier.IsAsteriskRange())
+                {
+                    quantifier.Kind = "*";
+                }
+                if (quantifier.IsPlusRange())
+                {
+                    quantifier.Kind = "+";
+                    quantifier.To = 0;
+                    quantifier.From = 0;
+                }
+
             }
             if (rangeNode.Values.Count > 1)
             {
@@ -34,6 +66,13 @@ namespace RuddyRex.Transformation
                 quantifier.From = numbers.Min(x => x.Value);
                 quantifier.To = numbers.Max(x => x.Value);
                 quantifier.Kind = "Range";
+                if (quantifier.IsQuestionMarkRange())
+                {
+                    quantifier.Kind = "?";
+                    quantifier.To = 0;
+                    quantifier.From = 0;
+                    return quantifier;
+                }
             }
 
             return quantifier;
@@ -41,6 +80,7 @@ namespace RuddyRex.Transformation
 
         public IRegexNode ConvertString(StringNode stringNode)
         {
+            Stack.Push(stringNode);
             return new RegexChar()
             {
                 Symbol = Convert.ToChar(stringNode.Value.ToString()),
@@ -50,6 +90,7 @@ namespace RuddyRex.Transformation
 
         public IRegexNode ConvertToChar(CharacterNode characterNode)
         {
+            Stack.Push(characterNode);
             return new RegexChar()
             {
                 Symbol = characterNode.Value,
@@ -60,7 +101,7 @@ namespace RuddyRex.Transformation
         public IRegexNode ConvertToCharacterClass(CharacterRangeNode rangeNode)
         {
             RegexCharacterClass characterClass = new RegexCharacterClass();
-
+            Stack.Push(rangeNode);
             foreach (CharacterNode node in rangeNode.Characters)
             {
                 characterClass.Expressions.Add(node.Accept(this));
@@ -72,11 +113,10 @@ namespace RuddyRex.Transformation
         public IRegexNode ConvertToGroup(GroupNode groupNode)
         {
             RegexGroup regexGroup = new();
-            
+            Stack.Push(groupNode);
             if (groupNode.Nodes.ToList().Any(n => n.GetType() == typeof(StringNode)))
-            {
                 groupNode = BreakUpStringNode(groupNode);
-            }
+            
             if (groupNode.Nodes.Count == 1)
             {
                 INode node = groupNode.Nodes.First();
