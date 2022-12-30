@@ -5,7 +5,7 @@ namespace RuddyRex.Transformation.Models;
 
 public record RegexQuantifier : IRegexNode
 {
-    public RegexType Type { get; set; }
+    public RegexType Type { get; set; } = RegexType.Quantifier;
     public string Kind { get; set; }
     public int From { get; set; }
     public int To { get; set; }
@@ -17,7 +17,7 @@ public record RegexQuantifier : IRegexNode
 
     internal bool IsPlusRange()
     {
-        return To == 1 && From == 1;
+        return To == 1 && From == 1 || Kind == "+";
     }
 
     internal bool IsQuestionMarkRange()

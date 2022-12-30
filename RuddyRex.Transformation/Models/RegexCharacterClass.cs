@@ -41,7 +41,7 @@ public class RegexCharacterClass : IRegexNode
         }
     }
 
-    public RegexType Type { get; set; }
+    public RegexType Type { get; set; } = RegexType.CharacterClass;
     public List<IRegexNode> Expressions { get; set; } = new List<IRegexNode>();
 
     public override bool Equals(object? obj)
