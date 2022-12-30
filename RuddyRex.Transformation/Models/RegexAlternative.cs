@@ -4,7 +4,7 @@ using RuddyRex.ParserLayer.Interfaces;
 namespace RuddyRex.Transformation.Models;
 public class RegexAlternative : IRegexNode
 {
-    public RegexType Type { get; set; }
+    public RegexType Type { get; set; } = RegexType.Alternative;
     public List<IRegexNode> Expressions { get; set; } = new List<IRegexNode>();
 
     public override bool Equals(object? obj)
