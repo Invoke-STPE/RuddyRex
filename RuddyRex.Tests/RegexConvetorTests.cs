@@ -261,13 +261,8 @@ namespace RuddyRex.Tests
                         {
                             new RegexClassRange()
                             {
-                                From = new RegexChar() { Value = "a", Symbol = 'a'},
-                                To = new RegexChar() {Value = "z", Symbol = 'z'},
-                            },
-                            new RegexClassRange()
-                            {
-                                From = new RegexChar() { Value = "A", Symbol = 'A'},
-                                To = new RegexChar() {Value = "Z", Symbol = 'Z'},
+                                From = new RegexChar() { Value = "a-z", Symbol = 'a'},
+                                To = new RegexChar() {Value = "A-Z", Symbol = 'z'},
                             }
                         }
                     }
@@ -345,13 +340,8 @@ namespace RuddyRex.Tests
                         {
                             new RegexClassRange()
                             {
-                                From = new RegexChar() { Value = "a", Symbol = 'a'},
-                                To = new RegexChar() {Value = "z", Symbol = 'z'},
-                            },
-                            new RegexClassRange()
-                            {
-                                From = new RegexChar() { Value = "A", Symbol = 'A'},
-                                To = new RegexChar() {Value = "Z", Symbol = 'Z'},
+                                From = new RegexChar() { Value = "a-z", Symbol = 'a'},
+                                To = new RegexChar() {Value = "A-Z", Symbol = 'z'},
                             }
                         }
                     }

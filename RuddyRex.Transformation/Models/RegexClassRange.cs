@@ -13,5 +13,10 @@ namespace RuddyRex.Transformation.Models
         public RegexType Type => RegexType.ClassRange;
         public RegexChar From { get; set; }
         public RegexChar To { get; set; }
+
+        public override string ToString()
+        {
+            return $"[{From}{To}]";
+        }
     }
 }

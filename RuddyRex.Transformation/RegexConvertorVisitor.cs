@@ -3,7 +3,6 @@ using RuddyRex.ParserLayer.Interfaces;
 using RuddyRex.ParserLayer.Models;
 using RuddyRex.Transformation.Exceptions;
 using RuddyRex.Transformation.Models;
-using System.Linq;
 
 namespace RuddyRex.Transformation
 {

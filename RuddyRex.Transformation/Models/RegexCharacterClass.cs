@@ -18,13 +18,8 @@ public class RegexCharacterClass : IRegexNode
             {
                 new RegexClassRange()
                 {
-                    From = new RegexChar() { Value = "a", Symbol = 'a'},
-                    To = new RegexChar() {Value = "z", Symbol = 'z'},
-                },
-                new RegexClassRange()
-                {
-                    From = new RegexChar() { Value = "A", Symbol = 'A'},
-                    To = new RegexChar() {Value = "Z", Symbol = 'Z'},
+                    From = new RegexChar() { Value = "a-z", Symbol = 'a'},
+                    To = new RegexChar() {Value = "A-Z", Symbol = 'z'},
                 }
             };
         }
@@ -54,5 +49,13 @@ public class RegexCharacterClass : IRegexNode
     public override int GetHashCode()
     {
         return HashCode.Combine(Type, Expressions);
+    }
+    public override string ToString()
+    {
+        List<string> convertedList = Expressions.Select(n => (RegexChar)n)
+                                                .Select(n => n.ToString())
+                                                .ToList();
+        string output = string.Join("", convertedList);
+        return $"[{output}]";
     }
 }

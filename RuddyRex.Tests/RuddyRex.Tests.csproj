@@ -16,6 +16,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\RuddyRex.CodeGeneration\RuddyRex.CodeGeneration.csproj" />
     <ProjectReference Include="..\RuddyRex.LexerLayer\RuddyRex.LexerLayer.csproj" />
     <ProjectReference Include="..\RuddyRex.Lib\RuddyRex.Lib.csproj" />
     <ProjectReference Include="..\RuddyRex.ParserLayer\RuddyRex.ParserLayer.csproj" />

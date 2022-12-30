@@ -6,4 +6,9 @@
     <Nullable>enable</Nullable>
   </PropertyGroup>
 
+  <ItemGroup>
+    <ProjectReference Include="..\RuddyRex.ParserLayer\RuddyRex.ParserLayer.csproj" />
+    <ProjectReference Include="..\RuddyRex.Transformation\RuddyRex.Transformation.csproj" />
+  </ItemGroup>
+
 </Project>

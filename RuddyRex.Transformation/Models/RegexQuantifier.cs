@@ -24,4 +24,10 @@ public record RegexQuantifier : IRegexNode
     {
         return From == 0 && To == 1;
     }
+
+    public override string ToString()
+    {
+        string output = Kind == "simple" ? $"{{{From},{To}}}" : Kind;
+        return output;
+    }
 }
