@@ -18,4 +18,9 @@ public class RegexAlternative : IRegexNode
     {
         return HashCode.Combine(Type, Expressions);
     }
+
+    public override string ToString()
+    {
+        return string.Join("", Expressions.Select(n => n.ToString()));
+    }
 }

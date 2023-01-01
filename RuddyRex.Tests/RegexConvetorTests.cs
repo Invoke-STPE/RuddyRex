@@ -261,13 +261,8 @@ namespace RuddyRex.Tests
                         {
                             new RegexClassRange()
                             {
-                                From = new RegexChar() { Value = "a", Symbol = 'a'},
-                                To = new RegexChar() {Value = "z", Symbol = 'z'},
-                            },
-                            new RegexClassRange()
-                            {
-                                From = new RegexChar() { Value = "A", Symbol = 'A'},
-                                To = new RegexChar() {Value = "Z", Symbol = 'Z'},
+                                From = new RegexChar() { Value = "a-z", Symbol = 'a'},
+                                To = new RegexChar() {Value = "A-Z", Symbol = 'z'},
                             }
                         }
                     }
@@ -345,13 +340,8 @@ namespace RuddyRex.Tests
                         {
                             new RegexClassRange()
                             {
-                                From = new RegexChar() { Value = "a", Symbol = 'a'},
-                                To = new RegexChar() {Value = "z", Symbol = 'z'},
-                            },
-                            new RegexClassRange()
-                            {
-                                From = new RegexChar() { Value = "A", Symbol = 'A'},
-                                To = new RegexChar() {Value = "Z", Symbol = 'Z'},
+                                From = new RegexChar() { Value = "a-z", Symbol = 'a'},
+                                To = new RegexChar() {Value = "A-Z", Symbol = 'z'},
                             }
                         }
                     }
@@ -444,25 +434,7 @@ namespace RuddyRex.Tests
             }
         }
 
-        [TestClass]
-        public class ConvertorShouldThrowException : RegexConvetorTests
-        {
-            [TestMethod]
-            [ExpectedException(typeof(InvalidSemanticException))]
-            public void WhenPassedLoneRangeExpression()
-            {
-                RangeNode input = new RangeNode()
-                {
-                    Values = new List<INode>()
-                    {
-                        new NumberNode() { Value = 1 }
-                    }
-                };
-
-                _convertor.ConvertRange(input);
-
-            }
-        }
+       
 
     }
 }

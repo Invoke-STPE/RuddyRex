@@ -24,4 +24,19 @@ public record RegexQuantifier : IRegexNode
     {
         return From == 0 && To == 1;
     }
+
+    public override string ToString()
+    {
+
+        if (Kind == "Range")
+        {
+            if (From == To)
+            {
+                return $"{{{From}}}";
+            }
+
+            return $"{{{From},{To}}}";
+        }
+        return Kind;
+    }
 }

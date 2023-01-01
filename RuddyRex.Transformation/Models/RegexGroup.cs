@@ -1,5 +1,6 @@
 ﻿using RuddyRex.ParserLayer;
 using RuddyRex.ParserLayer.Interfaces;
+using System.Linq;
 
 namespace RuddyRex.Transformation.Models;
 
@@ -18,5 +19,11 @@ public class RegexGroup : IRegexNode
     public override int GetHashCode()
     {
         return HashCode.Combine(Type, Expressions);
+    }
+
+    public override string ToString()
+    {
+        string output = string.Join("", Expressions.Select(n => n.ToString()));
+        return $"({output})";
     }
 }

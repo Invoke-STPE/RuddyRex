@@ -9,4 +9,13 @@ public record RegexChar : IRegexNode
     public string Value { get; set; }
     public string Kind { get; set; } = "simple";
     public char Symbol { get; set; }
+
+    public override string ToString()
+    {
+        return Value;
+    }
+    public bool IsLetterRange()
+    {
+        return Value == "a-z" || Value == "A-Z";
+    }
 }
