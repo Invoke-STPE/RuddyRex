@@ -32,8 +32,6 @@ namespace RuddyRex.Transformation
         {
             RegexQuantifier quantifier = new RegexQuantifier();
             Stack.TryPeek(out INode result);
-            if (Stack.Count == 0)
-                throw new InvalidSemanticException("Range expression cannot stand alone");
             KeywordExpressionNode? keyword = result?.Type == NodeType.KeywordExpression ? (KeywordExpressionNode)Stack.Pop() : new KeywordExpressionNode();
             if (rangeNode.Values.Count == 1)
             {

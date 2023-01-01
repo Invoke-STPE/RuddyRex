@@ -434,25 +434,7 @@ namespace RuddyRex.Tests
             }
         }
 
-        [TestClass]
-        public class ConvertorShouldThrowException : RegexConvetorTests
-        {
-            [TestMethod]
-            [ExpectedException(typeof(InvalidSemanticException))]
-            public void WhenPassedLoneRangeExpression()
-            {
-                RangeNode input = new RangeNode()
-                {
-                    Values = new List<INode>()
-                    {
-                        new NumberNode() { Value = 1 }
-                    }
-                };
-
-                _convertor.ConvertRange(input);
-
-            }
-        }
+       
 
     }
 }

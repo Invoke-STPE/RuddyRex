@@ -14,4 +14,8 @@ public record RegexChar : IRegexNode
     {
         return Value;
     }
+    public bool IsLetterRange()
+    {
+        return Value == "a-z" || Value == "A-Z";
+    }
 }

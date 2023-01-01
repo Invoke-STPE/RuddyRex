@@ -27,7 +27,16 @@ public record RegexQuantifier : IRegexNode
 
     public override string ToString()
     {
-        string output = Kind == "simple" ? $"{{{From},{To}}}" : Kind;
-        return output;
+
+        if (Kind == "Range")
+        {
+            if (From == To)
+            {
+                return $"{{{From}}}";
+            }
+
+            return $"{{{From},{To}}}";
+        }
+        return Kind;
     }
 }
