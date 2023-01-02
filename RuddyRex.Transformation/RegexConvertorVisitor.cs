@@ -1,4 +1,5 @@
 ﻿using RuddyRex.ParserLayer;
+using RuddyRex.ParserLayer.Exceptions;
 using RuddyRex.ParserLayer.Interfaces;
 using RuddyRex.ParserLayer.Models;
 using RuddyRex.Transformation.Exceptions;
@@ -17,7 +18,7 @@ namespace RuddyRex.Transformation
         {
             Stack.Push(keyword);
         }
-        public IRegexNode ConvertKeyword(KeywordExpressionNode keywordNode)
+        public IRegexNode ConvertKeywordExpression(KeywordExpressionNode keywordNode)
         {
             RegexRepetition repetition = new();
             Stack.Push(keywordNode);
@@ -44,16 +45,19 @@ namespace RuddyRex.Transformation
                 {
                     return quantifier;
                 }
+                
 
                 if (quantifier.IsAsteriskRange())
                 {
                     quantifier.Kind = "*";
+                    return quantifier;
                 }
                 if (quantifier.IsPlusRange())
                 {
                     quantifier.Kind = "+";
                     quantifier.To = 0;
                     quantifier.From = 0;
+                    return quantifier;
                 }
 
             }
@@ -70,8 +74,11 @@ namespace RuddyRex.Transformation
                     quantifier.From = 0;
                     return quantifier;
                 }
+                return quantifier;
             }
 
+
+            quantifier.To = 0;
             return quantifier;
         }
 
@@ -111,8 +118,8 @@ namespace RuddyRex.Transformation
         {
             RegexGroup regexGroup = new();
             Stack.Push(groupNode);
-            if (groupNode.Nodes.ToList().Any(n => n.GetType() == typeof(StringNode)))
-                groupNode = BreakUpStringNode(groupNode);
+            //if (groupNode.Nodes.ToList().Any(n => n.GetType() == typeof(StringNode)))
+            //    groupNode = BreakUpStringNode(groupNode);
             
             if (groupNode.Nodes.Count == 1)
             {
@@ -143,6 +150,21 @@ namespace RuddyRex.Transformation
                 }
             }
             return groupNode;
+        }
+
+        public IRegexNode ConvertKeyword(KeywordNode keywordNode)
+        {
+            switch (keywordNode.Value.ToLower())
+            {
+                case "any":
+                    return new RegexChar() { Kind = "simple", Value = ".", Symbol = '.' };
+                case "alternate":
+                    return new RegexChar() { Kind = "simple", Value = "|", Symbol = '|' };
+                case "space":
+                    return new RegexChar() { Kind = "simple", Value = " ", Symbol = ' ' };
+                default:
+                    throw new InvalidKeywordException("Invalid keyword");
+            }
         }
     }
 }

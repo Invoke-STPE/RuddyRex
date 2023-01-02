@@ -26,7 +26,7 @@ public static class Parser
             }
 
         }
-        if (brackets.Count > 0) throw new InvalidRangeExpression("Test");
+        if (brackets.Count > 0) throw new InvalidRangeExpression("Missing Bracket"); // TODO: exception skal ændres 
         return tree;
     }
 
@@ -70,9 +70,21 @@ public static class Parser
     private static INode AnalyseKeywordIdentifier(IToken token)
     {
         TokenKeyword tokenKeyword = (TokenKeyword)token;
+        if (tokenKeyword.Value.ToLower() == "space")
+        {
+            return CreateKeyword(tokenKeyword.Value);
+        }
+        if (tokenKeyword.Value.ToLower() == "any")
+        {
+            return CreateKeyword(tokenKeyword.Value);
+        }
+        if (tokenKeyword.Value.ToLower() == "alternate")
+        {
+            return CreateKeyword(tokenKeyword.Value);
+        }
         if (tokenKeyword.Value.ToLower() == "till")
         {
-            return CreateKeywordTill();
+            return CreateKeyword(tokenKeyword.Value);
         }
         if (RuddyRexDictionary.IsValidKeyword(tokenKeyword.Value))
         {
@@ -85,9 +97,9 @@ public static class Parser
         
         return tokenKeyword.Value.Length == 0 ? throw new InvalidRangeExpression("Invalid range") : throw new InvalidKeywordException("Keyword not regonized");
     }
-    private static INode CreateKeywordTill()
+    private static INode CreateKeyword(string value)
     {
-        return new KeywordNode() { Value = "till" };
+        return new KeywordNode() { Value = value };
     }
     private static INode CreateKeywordExpression(IToken token)
     {
@@ -115,6 +127,8 @@ public static class Parser
         if (brackets.Count == 0 || brackets.Pop().Type != TokenType.OpeningCurlyBracket) 
             throw new InvalidRangeExpression("Missing bracket");
 
+        if (PeekToken().Type == TokenType.ClosingParenthesis)
+            return new NullNode();
         return AnalyseToken(NextToken());
     }
 
@@ -180,10 +194,13 @@ public static class Parser
         brackets.Push(token);
         GroupNode groupNode = new GroupNode();
 
-        INode analysedNode = AnalyseToken(NextToken());
-        if (analysedNode.Type != NodeType.None)
+        while (PeekToken().Type != TokenType.ClosingParenthesis && _tokens.Count != 0)
         {
-            groupNode.Nodes.Add(analysedNode);
+            INode analysedNode = AnalyseToken(NextToken());
+            if (analysedNode.Type != NodeType.None)
+            {
+                groupNode.Nodes.Add(analysedNode);
+            }  
         }
         return groupNode;
     }

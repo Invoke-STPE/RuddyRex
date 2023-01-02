@@ -10,6 +10,7 @@ public record RegexRepetition : IRegexNode
 
     public override string ToString()
     {
+        //if(Expression.)
         return $"{Expression}{Quantifier}";
     }
 }

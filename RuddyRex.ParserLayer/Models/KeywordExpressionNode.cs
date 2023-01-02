@@ -24,7 +24,7 @@ public class KeywordExpressionNode : INode
 
     public IRegexNode Accept(IConvorterVisitor visitor)
     {
-        return visitor.ConvertKeyword(this);
+        return visitor.ConvertKeywordExpression(this);
     }
 
     public bool IsExactlyKeyword()

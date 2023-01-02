@@ -291,10 +291,16 @@ namespace RuddyRex.Tests
                     Type = "RegExp",
                     Nodes = new List<IRegexNode>()
                     {
-                        new RegexClassRange()
+                        new RegexCharacterClass()
                         {
-                            From = new RegexChar() { Value = "a-z", Symbol = 'a'},
-                            To = new RegexChar() {Value = "A-Z", Symbol = 'z'},
+                            Expressions = new List<IRegexNode>()
+                            {
+                            new RegexClassRange()
+                                {
+                                    From = new RegexChar() { Value = "a-z", Symbol = 'a'},
+                                    To = new RegexChar() {Value = "A-Z", Symbol = 'z'},
+                                }
+                            }
                         }
                     }
                 };

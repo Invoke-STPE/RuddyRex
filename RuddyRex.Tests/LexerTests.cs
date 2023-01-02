@@ -1,6 +1,7 @@
 ﻿using RuddyRex.LexerLayer;
 using RuddyRex.LexerLayer.Models;
 using RuddyRex.LexerLayer.Exceptions;
+using Microsoft.VisualStudio.TestTools.UnitTesting;
 
 namespace RuddyRex.Tests
 {
@@ -112,6 +113,17 @@ namespace RuddyRex.Tests
 
                 List<IToken> actual = Lexer.Tokenize("Between { 1 Till 3} Digit");
                 CollectionAssert.AreEqual(expected, actual);
+            }
+
+            [TestMethod]
+            public void WhenPassedSpaceKeyword()
+            {
+                string input = "space";
+                TokenKeyword expected = new TokenKeyword() { Value = "space" };
+
+                var actual = Lexer.Tokenize(input);
+
+                CollectionAssert.Contains(actual, expected);
             }
             [TestMethod]
             [DataRow("This is pure text")]

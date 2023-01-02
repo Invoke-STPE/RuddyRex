@@ -279,6 +279,158 @@ namespace RuddyRex.Tests
                 StringNode actual = (StringNode)Parser.ParseTree(tokens).Nodes.First();
                 Assert.AreEqual(expected, actual);
             }
+
+            [TestMethod]
+            public void WhenPassedSpaceToken_ReturnsKeyword()
+            {
+                var tokens = Lexer.Tokenize("Match space");
+                KeywordNode expected = new KeywordNode() { Value = "space"};
+                KeywordNode actual = (KeywordNode)Parser.ParseTree(tokens).Nodes.First();
+                Assert.AreEqual(expected, actual);
+            }
+        }
+
+        [TestClass]
+        public class ParserShouldParseChainedExpressions
+        {
+            [TestMethod]
+            public void WhenPassedBetweenAndExactlyExpression_ReturnsParsedExpressions()
+            {
+                var input = Lexer.Tokenize("Match (Between {1 till 3} digit Exactly {1} letter)");
+                AbstractTree<INode> expected = new()
+                {
+                    Type = "Match",
+                    Nodes = new List<INode>()
+                    {
+                        new GroupNode()
+                        {
+                            Nodes = new List<INode>()
+                            {
+                                new KeywordExpressionNode()
+                                {
+                                    Keyword = "Between",
+                                    Parameter = new RangeNode()
+                                    {
+                                        Values = new List<INode>()
+                                        {
+                                            new NumberNode() { Value = 1},
+                                            new NumberNode() { Value = 3}
+                                        }
+                                    },
+                                    ValueType = new KeywordNode(){ Value = "digit"}
+                                },
+                                new KeywordExpressionNode()
+                                {
+                                    Keyword = "Exactly",
+                                    Parameter = new RangeNode()
+                                    {
+                                        Values = new List<INode>()
+                                        {
+                                            new NumberNode() { Value = 1},
+                                        }
+                                    },
+                                    ValueType = new KeywordNode(){ Value = "letter"}
+                                }
+                            }
+                        }
+                    }
+                };
+
+                var actual = Parser.ParseTree(input);
+
+                Assert.AreEqual(expected, actual);
+            }
+
+            [TestMethod]
+            public void WhenPassedCharacterAndRange_ReturnsParsedCharacterRange()
+            {
+                var input = Lexer.Tokenize(@"Match ("","" { 0 till 1})");
+
+                AbstractTree<INode> expected = new()
+                {
+                    Type = "Match",
+                    Nodes = new List<INode>()
+                    {
+                        new GroupNode()
+                        {
+                            Nodes = new List<INode>()
+                            {
+                                new StringNode(){ Value = ","},
+                                new RangeNode()
+                                {
+                                    Values = new List<INode>()
+                                    {
+                                        new NumberNode() { Value = 0},
+                                        new NumberNode() { Value = 1},
+                                    }
+                                }
+                            }
+                        }
+                        
+                    }
+                };
+
+                var actual = Parser.ParseTree(input);
+
+                Assert.AreEqual(expected, actual);
+            }
+
+            [TestMethod]
+            public void WhenPassedExpressionCharacterRange_ReturnsParsedExpression()
+            {
+                var tokens = Lexer.Tokenize(@"Match (Between {1 till 3} digit Exactly {1} letter "",""{0 till 1})");
+                AbstractTree<INode> expected = new()
+                {
+                    Type = "Match",
+                    Nodes = new List<INode>()
+                    {
+                        new GroupNode()
+                        {
+                            Nodes = new List<INode>()
+                            {
+                                new KeywordExpressionNode()
+                                {
+                                    Keyword = "Between",
+                                    Parameter = new RangeNode()
+                                    {
+                                        Values = new List<INode>()
+                                        {
+                                            new NumberNode() { Value = 1},
+                                            new NumberNode() { Value = 3}
+                                        }
+                                    },
+                                    ValueType = new KeywordNode(){ Value = "digit"}
+                                },
+                                new KeywordExpressionNode()
+                                {
+                                    Keyword = "Exactly",
+                                    Parameter = new RangeNode()
+                                    {
+                                        Values = new List<INode>()
+                                        {
+                                            new NumberNode() { Value = 1},
+                                        }
+                                    },
+                                    ValueType = new KeywordNode(){ Value = "letter"}
+                                },
+                                new StringNode(){ Value = ","},
+                                new RangeNode()
+                                {
+                                    Values = new List<INode>()
+                                    {
+                                        new NumberNode() { Value = 0},
+                                        new NumberNode() { Value = 1},
+                                    }
+                                }
+                            }
+                        }
+                    }
+                };
+
+                var actual = Parser.ParseTree(tokens);
+
+                Assert.AreEqual(expected, actual);
+            }
         }
 
         [TestClass]

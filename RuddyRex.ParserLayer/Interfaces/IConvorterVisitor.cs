@@ -7,7 +7,8 @@ public interface IConvorterVisitor
     IRegexNode ConvertToChar(CharacterNode characterNode);
     IRegexNode ConvertToCharacterClass(CharacterRangeNode rangeNode);
     IRegexNode ConvertToGroup(GroupNode groupNode);
-    IRegexNode ConvertKeyword(KeywordExpressionNode keywordNode);
+    IRegexNode ConvertKeywordExpression(KeywordExpressionNode keywordNode);
+    IRegexNode ConvertKeyword(KeywordNode keywordNode);
     IRegexNode ConvertRange(RangeNode rangeNode);
     IRegexNode ConvertString(StringNode stringNode);
 }
