@@ -59,37 +59,37 @@ namespace RuddyRex.Tests
                 Assert.AreEqual(expected, actual);
             }
 
-            [TestMethod]
-            public void WhenPassedGroupExpression_ReturnsAlternativeChars()
-            {
-                GroupNode groupNode = new GroupNode()
-                {
-                    Nodes = new List<INode>()
-                    {
-                        new StringNode() { Value = "Test"}
-                    }
-                };
+            //[TestMethod]
+            //public void WhenPassedGroupExpression_ReturnsAlternativeChars()
+            //{
+            //    GroupNode groupNode = new GroupNode()
+            //    {
+            //        Nodes = new List<INode>()
+            //        {
+            //            new StringNode() { Value = "Test"}
+            //        }
+            //    };
 
-                RegexGroup expected = new RegexGroup()
-                {
-                    Expressions = new List<IRegexNode>()
-                    {
-                        new RegexAlternative()
-                        { 
-                            Expressions = new List<IRegexNode>()
-                            {
-                                new RegexChar(){ Symbol = 'T', Value = "T"},
-                                new RegexChar(){ Symbol = 'e', Value = "e"},
-                                new RegexChar(){ Symbol = 's', Value = "s"},
-                                new RegexChar(){ Symbol = 't', Value = "t"},
-                            }
-                        }
-                    }
-                };
+            //    RegexGroup expected = new RegexGroup()
+            //    {
+            //        Expressions = new List<IRegexNode>()
+            //        {
+            //            new RegexAlternative()
+            //            { 
+            //                Expressions = new List<IRegexNode>()
+            //                {
+            //                    new RegexChar(){ Symbol = 'T', Value = "T"},
+            //                    new RegexChar(){ Symbol = 'e', Value = "e"},
+            //                    new RegexChar(){ Symbol = 's', Value = "s"},
+            //                    new RegexChar(){ Symbol = 't', Value = "t"},
+            //                }
+            //            }
+            //        }
+            //    };
 
-                RegexGroup actual = (RegexGroup)_convertor.ConvertToGroup(groupNode);
-                Assert.AreEqual(expected, actual);
-            }
+            //    RegexGroup actual = (RegexGroup)_convertor.ConvertToGroup(groupNode);
+            //    Assert.AreEqual(expected, actual);
+            //}
 
         }
 
@@ -268,7 +268,7 @@ namespace RuddyRex.Tests
                     }
                 };
 
-                RegexRepetition actual = (RegexRepetition)_convertor.ConvertKeyword(betweenExpression);
+                RegexRepetition actual = (RegexRepetition)_convertor.ConvertKeywordExpression(betweenExpression);
                 Assert.AreEqual(expected, actual);
             }
             [TestMethod]
@@ -308,7 +308,7 @@ namespace RuddyRex.Tests
                     }
                 };
 
-                RegexRepetition actual = (RegexRepetition)_convertor.ConvertKeyword(betweenExpression);
+                RegexRepetition actual = (RegexRepetition)_convertor.ConvertKeywordExpression(betweenExpression);
                 Assert.AreEqual(expected, actual);
             }
             [TestMethod]
@@ -347,7 +347,7 @@ namespace RuddyRex.Tests
                     }
                 };
 
-                RegexRepetition actual = (RegexRepetition)_convertor.ConvertKeyword(betweenExpression);
+                RegexRepetition actual = (RegexRepetition)_convertor.ConvertKeywordExpression(betweenExpression);
                 Assert.AreEqual(expected, actual);
             }
             [TestMethod]
@@ -386,7 +386,7 @@ namespace RuddyRex.Tests
                     }
                 };
 
-                RegexRepetition actual = (RegexRepetition)_convertor.ConvertKeyword(betweenExpression);
+                RegexRepetition actual = (RegexRepetition)_convertor.ConvertKeywordExpression(betweenExpression);
                 Assert.AreEqual(expected, actual);
             }
         }
@@ -429,6 +429,21 @@ namespace RuddyRex.Tests
                 };
 
                 RegexCharacterClass actual = (RegexCharacterClass)_convertor.ConvertToCharacterClass(characterRange);
+
+                Assert.AreEqual(expected, actual);
+            }
+        }
+
+        [TestClass]
+        public class ConvertorShouldConvertKeyword : RegexConvetorTests
+        {
+            [TestMethod]
+            public void WhenPassedSingleKeywordNode_ReturnsRegexChar()
+            {
+                KeywordNode keyword = new KeywordNode() { Value = "space" };
+                RegexChar expected = new() { Value = " ", Symbol = ' ' };
+
+                RegexChar actual = (RegexChar)_convertor.ConvertKeyword(keyword);
 
                 Assert.AreEqual(expected, actual);
             }

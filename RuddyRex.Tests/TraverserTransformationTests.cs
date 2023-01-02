@@ -408,6 +408,237 @@ namespace RuddyRex.Tests
                 Assert.AreEqual(expected, actual);
             }
         }
+        [TestClass]
+        public class TransformerShouldTransformGroup : TransformationTests
+        {
+            [TestMethod]
+            public void WhenPassedGroupWithTwoExpressions()
+            {
+                var input = new AbstractTree<INode>()
+                {
+                    Type = "Match",
+                    Nodes = new List<INode>()
+                    {
+                        new GroupNode()
+                        {
+                            Nodes = new List<INode>()
+                            {
+                                new KeywordExpressionNode()
+                                {
+                                    Keyword = "Between",
+                                    Parameter = new RangeNode()
+                                    {
+                                        Values = new List<INode>()
+                                        {
+                                            new NumberNode() { Value = 1},
+                                            new NumberNode() { Value = 3}
+                                        }
+                                    },
+                                    ValueType = new KeywordNode(){ Value = "digit"}
+                                },
+                                new KeywordExpressionNode()
+                                {
+                                    Keyword = "Exactly",
+                                    Parameter = new RangeNode()
+                                    {
+                                        Values = new List<INode>()
+                                        {
+                                            new NumberNode() { Value = 1},
+                                        }
+                                    },
+                                    ValueType = new KeywordNode(){ Value = "letter"}
+                                }
+                            }
+                        }
+                    }
+                };
+
+                AbstractTree<IRegexNode> expected = new AbstractTree<IRegexNode>()
+                {
+                    Type = "RegExp",
+                    Nodes = new List<IRegexNode>()
+                    {
+                        new RegexGroup()
+                        {
+                            Expressions = new List<IRegexNode>()
+                            {
+                                new RegexAlternative()
+                                {
+                                    Expressions = new List<IRegexNode>()
+                                    {
+                                        new RegexRepetition()
+                                        {
+                                           Expression = new RegexCharacterClass()
+                                            {
+                                                Expressions = new List<IRegexNode>()
+                                                {
+                                                    new RegexClassRange()
+                                                    {
+                                                        From = new RegexChar( ){ Kind = "simple", Value = "1", Symbol = '1'},
+                                                        To = new RegexChar( ){ Kind = "simple", Value = "9", Symbol = '9'}
+                                                    }
+                                                }
+                                            },
+                                            Quantifier = new RegexQuantifier()
+                                            {
+                                                Kind = "Range",
+                                                From = 1,
+                                                To = 3
+
+                                            }
+                                        },
+                                        new RegexRepetition()
+                                        {
+                                           Expression = new RegexCharacterClass()
+                                            {
+                                                Expressions = new List<IRegexNode>()
+                                                {
+                                                    new RegexClassRange()
+                                                    {
+                                                        From = new RegexChar( ){ Kind = "simple", Value = "a-z", Symbol = 'a'},
+                                                        To = new RegexChar( ){ Kind = "simple", Value = "A-Z", Symbol = 'z'}
+                                                    }
+                                                }
+                                            },
+                                            Quantifier = new RegexQuantifier()
+                                            {
+                                                Kind = "Range",
+                                                To = 1,
+                                                From = 1
+                                            }
+                                        }
+                                    }
+                                    
+                                }
+                            }
+                        }
+                    }
+                };
+
+                var actual = _traverser.TransformTree(input);
+
+                Assert.AreEqual(expected, actual);
+            }
+            [TestMethod]
+            public void WhenPassedTwoExpressionAndCharacterRange()
+            {
+                AbstractTree<INode> input = new()
+                {
+                    Type = "Match",
+                    Nodes = new List<INode>()
+                    {
+                        new GroupNode()
+                        {
+                            Nodes = new List<INode>()
+                            {
+                                new KeywordExpressionNode()
+                                {
+                                    Keyword = "Between",
+                                    Parameter = new RangeNode()
+                                    {
+                                        Values = new List<INode>()
+                                        {
+                                            new NumberNode() { Value = 1},
+                                            new NumberNode() { Value = 3}
+                                        }
+                                    },
+                                    ValueType = new KeywordNode(){ Value = "digit"}
+                                },
+                                new KeywordExpressionNode()
+                                {
+                                    Keyword = "Exactly",
+                                    Parameter = new RangeNode()
+                                    {
+                                        Values = new List<INode>()
+                                        {
+                                            new NumberNode() { Value = 1},
+                                        }
+                                    },
+                                    ValueType = new KeywordNode(){ Value = "letter"}
+                                },
+                                new StringNode(){ Value = ","},
+                                new RangeNode()
+                                {
+                                    Values = new List<INode>()
+                                    {
+                                        new NumberNode() { Value = 0},
+                                        new NumberNode() { Value = 1},
+                                    }
+                                }
+                            }
+                        }
+                    }
+                };
+
+                AbstractTree<IRegexNode> expected = new AbstractTree<IRegexNode>()
+                {
+                    Type = "RegExp",
+                    Nodes = new List<IRegexNode>()
+                    {
+                        new RegexGroup()
+                        {
+                            Expressions = new List<IRegexNode>()
+                            {
+                                new RegexAlternative()
+                                {
+                                    Expressions = new List<IRegexNode>()
+                                    {
+                                        new RegexRepetition()
+                                        {
+                                           Expression = new RegexCharacterClass()
+                                            {
+                                                Expressions = new List<IRegexNode>()
+                                                {
+                                                    new RegexClassRange()
+                                                    {
+                                                        From = new RegexChar( ){ Kind = "simple", Value = "1", Symbol = '1'},
+                                                        To = new RegexChar( ){ Kind = "simple", Value = "9", Symbol = '9'}
+                                                    }
+                                                }
+                                            },
+                                            Quantifier = new RegexQuantifier()
+                                            {
+                                                Kind = "Range",
+                                                From = 1,
+                                                To = 3
+
+                                            }
+                                        },
+                                        new RegexRepetition()
+                                        {
+                                           Expression = new RegexCharacterClass()
+                                            {
+                                                Expressions = new List<IRegexNode>()
+                                                {
+                                                    new RegexClassRange()
+                                                    {
+                                                        From = new RegexChar( ){ Kind = "simple", Value = "a-z", Symbol = 'a'},
+                                                        To = new RegexChar( ){ Kind = "simple", Value = "A-Z", Symbol = 'z'}
+                                                    }
+                                                }
+                                            },
+                                            Quantifier = new RegexQuantifier()
+                                            {
+                                                Kind = "Range",
+                                                To = 1,
+                                                From = 1
+                                            }
+                                        },
+                                        new RegexChar(){ Kind = "simple", Value = ",", Symbol = ','},
+                                        new RegexQuantifier() { Kind = "?", From = 0, To = 0}
+                                    }
+
+                                }
+                            }
+                        }
+                    }
+                };
+
+                var actual = _traverser.TransformTree(input);
+
+                Assert.AreEqual(expected, actual);
+            }
+        }
     }
 
 }

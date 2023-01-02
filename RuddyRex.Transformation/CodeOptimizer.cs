@@ -61,7 +61,7 @@ namespace RuddyRex.Transformation
 
         private static IRegexNode? ValidateCharacterClassNode(RegexCharacterClass characterClass)
         {
-            if (characterClass.Expressions.Count == 1)
+            if (characterClass.Expressions.Count == 1 && characterClass.Expressions.First().Type != RegexType.ClassRange)
             {
                 return characterClass.Expressions.First();
             }
@@ -73,7 +73,9 @@ namespace RuddyRex.Transformation
         {
             if (node.Expressions.Count == 1)
             {
-                return node.Expressions.First();
+                IRegexNode firstNode = node.Expressions.First();
+                if (firstNode.Type != RegexType.Repetition && firstNode.Type != RegexType.Alternative)
+                    return node.Expressions.First();
             }
 
             OptimizeCharacterLiteral(node.Expressions);

@@ -52,10 +52,12 @@ public class RegexCharacterClass : IRegexNode
     }
     public override string ToString()
     {
-        List<string> convertedList = Expressions.Select(n => (RegexChar)n)
-                                                .Select(n => n.ToString())
+        //List<string> convertedList = Expressions.Select(n => (RegexChar)n)
+        //                                        .Select(n => n.ToString())
+        //                                        .ToList();
+        List<string> convertedList = Expressions.Select(n => n.ToString())
                                                 .ToList();
         string output = string.Join("", convertedList);
-        return $"[{output}]";
+        return $"[{output}]"; // Når det bare er character klasse skal den ha brackets her fra
     }
 }

@@ -34,7 +34,10 @@ public record RegexQuantifier : IRegexNode
             {
                 return $"{{{From}}}";
             }
-
+            if (To == 0)
+            {
+                return $"{{{From},}}";
+            }
             return $"{{{From},{To}}}";
         }
         return Kind;

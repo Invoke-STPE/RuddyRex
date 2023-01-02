@@ -9,6 +9,6 @@ public record KeywordNode : INode
 
     public IRegexNode Accept(IConvorterVisitor visitor)
     {
-        throw new NotImplementedException();
+        return visitor.ConvertKeyword(this);
     }
 }

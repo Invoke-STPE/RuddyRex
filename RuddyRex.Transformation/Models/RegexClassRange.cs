@@ -16,7 +16,7 @@ namespace RuddyRex.Transformation.Models
 
         public override string ToString()
         {
-            string output = From.IsLetterRange() ? $"[{From}{To}]" : $"[{From}-{To}]";
+            string output = From.IsLetterRange() ? $"{From}{To}" : $"{From}-{To}";
             return output;
         }
     }
