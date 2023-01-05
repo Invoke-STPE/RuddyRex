@@ -1,0 +1,43 @@
+﻿@page "/"
+
+<PageTitle>Index</PageTitle>
+
+<section class="">
+    <h1 class="display-4">TEXT EDITOR</h1>
+    <br>
+    <div class="row w-100">
+        <div class="col-12 justify-content-center">
+                <textarea id="textarea1" @onchange="GenerateCode"
+                          class="input shadow"
+                          name="name"
+                          rows="15"
+                          cols="100"
+                          placeholder="Your text here ">
+                    </textarea>
+        </div>
+        
+    </div>
+    <br />
+    <div class="row">
+        <div class="justify-content-center">
+            <div class="col-md-3 col-sm3">
+                @output
+            </div>
+        </div>
+    </div>
+</section>
+
+@code {
+    private string output = "";
+    public void GenerateCode(ChangeEventArgs args)
+    {
+        string input = args.Value.ToString();
+        var tokens = Lexer.Tokenize(input);
+        var ast = Parser.ParseTree(tokens);
+        IConvorterVisitor convorterVisitor = new RegexConvertorVisitor();
+        var transformer = new Transformer(convorterVisitor);
+        var regexTree = transformer.TransformTree(ast);
+        var optimizedTree = CodeOptimizer.OptimizeTree(regexTree);
+        var output = CodeGenerator.GenerateCode(optimizedTree);
+    }
+}

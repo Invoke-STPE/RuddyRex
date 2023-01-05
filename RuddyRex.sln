@@ -13,7 +13,9 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "RuddyRex.ParserLayer", "Rud
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "RuddyRex.Transformation", "RuddyRex.Transformation\RuddyRex.Transformation.csproj", "{CD910EF6-860A-4BEE-A314-4DA8088C3F91}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "RuddyRex.CodeGeneration", "RuddyRex.CodeGeneration\RuddyRex.CodeGeneration.csproj", "{60AD8AAE-C129-4477-B430-B47387BE50F3}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "RuddyRex.CodeGeneration", "RuddyRex.CodeGeneration\RuddyRex.CodeGeneration.csproj", "{60AD8AAE-C129-4477-B430-B47387BE50F3}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "RuddyRex.GUI", "RuddyRex.GUI\RuddyRex.GUI.csproj", "{30B346B1-308B-4058-878E-2166A2A12787}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -45,6 +47,10 @@ Global
 		{60AD8AAE-C129-4477-B430-B47387BE50F3}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{60AD8AAE-C129-4477-B430-B47387BE50F3}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{60AD8AAE-C129-4477-B430-B47387BE50F3}.Release|Any CPU.Build.0 = Release|Any CPU
+		{30B346B1-308B-4058-878E-2166A2A12787}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{30B346B1-308B-4058-878E-2166A2A12787}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{30B346B1-308B-4058-878E-2166A2A12787}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{30B346B1-308B-4058-878E-2166A2A12787}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

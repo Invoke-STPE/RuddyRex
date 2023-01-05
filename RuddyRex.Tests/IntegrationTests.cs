@@ -83,6 +83,7 @@ namespace RuddyRex.Tests
                             (Between {1 till 3} digit Exactly {1} letter "",""{0 till 1}) space
                             (Exactly {4} digit)";
             string expected = "([a-zA-Z]{3,}) ([1-9]{1,3}[a-zA-Z]{1},?) (.+,?) ([1-9]{4})|([a-zA-Z]{3,}) ([1-9]{1,3}[a-zA-Z]{1},?) ([1-9]{4})";
+            //string test = @"(\w{3,}) (\d{1,3}\w,+) (.+,{1}) (\d{4})|(\w{3,}) (\d{1,3}\w,+) (\d{4})"
             var tokens = Lexer.Tokenize(input);
             var ast = Parser.ParseTree(tokens);
             IConvorterVisitor convorterVisitor = new RegexConvertorVisitor();

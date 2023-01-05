@@ -24,7 +24,6 @@ public static class Parser
             {
                 tree.Nodes.Add(node);
             }
-
         }
         if (brackets.Count > 0) throw new InvalidRangeExpression("Missing Bracket"); // TODO: exception skal ændres 
         return tree;
