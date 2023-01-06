@@ -1,7 +1,12 @@
-﻿using RuddyRex.ParserLayer.Interfaces;
+﻿using RuddyRex.Core.Interfaces.NodeInterface;
+using RuddyRex.Core.Interfaces.NodeInterfaces;
+using RuddyRex.Core.Interfaces.RegexInterface;
+using RuddyRex.Core.Interfaces.VisitorInterfaces;
+using RuddyRex.Core.Types;
+
 namespace RuddyRex.ParserLayer.Models;
 
-public class GroupNode : INode
+public class GroupNode : IParentNode
 {
     public NodeType Type { get; } = NodeType.GroupExpression;
     public List<INode> Nodes { get; set; } = new List<INode>();

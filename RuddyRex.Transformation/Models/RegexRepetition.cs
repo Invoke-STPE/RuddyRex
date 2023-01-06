@@ -1,6 +1,5 @@
-﻿using RuddyRex.ParserLayer;
-using RuddyRex.ParserLayer.Interfaces;
-
+﻿using RuddyRex.Core.Interfaces.RegexInterface;
+using RuddyRex.Core.Types;
 namespace RuddyRex.Transformation.Models;
 public record RegexRepetition : IRegexNode
 {
@@ -10,7 +9,6 @@ public record RegexRepetition : IRegexNode
 
     public override string ToString()
     {
-        //if(Expression.)
         return $"{Expression}{Quantifier}";
     }
 }

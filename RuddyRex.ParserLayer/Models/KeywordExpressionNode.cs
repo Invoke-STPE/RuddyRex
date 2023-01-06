@@ -1,13 +1,17 @@
-﻿using RuddyRex.ParserLayer.Interfaces;
+﻿using RuddyRex.Core.Interfaces.NodeInterface;
+using RuddyRex.Core.Interfaces.NodeInterfaces;
+using RuddyRex.Core.Interfaces.RegexInterface;
+using RuddyRex.Core.Interfaces.VisitorInterfaces;
+using RuddyRex.Core.Types;
 
 namespace RuddyRex.ParserLayer.Models;
 
-public class KeywordExpressionNode : INode
+public class KeywordExpressionNode : IExpressionNode
 {
     public NodeType Type { get; } = NodeType.KeywordExpression;
     public string Keyword { get; set; } = "";
     public INode Parameter { get; set; }
-    public KeywordNode ValueType { get; set; } = new();
+    public IStringValueNode ValueType { get; set; } = new KeywordNode();
 
     public override bool Equals(object? obj)
     {

@@ -1,6 +1,6 @@
-﻿using RuddyRex.ParserLayer;
-using RuddyRex.ParserLayer.Interfaces;
-using System.Linq;
+﻿using RuddyRex.Core.Interfaces.RegexInterface;
+using RuddyRex.Core.Types;
+
 
 namespace RuddyRex.Transformation.Models;
 

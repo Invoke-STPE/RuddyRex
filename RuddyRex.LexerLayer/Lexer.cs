@@ -2,6 +2,9 @@
 using RuddyRex.LexerLayer.Exceptions;
 
 using System.Text.RegularExpressions;
+using RuddyRex.Core.Interfaces.TokenInterfaces;
+using RuddyRex.Core.Types;
+
 namespace RuddyRex.LexerLayer;
 
 public static class Lexer
