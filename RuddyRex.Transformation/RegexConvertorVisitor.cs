@@ -1,9 +1,11 @@
-﻿using RuddyRex.ParserLayer;
-using RuddyRex.ParserLayer.Exceptions;
-using RuddyRex.ParserLayer.Interfaces;
-using RuddyRex.ParserLayer.Models;
-using RuddyRex.Transformation.Exceptions;
+﻿using RuddyRex.Core.Exceptions;
+using RuddyRex.Core.Interfaces.NodeInterface;
+using RuddyRex.Core.Interfaces.NodeInterfaces;
+using RuddyRex.Core.Interfaces.RegexInterface;
+using RuddyRex.Core.Interfaces.VisitorInterfaces;
+using RuddyRex.Core.Types;
 using RuddyRex.Transformation.Models;
+using RuddyRex.Transformation.Models.DTO;
 
 namespace RuddyRex.Transformation
 {
@@ -14,11 +16,11 @@ namespace RuddyRex.Transformation
         {
             Stack = new Stack<INode>();
         }
-        public RegexConvertorVisitor(KeywordExpressionNode keyword)
+        public RegexConvertorVisitor(IExpressionNode keyword)
         {
             Stack.Push(keyword);
         }
-        public IRegexNode ConvertKeywordExpression(KeywordExpressionNode keywordNode)
+        public IRegexNode ConvertKeywordExpression(IExpressionNode keywordNode)
         {
             RegexRepetition repetition = new();
             Stack.Push(keywordNode);
@@ -29,14 +31,14 @@ namespace RuddyRex.Transformation
             return repetition;
         }
 
-        public IRegexNode ConvertRange(RangeNode rangeNode)
+        public IRegexNode ConvertRange(IParentNode rangeNode)
         {
             RegexQuantifier quantifier = new RegexQuantifier();
             Stack.TryPeek(out INode result);
-            KeywordExpressionNode? keyword = result?.Type == NodeType.KeywordExpression ? (KeywordExpressionNode)Stack.Pop() : new KeywordExpressionNode();
-            if (rangeNode.Values.Count == 1)
+            IExpressionNode? keyword = result?.Type == NodeType.KeywordExpression ? (IExpressionNode)Stack.Pop() : new KeywordExpressionNodeDTO();
+            if (rangeNode.Nodes.Count == 1)
             {
-                var numbers = rangeNode.Values.Select(x => (NumberNode)x);
+                var numbers = rangeNode.Nodes.Select(x => (INumberNode)x);
                 quantifier.From = numbers.Min(x => x.Value);
                 quantifier.To = numbers.Min(x => x.Value);
                 quantifier.Kind = "Range";
@@ -61,9 +63,9 @@ namespace RuddyRex.Transformation
                 }
 
             }
-            if (rangeNode.Values.Count > 1)
+            if (rangeNode.Nodes.Count > 1)
             {
-                var numbers = rangeNode.Values.Select(x => (NumberNode)x);
+                var numbers = rangeNode.Nodes.Select(x => (INumberNode)x);
                 quantifier.From = numbers.Min(x => x.Value);
                 quantifier.To = numbers.Max(x => x.Value);
                 quantifier.Kind = "Range";
@@ -82,7 +84,7 @@ namespace RuddyRex.Transformation
             return quantifier;
         }
 
-        public IRegexNode ConvertString(StringNode stringNode)
+        public IRegexNode ConvertString(IStringValueNode stringNode)
         {
             Stack.Push(stringNode);
             return new RegexChar()
@@ -92,7 +94,7 @@ namespace RuddyRex.Transformation
             };
         }
 
-        public IRegexNode ConvertToChar(CharacterNode characterNode)
+        public IRegexNode ConvertChar(ICharValueNode characterNode)
         {
             Stack.Push(characterNode);
             return new RegexChar()
@@ -102,11 +104,11 @@ namespace RuddyRex.Transformation
             };
         }
 
-        public IRegexNode ConvertToCharacterClass(CharacterRangeNode rangeNode)
+        public IRegexNode ConvertCharacterClass(IParentNode rangeNode)
         {
             RegexCharacterClass characterClass = new RegexCharacterClass();
             Stack.Push(rangeNode);
-            foreach (CharacterNode node in rangeNode.Characters)
+            foreach (ICharValueNode node in rangeNode.Nodes)
             {
                 characterClass.Expressions.Add(node.Accept(this));
             }
@@ -114,13 +116,10 @@ namespace RuddyRex.Transformation
             return characterClass;
         }
 
-        public IRegexNode ConvertToGroup(GroupNode groupNode)
+        public IRegexNode ConvertGroup(IParentNode groupNode)
         {
             RegexGroup regexGroup = new();
             Stack.Push(groupNode);
-            //if (groupNode.Nodes.ToList().Any(n => n.GetType() == typeof(StringNode)))
-            //    groupNode = BreakUpStringNode(groupNode);
-            
             if (groupNode.Nodes.Count == 1)
             {
                 INode node = groupNode.Nodes.First();
@@ -135,24 +134,7 @@ namespace RuddyRex.Transformation
             return regexGroup;
         }
 
-        private GroupNode BreakUpStringNode(GroupNode groupNode)
-        {
-            foreach (INode node in groupNode.Nodes.ToList())
-            {
-                if (node.GetType() == typeof(StringNode))
-                {
-                    StringNode stringNode = (StringNode)node;
-                    foreach (char c in stringNode.Value.ToCharArray())
-                    {
-                        groupNode.Nodes.Add(new StringNode() { Value = c.ToString() });
-                    }
-                    groupNode.Nodes.Remove(stringNode);
-                }
-            }
-            return groupNode;
-        }
-
-        public IRegexNode ConvertKeyword(KeywordNode keywordNode)
+        public IRegexNode ConvertKeyword(IStringValueNode keywordNode)
         {
             switch (keywordNode.Value.ToLower())
             {

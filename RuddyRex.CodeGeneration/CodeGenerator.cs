@@ -1,7 +1,6 @@
-﻿using RuddyRex.ParserLayer;
-using RuddyRex.ParserLayer.Interfaces;
-using RuddyRex.ParserLayer.Models;
-using RuddyRex.Transformation.Models;
+﻿using RuddyRex.Core;
+using RuddyRex.Core.Interfaces.RegexInterface;
+using RuddyRex.Core.Types;
 
 namespace RuddyRex.CodeGeneration
 {
@@ -15,31 +14,31 @@ namespace RuddyRex.CodeGeneration
                 switch (node.Type)
                 {
                     case RegexType.Group:
-                        RegexGroup regexGroup = (RegexGroup)node;
+                        IRegexNode regexGroup = node;
                         output += regexGroup.ToString();
                         break;
                     case RegexType.CharacterClass:
-                        RegexCharacterClass regexCharacterClass = (RegexCharacterClass)node;
+                        IRegexNode regexCharacterClass = node;
                         output += regexCharacterClass.ToString();
                         break;
                     case RegexType.Char:
-                        RegexChar regexChar = (RegexChar)node;
+                        IRegexNode regexChar = node;
                         output += regexChar.ToString();
                         break;
                     case RegexType.Repetition:
-                        RegexRepetition regexRepetition = (RegexRepetition)node;
+                        IRegexNode regexRepetition = node;
                         output += regexRepetition.ToString();
                         break;
                     case RegexType.Quantifier:
-                        RegexQuantifier regexQuantifier = (RegexQuantifier)node;
+                        IRegexNode regexQuantifier = node;
                         output += regexQuantifier.ToString();
                         break;
                     case RegexType.Alternative:
-                        RegexAlternative regexAlternative = (RegexAlternative)node;
+                        IRegexNode regexAlternative = node;
                         output += regexAlternative.ToString();
                         break;
                     case RegexType.ClassRange:
-                        RegexClassRange regexClassRange = (RegexClassRange)node;
+                        IRegexNode regexClassRange = node;
                         output += regexClassRange.ToString();
                         break;
                     default:

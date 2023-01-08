@@ -1,6 +1,6 @@
-﻿using RuddyRex.ParserLayer;
-using RuddyRex.ParserLayer.Interfaces;
-using RuddyRex.ParserLayer.Models;
+﻿using RuddyRex.Core.Interfaces.NodeInterface;
+using RuddyRex.Core.Interfaces.RegexInterface;
+using RuddyRex.Core.Types;
 
 namespace RuddyRex.Transformation.Models;
 
@@ -10,7 +10,7 @@ public class RegexCharacterClass : IRegexNode
     {
 
     }
-    public RegexCharacterClass(KeywordExpressionNode keywordNode)
+    public RegexCharacterClass(IExpressionNode keywordNode)
     {
         if (keywordNode.ValueType.Value == "letter")
         {

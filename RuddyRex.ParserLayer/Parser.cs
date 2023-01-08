@@ -1,7 +1,9 @@
-﻿using RuddyRex.LexerLayer;
-using RuddyRex.LexerLayer.Models;
-using RuddyRex.Lib;
-using RuddyRex.ParserLayer.Exceptions;
+﻿using RuddyRex.Core;
+using RuddyRex.Core.Exceptions;
+using RuddyRex.Core.Interfaces.NodeInterface;
+using RuddyRex.Core.Interfaces.TokenInterfaces;
+using RuddyRex.Core.Types;
+using RuddyRex.ParserLayer.DTO;
 using RuddyRex.ParserLayer.Models;
 
 namespace RuddyRex.ParserLayer;
@@ -26,7 +28,7 @@ public static class Parser
             }
 
         }
-        if (brackets.Count > 0) throw new InvalidRangeExpression("Missing Bracket"); // TODO: exception skal ændres 
+        if (brackets.Count > 0) throw new ExpectedBracketException("Expected bracket pair, but found none."); // TODO: exception skal ændres 
         return tree;
     }
 
@@ -43,7 +45,6 @@ public static class Parser
             TokenType.CharacterLiteral => AnalyseCharacterLiteral(token),
             TokenType.KeywordIdentifier => AnalyseKeywordIdentifier(token),
             TokenType.NumberLiteral => AnalyseNumberLiteral(token),
-            TokenType.AlternateOperator => new NullNode(),
             TokenType.StringLiteral => AnalyseStringLiteral(token),
             TokenType.None => new NullNode(),
         };
@@ -51,25 +52,25 @@ public static class Parser
 
     private static INode AnalyseStringLiteral(IToken token)
     {
-        TokenString tokenString = (TokenString)token;
+        ITokenString tokenString = (ITokenString)token;
         return new StringNode() { Value = tokenString.Value };
     }
 
     private static INode AnalyseCharacterLiteral(IToken token)
     {
-        TokenCharacter tokenCharacter = (TokenCharacter)token;
+        ITokenChar tokenCharacter = (ITokenChar)token;
         return new CharacterNode() { Value = tokenCharacter.Character };
     }
 
     private static INode AnalyseNumberLiteral(IToken token)
     {
-        TokenNumber tokenNumber = (TokenNumber)token;
+        ITokenInt tokenNumber = (ITokenInt)token;
         return new NumberNode() { Value = tokenNumber.Value };
     }
 
     private static INode AnalyseKeywordIdentifier(IToken token)
     {
-        TokenKeyword tokenKeyword = (TokenKeyword)token;
+        ITokenString tokenKeyword = (ITokenString)token;
         if (tokenKeyword.Value.ToLower() == "space")
         {
             return CreateKeyword(tokenKeyword.Value);
@@ -103,7 +104,7 @@ public static class Parser
     }
     private static INode CreateKeywordExpression(IToken token)
     {
-        TokenKeyword tokenKeyword = (TokenKeyword)token;
+        ITokenString tokenKeyword = (ITokenString)token;
 
         KeywordExpressionNode keywordNode = new KeywordExpressionNode()
         {
@@ -117,7 +118,7 @@ public static class Parser
 
     private static INode CreateValueType(IToken token)
     {
-        TokenKeyword tokenKeyword = (TokenKeyword)token;
+        ITokenString tokenKeyword = (ITokenString)token;
        
         return new KeywordNode() { Value = tokenKeyword.Value };
        
@@ -125,7 +126,7 @@ public static class Parser
     private static INode AnalyseClosingCurlyBracket()
     {
         if (brackets.Count == 0 || brackets.Pop().Type != TokenType.OpeningCurlyBracket) 
-            throw new InvalidRangeExpression("Missing bracket");
+            throw new ExpectedBracketException("Expected bracket pair, but found none.");
 
         if (PeekToken().Type == TokenType.ClosingParenthesis)
             return new NullNode();
@@ -141,7 +142,7 @@ public static class Parser
         {
             if (PeekToken()?.Type == TokenType.NumberLiteral)
             {
-                rangeNode.Values.Add(AnalyseToken(NextToken()));
+                rangeNode.Nodes.Add(AnalyseToken(NextToken()));
             }
             else if (PeekToken()?.Type == TokenType.KeywordIdentifier)
             {
@@ -152,14 +153,14 @@ public static class Parser
                 }
             }
         }
-        if (rangeNode.Values.Count == 2)
+        if (rangeNode.Nodes.Count == 2)
         {
             if (keyword?.Value.ToLower() != "till")
             {
                 throw new InvalidRangeExpression("Invalid keyword in range expression");
             }
         }
-        if (rangeNode.Values.Count == 0) 
+        if (rangeNode.Nodes.Count == 0) 
             throw new InvalidRangeExpression("Range expression cannot contain 0 numbers");
         return rangeNode;
     }
@@ -167,7 +168,7 @@ public static class Parser
     private static INode AnalyseClosingSqaureBracket()
     {
         if (brackets.Count == 0 || brackets.Pop().Type != TokenType.OpeningSquareBracket)
-            throw new InvalidRangeExpression("Missing bracket");
+            throw new ExpectedBracketException("Expected bracket pair, but found none.");
         return new NullNode();
     }
 
@@ -177,7 +178,7 @@ public static class Parser
         CharacterRangeNode characterRangeNode = new CharacterRangeNode();
         while (PeekToken()?.Type == TokenType.CharacterLiteral)
         {
-            characterRangeNode.Characters.Add(AnalyseToken(NextToken()));
+            characterRangeNode.Nodes.Add(AnalyseToken(NextToken()));
         }
         return characterRangeNode;
     }
@@ -185,7 +186,7 @@ public static class Parser
     private static INode AnalyseClosingParenthesis()
     {
         if (brackets.Count == 0 || brackets.Pop().Type != TokenType.OpeningParenthesis)
-            throw new InvalidRangeExpression("Missing bracket");
+            throw new ExpectedBracketException("Expected bracket pair, but found none.");
         return new NullNode();
     }
 
@@ -211,16 +212,16 @@ public static class Parser
         {
             return result;
         }
-        return new TokenNull();
+        return new NullValueToken();
     }
     private static IToken? PeekToken()
     {
-        return _tokens.TryPeek(out IToken result) ? result : new TokenNull();
+        return _tokens.TryPeek(out IToken result) ? result : new NullValueToken();
     }
 
     private static AbstractTree<INode> CreateAST(IToken? token)
     {
-        TokenKeyword keyword = (TokenKeyword)token;
+        ITokenString keyword = (ITokenString)token;
         if (RuddyRexDictionary.IsValidStartKeyword((keyword.Value)))
         {
             return new AbstractTree<INode>() { Type = keyword.Value };

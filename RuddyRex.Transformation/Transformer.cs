@@ -1,20 +1,18 @@
-﻿using RuddyRex.ParserLayer;
-using RuddyRex.ParserLayer.Interfaces;
-using RuddyRex.ParserLayer.Models;
+﻿using RuddyRex.Core;
+using RuddyRex.Core.Interfaces.NodeInterface;
+using RuddyRex.Core.Interfaces.NodeInterfaces;
+using RuddyRex.Core.Interfaces.RegexInterface;
+using RuddyRex.Core.Interfaces.VisitorInterfaces;
+using RuddyRex.Core.Types;
 using RuddyRex.Transformation.Models;
-using System.Xml.Linq;
+using RuddyRex.Transformation.Models.DTO;
 
 namespace RuddyRex.Transformation;
 public class Transformer
 {
-	private readonly IConvorterVisitor _visitor;
+	private static readonly IConvorterVisitor _visitor = new RegexConvertorVisitor();
 
-	public Transformer(IConvorterVisitor visitor)
-	{
-		_visitor = visitor;
-	}
-
-	public AbstractTree<IRegexNode> TransformTree(AbstractTree<INode> tree)
+	public static AbstractTree<IRegexNode> TransformTree(AbstractTree<INode> tree)
 	{
 		AbstractTree<INode> brokenStringNodes = new();
 
@@ -46,9 +44,7 @@ public class Transformer
                 return output;
             }
         }
-
         RegexAlternative alternative = new();
-
         foreach (var node in brokenStringNodes.Nodes)
         {
             alternative.Expressions.Add(node.Accept(_visitor));
@@ -57,7 +53,7 @@ public class Transformer
 		return output;
 	}
 
-	private List<INode> BreakUpStringNodes(AbstractTree<INode> tree)
+	private static List<INode> BreakUpStringNodes(AbstractTree<INode> tree)
 	{
         List<INode> output = new();
 		foreach (var node in tree.Nodes)
@@ -67,21 +63,21 @@ public class Transformer
         return output;
 	}
 
-	private List<INode> BreakNode(INode node)
+	private static List<INode> BreakNode(INode node)
 	{
         List<INode> output = new();
         switch (node.Type)
         {
             case NodeType.StringLiteral:
-                StringNode stringNode = (StringNode)node;
+                IStringValueNode stringNode = (IStringValueNode)node;
                 foreach (var s in stringNode.Value)
                 {
-                    output.Add(new StringNode() { Value = s.ToString() });
+                    output.Add(new StringNodeDTO() { Value = s.ToString() });
                 }
                 break;
             case NodeType.GroupExpression:
-                GroupNode groupNode = (GroupNode)node;
-                GroupNode newGroup = new GroupNode();
+                IParentNode groupNode = (IParentNode)node;
+                IParentNode newGroup = new GroupNodeDTO();
                 foreach (var group in groupNode.Nodes)
                 {
                     newGroup.Nodes.AddRange(BreakNode(group));
