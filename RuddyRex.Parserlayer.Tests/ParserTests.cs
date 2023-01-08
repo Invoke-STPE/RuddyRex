@@ -122,7 +122,7 @@ namespace RuddyRex.Parserlayer.Tests
         public class ParserShouldParseKeywordExpressions
         {
             [TestMethod]
-            [DataRow("Match Between {1 Till 2} letter", "letter")]
+            [DataRow("Match Between {1 Till 2} letters", "letters")]
             [DataRow("Match Between {1 Till 2} digit", "digit")]
             public void WhenPassedBetweenExpression(string input, string valueType)
             {
@@ -336,7 +336,7 @@ namespace RuddyRex.Parserlayer.Tests
 
                 var actual = Parser.ParseTree(input);
 
-                Assert.AreEqual(expected, actual);
+                CollectionAssert.AreEqual(expected.Nodes, actual.Nodes);
             }
 
             [TestMethod]
@@ -435,7 +435,7 @@ namespace RuddyRex.Parserlayer.Tests
         public class ParserShouldThrowException
         {
             [TestMethod]
-            [ExpectedException(typeof(InvalidRangeExpression))]
+            [ExpectedException(typeof(ExpectedBracketException))]
             [DataRow("Match (")]
             [DataRow("Match ())")]
             [DataRow("Match ((())")]
@@ -447,8 +447,8 @@ namespace RuddyRex.Parserlayer.Tests
                 Parser.ParseTree(tokens);
             }
             [TestMethod]
-            [ExpectedException(typeof(InvalidRangeExpression))]
-            [DataRow("Match [")]
+            [ExpectedException(typeof(ExpectedBracketException))]
+            [DataRow("Match [abc")]
             [DataRow("Match ]")]
             [DataRow("Match []]")]
             [DataRow("Match [abc]]")]

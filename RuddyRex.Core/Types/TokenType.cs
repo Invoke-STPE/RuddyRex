@@ -2,6 +2,7 @@
 
 public enum TokenType
 {
+    None,
     // Operator definitions
     OpeningParenthesis,
     ClosingParenthesis,
@@ -15,5 +16,4 @@ public enum TokenType
     NumberLiteral,
     CharacterLiteral,
     StringLiteral,
-    None,
 }

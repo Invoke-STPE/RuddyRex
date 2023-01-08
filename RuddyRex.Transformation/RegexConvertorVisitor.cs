@@ -94,7 +94,7 @@ namespace RuddyRex.Transformation
             };
         }
 
-        public IRegexNode ConvertToChar(ICharValueNode characterNode)
+        public IRegexNode ConvertChar(ICharValueNode characterNode)
         {
             Stack.Push(characterNode);
             return new RegexChar()
@@ -104,7 +104,7 @@ namespace RuddyRex.Transformation
             };
         }
 
-        public IRegexNode ConvertToCharacterClass(IParentNode rangeNode)
+        public IRegexNode ConvertCharacterClass(IParentNode rangeNode)
         {
             RegexCharacterClass characterClass = new RegexCharacterClass();
             Stack.Push(rangeNode);
@@ -116,7 +116,7 @@ namespace RuddyRex.Transformation
             return characterClass;
         }
 
-        public IRegexNode ConvertToGroup(IParentNode groupNode)
+        public IRegexNode ConvertGroup(IParentNode groupNode)
         {
             RegexGroup regexGroup = new();
             Stack.Push(groupNode);
@@ -132,23 +132,6 @@ namespace RuddyRex.Transformation
                 regexGroup.Expressions.Add(alternative);
             }
             return regexGroup;
-        }
-
-        private IParentNode BreakUpStringNode(IParentNode groupNode)
-        {
-            foreach (INode node in groupNode.Nodes.ToList())
-            {
-                if (node.GetType() == typeof(StringNodeDTO))
-                {
-                    StringNodeDTO stringNode = (StringNodeDTO)node;
-                    foreach (char c in stringNode.Value.ToCharArray())
-                    {
-                        groupNode.Nodes.Add(new StringNodeDTO() { Value = c.ToString() });
-                    }
-                    groupNode.Nodes.Remove(stringNode);
-                }
-            }
-            return groupNode;
         }
 
         public IRegexNode ConvertKeyword(IStringValueNode keywordNode)

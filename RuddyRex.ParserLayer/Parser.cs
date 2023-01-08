@@ -28,7 +28,7 @@ public static class Parser
             }
 
         }
-        if (brackets.Count > 0) throw new InvalidRangeExpression("Missing Bracket"); // TODO: exception skal ændres 
+        if (brackets.Count > 0) throw new ExpectedBracketException("Expected bracket pair, but found none."); // TODO: exception skal ændres 
         return tree;
     }
 
@@ -45,7 +45,6 @@ public static class Parser
             TokenType.CharacterLiteral => AnalyseCharacterLiteral(token),
             TokenType.KeywordIdentifier => AnalyseKeywordIdentifier(token),
             TokenType.NumberLiteral => AnalyseNumberLiteral(token),
-            TokenType.AlternateOperator => new NullNode(),
             TokenType.StringLiteral => AnalyseStringLiteral(token),
             TokenType.None => new NullNode(),
         };
@@ -127,7 +126,7 @@ public static class Parser
     private static INode AnalyseClosingCurlyBracket()
     {
         if (brackets.Count == 0 || brackets.Pop().Type != TokenType.OpeningCurlyBracket) 
-            throw new InvalidRangeExpression("Missing bracket");
+            throw new ExpectedBracketException("Expected bracket pair, but found none.");
 
         if (PeekToken().Type == TokenType.ClosingParenthesis)
             return new NullNode();
@@ -169,7 +168,7 @@ public static class Parser
     private static INode AnalyseClosingSqaureBracket()
     {
         if (brackets.Count == 0 || brackets.Pop().Type != TokenType.OpeningSquareBracket)
-            throw new InvalidRangeExpression("Missing bracket");
+            throw new ExpectedBracketException("Expected bracket pair, but found none.");
         return new NullNode();
     }
 
@@ -187,7 +186,7 @@ public static class Parser
     private static INode AnalyseClosingParenthesis()
     {
         if (brackets.Count == 0 || brackets.Pop().Type != TokenType.OpeningParenthesis)
-            throw new InvalidRangeExpression("Missing bracket");
+            throw new ExpectedBracketException("Expected bracket pair, but found none.");
         return new NullNode();
     }
 

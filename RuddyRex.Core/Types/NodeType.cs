@@ -2,11 +2,11 @@
 {
     public enum NodeType
     {
+        None,
         NumberLiteral,
         StringLiteral,
         GroupExpression,
         KeywordExpression,
-        None,
         RangeExpression,
         CharacterRange,
         CharacterNode,

@@ -10,8 +10,4 @@
     <ProjectReference Include="..\RuddyRex.Core\RuddyRex.Core.csproj" />
   </ItemGroup>
 
-  <ItemGroup>
-    <Folder Include="Exceptions\" />
-  </ItemGroup>
-
 </Project>

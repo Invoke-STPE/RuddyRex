@@ -14,6 +14,6 @@ public record CharacterNode : ICharValueNode
 
     public IRegexNode Accept(IConvorterVisitor visitor)
     {
-        return visitor.ConvertToChar(this);
+        return visitor.ConvertChar(this);
     }
 }

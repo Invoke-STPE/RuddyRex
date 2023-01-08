@@ -12,6 +12,5 @@ namespace RuddyRex.Core.Interfaces.NodeInterfaces
     public interface IStringValueNode : INode
     {
         public string Value { get; set; }
-
     }
 }

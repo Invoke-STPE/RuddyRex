@@ -27,7 +27,7 @@ namespace RuddyRex.Transformation.Tests
 
                 RegexType expected = RegexType.Group;
 
-                RegexGroup actual = (RegexGroup)_convertor.ConvertToGroup(groupNode);
+                RegexGroup actual = (RegexGroup)_convertor.ConvertGroup(groupNode);
                 Assert.AreEqual(expected, actual.Type);
             }
 
@@ -50,7 +50,7 @@ namespace RuddyRex.Transformation.Tests
                    }
                 };
 
-                RegexGroup actual = (RegexGroup)_convertor.ConvertToGroup(groupNode);
+                RegexGroup actual = (RegexGroup)_convertor.ConvertGroup(groupNode);
                 Assert.AreEqual(expected, actual);
             }
 
@@ -364,7 +364,7 @@ namespace RuddyRex.Transformation.Tests
                 CharacterNode characterNode = new CharacterNode() { Value = 'a' };
                 RegexChar expected = new() { Value = "a", Symbol = 'a' };
 
-                RegexChar actual = (RegexChar)_convertor.ConvertToChar(characterNode);
+                RegexChar actual = (RegexChar)_convertor.ConvertChar(characterNode);
 
                 Assert.AreEqual(expected, actual);
             }
@@ -392,7 +392,7 @@ namespace RuddyRex.Transformation.Tests
                     }
                 };
 
-                RegexCharacterClass actual = (RegexCharacterClass)_convertor.ConvertToCharacterClass(characterRange);
+                RegexCharacterClass actual = (RegexCharacterClass)_convertor.ConvertCharacterClass(characterRange);
 
                 Assert.AreEqual(expected, actual);
             }

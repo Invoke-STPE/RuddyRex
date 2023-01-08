@@ -9,7 +9,7 @@ namespace RuddyRex.Core.Interfaces.NodeInterface
         INode Parameter { get; set; }
         IStringValueNode ValueType { get; set; }
 
-        bool Equals(object? obj);
+        //bool Equals(object? obj);
         bool IsExactlyKeyword();
     }
 }

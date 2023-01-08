@@ -21,7 +21,7 @@ public class CharacterRangeNode : IParentNode
 
     public IRegexNode Accept(IConvorterVisitor visitor)
     {
-        return visitor.ConvertToCharacterClass(this);
+        return visitor.ConvertCharacterClass(this);
     }
 
     public override int GetHashCode()

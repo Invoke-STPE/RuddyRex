@@ -6,6 +6,6 @@ namespace RuddyRex.Core.Interfaces.NodeInterfaces
     {
         public List<INode> Nodes { get; set; }
 
-        bool Equals(object? obj);
+
     }
 }

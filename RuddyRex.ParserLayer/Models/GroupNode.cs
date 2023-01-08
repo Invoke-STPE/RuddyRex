@@ -25,6 +25,6 @@ public class GroupNode : IParentNode
 
     public IRegexNode Accept(IConvorterVisitor visitor)
     {
-        return visitor.ConvertToGroup(this);
+        return visitor.ConvertGroup(this);
     }
 }

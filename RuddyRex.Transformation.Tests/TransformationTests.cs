@@ -14,15 +14,7 @@ namespace RuddyRex.Transformation.Tests
     [TestClass]
     public class TransformationTests
     {
-        private RegexConvertorVisitor _convertor;
-        private Transformer _traverser;
 
-        [TestInitialize]
-        public void InitializeTest()
-        {
-            _convertor = new RegexConvertorVisitor();
-            _traverser = new Transformer(_convertor);
-        }
 
         [TestClass]
         public class TransformerShouldAppend : TransformationTests
@@ -47,7 +39,7 @@ namespace RuddyRex.Transformation.Tests
                     }
                 };
 
-                var actual = _traverser.TransformTree(input);
+                var actual = Transformer.TransformTree(input);
 
                 Assert.AreEqual(expected, actual);
             }
@@ -71,7 +63,7 @@ namespace RuddyRex.Transformation.Tests
                     }
                 };
 
-                var actual = _traverser.TransformTree(input);
+                var actual = Transformer.TransformTree(input);
 
                 Assert.AreEqual(expected, actual);
             }
@@ -107,7 +99,7 @@ namespace RuddyRex.Transformation.Tests
                     }
                 };
 
-                var actual = _traverser.TransformTree(input);
+                var actual = Transformer.TransformTree(input);
 
                 Assert.AreEqual(expected, actual);
             }
@@ -153,7 +145,7 @@ namespace RuddyRex.Transformation.Tests
                     }
                 };
 
-                var actual = _traverser.TransformTree(input);
+                var actual = Transformer.TransformTree(input);
 
                 Assert.AreEqual(expected, actual);
             }
@@ -209,7 +201,7 @@ namespace RuddyRex.Transformation.Tests
                     }
                 };
 
-                var actual = _traverser.TransformTree(input);
+                var actual = Transformer.TransformTree(input);
 
                 Assert.AreEqual(expected, actual);
             }
@@ -264,7 +256,7 @@ namespace RuddyRex.Transformation.Tests
                     }
                 };
 
-                var actual = _traverser.TransformTree(input);
+                var actual = Transformer.TransformTree(input);
 
                 Assert.AreEqual(expected, actual);
             }
@@ -316,7 +308,7 @@ namespace RuddyRex.Transformation.Tests
                     }
                 };
 
-                var actual = _traverser.TransformTree(input);
+                var actual = Transformer.TransformTree(input);
 
                 Assert.AreEqual(expected, actual);
             }
@@ -370,7 +362,7 @@ namespace RuddyRex.Transformation.Tests
                     }
                 };
 
-                var actual = _traverser.TransformTree(input);
+                var actual = Transformer.TransformTree(input);
 
                 Assert.AreEqual(expected, actual);
             }
@@ -405,7 +397,7 @@ namespace RuddyRex.Transformation.Tests
                     }
                 };
 
-                var actual = _traverser.TransformTree(input);
+                var actual = Transformer.TransformTree(input);
 
                 Assert.AreEqual(expected, actual);
             }
@@ -517,7 +509,7 @@ namespace RuddyRex.Transformation.Tests
                     }
                 };
 
-                var actual = _traverser.TransformTree(input);
+                var actual = Transformer.TransformTree(input);
 
                 Assert.AreEqual(expected, actual);
             }
@@ -636,7 +628,7 @@ namespace RuddyRex.Transformation.Tests
                     }
                 };
 
-                var actual = _traverser.TransformTree(input);
+                var actual = Transformer.TransformTree(input);
 
                 Assert.AreEqual(expected, actual);
             }

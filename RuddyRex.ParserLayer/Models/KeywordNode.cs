@@ -15,4 +15,16 @@ public record KeywordNode : IStringValueNode
     {
         return visitor.ConvertKeyword(this);
     }
+
+    //public override bool Equals(object? obj)
+    //{
+    //    return obj is KeywordNode node &&
+    //           Type == node.Type &&
+    //           Value == node.Value;
+    //}
+
+    //public override int GetHashCode()
+    //{
+    //    return HashCode.Combine(Type, Value);
+    //}
 }

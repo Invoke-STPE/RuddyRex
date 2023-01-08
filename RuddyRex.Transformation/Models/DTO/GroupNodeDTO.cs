@@ -19,7 +19,7 @@ namespace RuddyRex.Transformation.Models.DTO
 
         public IRegexNode Accept(IConvorterVisitor visitor)
         {
-            return visitor.ConvertToGroup(this);
+            return visitor.ConvertGroup(this);
         }
     }
 }

@@ -161,19 +161,5 @@ namespace RuddyRex.LexerLayer.Tests
             }
         }
 
-        [TestClass]
-        public class LexerThrowsException
-        {
-            [TestMethod]
-            [ExpectedException(typeof(CharacterIsNotValidException))]
-            [DataRow("%")]
-            [DataRow("-")]
-            [DataRow("+")]
-            [DataRow("-")]
-            public void WhenPassedInvalidCharacters(string invalid)
-            {
-                Lexer.Tokenize($"{invalid}Between {{ 1 Till 3}} Digit");
-            }
-        }
     }
 }

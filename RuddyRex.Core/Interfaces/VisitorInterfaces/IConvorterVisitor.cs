@@ -6,9 +6,9 @@ namespace RuddyRex.Core.Interfaces.VisitorInterfaces;
 
 public interface IConvorterVisitor
 {
-    IRegexNode ConvertToChar(ICharValueNode characterNode);
-    IRegexNode ConvertToCharacterClass(IParentNode rangeNode);
-    IRegexNode ConvertToGroup(IParentNode groupNode);
+    IRegexNode ConvertChar(ICharValueNode characterNode);
+    IRegexNode ConvertCharacterClass(IParentNode rangeNode);
+    IRegexNode ConvertGroup(IParentNode groupNode);
     IRegexNode ConvertKeywordExpression(IExpressionNode keywordNode);
     IRegexNode ConvertKeyword(IStringValueNode keywordNode);
     IRegexNode ConvertRange(IParentNode rangeNode);

@@ -20,9 +20,7 @@ namespace RuddyRex.Integration.Tests
             string expected = "[1-9]{2,4}-?[1-9]{2,4}-?[1-9]{2,4}-?[1-9]{4}";
             var tokens = Lexer.Tokenize(input);
             var ast = Parser.ParseTree(tokens);
-            IConvorterVisitor convorterVisitor = new RegexConvertorVisitor();
-            var transformer = new Transformer(convorterVisitor);
-            var regexTree = transformer.TransformTree(ast);
+            var regexTree = Transformer.TransformTree(ast);
             var optimizedTree = CodeOptimizer.OptimizeTree(regexTree);
             var actual = CodeGenerator.GenerateCode(optimizedTree);
 
@@ -38,9 +36,7 @@ namespace RuddyRex.Integration.Tests
             string expected = "Tracking ID: *([a-zA-Z]*) *";
             var tokens = Lexer.Tokenize(input);
             var ast = Parser.ParseTree(tokens);
-            IConvorterVisitor convorterVisitor = new RegexConvertorVisitor();
-            var transformer = new Transformer(convorterVisitor);
-            var regexTree = transformer.TransformTree(ast);
+            var regexTree = Transformer.TransformTree(ast);
             var optimizedTree = CodeOptimizer.OptimizeTree(regexTree);
             var actual = CodeGenerator.GenerateCode(optimizedTree);
 
@@ -56,9 +52,7 @@ namespace RuddyRex.Integration.Tests
             string expected = "([1-9]{3}) [1-9]{3}-?[1-9]{4}";
             var tokens = Lexer.Tokenize(input);
             var ast = Parser.ParseTree(tokens);
-            IConvorterVisitor convorterVisitor = new RegexConvertorVisitor();
-            var transformer = new Transformer(convorterVisitor);
-            var regexTree = transformer.TransformTree(ast);
+            var regexTree = Transformer.TransformTree(ast);
             var optimizedTree = CodeOptimizer.OptimizeTree(regexTree);
             var actual = CodeGenerator.GenerateCode(optimizedTree);
 
@@ -79,9 +73,7 @@ namespace RuddyRex.Integration.Tests
             string expected = "([a-zA-Z]{3,}) ([1-9]{1,3}[a-zA-Z]{1},?) (.+,?) ([1-9]{4})|([a-zA-Z]{3,}) ([1-9]{1,3}[a-zA-Z]{1},?) ([1-9]{4})";
             var tokens = Lexer.Tokenize(input);
             var ast = Parser.ParseTree(tokens);
-            IConvorterVisitor convorterVisitor = new RegexConvertorVisitor();
-            var transformer = new Transformer(convorterVisitor);
-            var regexTree = transformer.TransformTree(ast);
+            var regexTree = Transformer.TransformTree(ast);
             var optimizedTree = CodeOptimizer.OptimizeTree(regexTree);
             var actual = CodeGenerator.GenerateCode(optimizedTree);
 
@@ -96,9 +88,7 @@ namespace RuddyRex.Integration.Tests
             string expected = ",([a-zA-Z]{1,3})";
             var tokens = Lexer.Tokenize(input);
             var ast = Parser.ParseTree(tokens);
-            IConvorterVisitor convorterVisitor = new RegexConvertorVisitor();
-            var transformer = new Transformer(convorterVisitor);
-            var regexTree = transformer.TransformTree(ast);
+            var regexTree = Transformer.TransformTree(ast);
             var optimizedTree = CodeOptimizer.OptimizeTree(regexTree);
             var actual = CodeGenerator.GenerateCode(optimizedTree);
 

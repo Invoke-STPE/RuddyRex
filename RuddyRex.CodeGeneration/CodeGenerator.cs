@@ -14,31 +14,31 @@ namespace RuddyRex.CodeGeneration
                 switch (node.Type)
                 {
                     case RegexType.Group:
-                        IRegexNode regexGroup = (IRegexNode)node;
+                        IRegexNode regexGroup = node;
                         output += regexGroup.ToString();
                         break;
                     case RegexType.CharacterClass:
-                        IRegexNode regexCharacterClass = (IRegexNode)node;
+                        IRegexNode regexCharacterClass = node;
                         output += regexCharacterClass.ToString();
                         break;
                     case RegexType.Char:
-                        IRegexNode regexChar = (IRegexNode)node;
+                        IRegexNode regexChar = node;
                         output += regexChar.ToString();
                         break;
                     case RegexType.Repetition:
-                        IRegexNode regexRepetition = (IRegexNode)node;
+                        IRegexNode regexRepetition = node;
                         output += regexRepetition.ToString();
                         break;
                     case RegexType.Quantifier:
-                        IRegexNode regexQuantifier = (IRegexNode)node;
+                        IRegexNode regexQuantifier = node;
                         output += regexQuantifier.ToString();
                         break;
                     case RegexType.Alternative:
-                        IRegexNode regexAlternative = (IRegexNode)node;
+                        IRegexNode regexAlternative = node;
                         output += regexAlternative.ToString();
                         break;
                     case RegexType.ClassRange:
-                        IRegexNode regexClassRange = (IRegexNode)node;
+                        IRegexNode regexClassRange = node;
                         output += regexClassRange.ToString();
                         break;
                     default:
