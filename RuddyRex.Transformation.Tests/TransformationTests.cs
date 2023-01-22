@@ -468,7 +468,7 @@ namespace RuddyRex.Transformation.Tests
                                                 {
                                                     new RegexClassRange()
                                                     {
-                                                        From = new RegexChar( ){ Kind = "simple", Value = "1", Symbol = '1'},
+                                                        From = new RegexChar( ){ Kind = "simple", Value = "0", Symbol = '0'},
                                                         To = new RegexChar( ){ Kind = "simple", Value = "9", Symbol = '9'}
                                                     }
                                                 }
@@ -585,7 +585,7 @@ namespace RuddyRex.Transformation.Tests
                                                 {
                                                     new RegexClassRange()
                                                     {
-                                                        From = new RegexChar( ){ Kind = "simple", Value = "1", Symbol = '1'},
+                                                        From = new RegexChar( ){ Kind = "simple", Value = "0", Symbol = '0'},
                                                         To = new RegexChar( ){ Kind = "simple", Value = "9", Symbol = '9'}
                                                     }
                                                 }

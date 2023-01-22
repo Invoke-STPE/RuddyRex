@@ -19,13 +19,15 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "RuddyRex.LexerLayer.Tests",
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "RuddyRex.Parserlayer.Tests", "RuddyRex.Parserlayer.Tests\RuddyRex.Parserlayer.Tests.csproj", "{294390D3-C119-46EB-9292-DB36EEF86E59}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "RuddyRex.Transformation.Tests", "RuddyRex.Transformation.Tests\RuddyRex.Transformation.Tests.csproj", "{6B5984C6-5596-4E89-BF22-4557928C2F3B}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "RuddyRex.Transformation.Tests", "RuddyRex.Transformation.Tests\RuddyRex.Transformation.Tests.csproj", "{6B5984C6-5596-4E89-BF22-4557928C2F3B}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "RuddyRex.CodeOptimizing.Tests", "RuddyRex.CodeOptimizing.Tests\RuddyRex.CodeOptimizing.Tests.csproj", "{5D787986-8541-4C0C-98CA-BED4E48C5992}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "RuddyRex.CodeOptimizing.Tests", "RuddyRex.CodeOptimizing.Tests\RuddyRex.CodeOptimizing.Tests.csproj", "{5D787986-8541-4C0C-98CA-BED4E48C5992}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "RuddyRex.CodeGeneration.Tests", "RuddyRex.CodeGeneration.Tests\RuddyRex.CodeGeneration.Tests.csproj", "{2E49338D-63DC-4257-9DC9-1CE4011C06E6}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "RuddyRex.CodeGeneration.Tests", "RuddyRex.CodeGeneration.Tests\RuddyRex.CodeGeneration.Tests.csproj", "{2E49338D-63DC-4257-9DC9-1CE4011C06E6}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "RuddyRex.Integration.Tests", "RuddyRex.Integration.Tests\RuddyRex.Integration.Tests.csproj", "{AB1590DF-32FB-4794-8DC2-AEDDC81FD639}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "RuddyRex.Integration.Tests", "RuddyRex.Integration.Tests\RuddyRex.Integration.Tests.csproj", "{AB1590DF-32FB-4794-8DC2-AEDDC81FD639}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "RuddyRex.WebApp", "RuddyRex.WebApp\RuddyRex.WebApp.csproj", "{C5E7D0EF-B929-4A76-B38F-24B9523E7BF1}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -77,6 +79,10 @@ Global
 		{AB1590DF-32FB-4794-8DC2-AEDDC81FD639}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{AB1590DF-32FB-4794-8DC2-AEDDC81FD639}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{AB1590DF-32FB-4794-8DC2-AEDDC81FD639}.Release|Any CPU.Build.0 = Release|Any CPU
+		{C5E7D0EF-B929-4A76-B38F-24B9523E7BF1}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{C5E7D0EF-B929-4A76-B38F-24B9523E7BF1}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{C5E7D0EF-B929-4A76-B38F-24B9523E7BF1}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{C5E7D0EF-B929-4A76-B38F-24B9523E7BF1}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

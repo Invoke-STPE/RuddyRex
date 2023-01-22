@@ -17,7 +17,7 @@ namespace RuddyRex.Integration.Tests
                             Between {2 till 4} digit ""-""{0 till 1}
                             Between {2 till 4} digit ""-""{0 till 1}
                             Exactly {4} digit";
-            string expected = "[1-9]{2,4}-?[1-9]{2,4}-?[1-9]{2,4}-?[1-9]{4}";
+            string expected = "[0-9]{2,4}-?[0-9]{2,4}-?[0-9]{2,4}-?[0-9]{4}";
             var tokens = Lexer.Tokenize(input);
             var ast = Parser.ParseTree(tokens);
             var regexTree = Transformer.TransformTree(ast);
@@ -49,7 +49,7 @@ namespace RuddyRex.Integration.Tests
                             (Exactly {3} digit) space
                             Exactly {3} digit ""-""{0 till 1}
                             Exactly {4} digit";
-            string expected = "([1-9]{3}) [1-9]{3}-?[1-9]{4}";
+            string expected = "([0-9]{3}) [0-9]{3}-?[0-9]{4}";
             var tokens = Lexer.Tokenize(input);
             var ast = Parser.ParseTree(tokens);
             var regexTree = Transformer.TransformTree(ast);
@@ -70,7 +70,7 @@ namespace RuddyRex.Integration.Tests
                             (Between {3 till} letter) space
                             (Between {1 till 3} digit Exactly {1} letter "",""{0 till 1}) space
                             (Exactly {4} digit)";
-            string expected = "([a-zA-Z]{3,}) ([1-9]{1,3}[a-zA-Z]{1},?) (.+,?) ([1-9]{4})|([a-zA-Z]{3,}) ([1-9]{1,3}[a-zA-Z]{1},?) ([1-9]{4})";
+            string expected = "([a-zA-Z]{3,}) ([0-9]{1,3}[a-zA-Z]{1},?) (.+,?) ([0-9]{4})|([a-zA-Z]{3,}) ([0-9]{1,3}[a-zA-Z]{1},?) ([0-9]{4})";
             var tokens = Lexer.Tokenize(input);
             var ast = Parser.ParseTree(tokens);
             var regexTree = Transformer.TransformTree(ast);

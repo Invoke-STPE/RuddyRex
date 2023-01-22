@@ -1,4 +1,5 @@
-﻿using RuddyRex.Core.Interfaces.NodeInterface;
+﻿using RuddyRex.Core;
+using RuddyRex.Core.Interfaces.NodeInterface;
 using RuddyRex.Core.Interfaces.RegexInterface;
 using RuddyRex.Core.Types;
 
@@ -12,7 +13,7 @@ public class RegexCharacterClass : IRegexNode
     }
     public RegexCharacterClass(IExpressionNode keywordNode)
     {
-        if (keywordNode.ValueType.Value == "letter")
+        if (RuddyRexDictionary.IsValidReturnValue(keywordNode.ValueType.Value))
         {
             Expressions = new List<IRegexNode>()
             {
@@ -29,7 +30,7 @@ public class RegexCharacterClass : IRegexNode
             {
                 new RegexClassRange()
                 {
-                    From = new RegexChar() { Value = "1", Symbol = '1'},
+                    From = new RegexChar() { Value = "0", Symbol = '0'},
                     To = new RegexChar() {Value = "9", Symbol = '9'},
                 }
             };
