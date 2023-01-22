@@ -1,0 +1,62 @@
+﻿@page "/"
+@using System.Timers;
+
+<PageTitle>Index</PageTitle>
+
+<h1>RuddyRex</h1>
+
+<div class="row">
+<label for="story">Input your RuddyRex expression:</label>
+
+<textarea @bind="sourceCode" @bind:event="oninput" @onkeyup="ResetTimer" rows="5" cols="33">
+</textarea>
+</div>
+<div class="row w-25">
+    <h2>Compiled expression in regular expression:</h2>
+    @if(error)
+    {
+        <p class="text-danger">@errorMessage</p>
+    }
+    else 
+    {
+            <p>@compiledRuddyRex</p>
+    }
+</div>
+@code{
+    private string sourceCode;
+    private string compiledRuddyRex;
+    private string errorMessage;
+    private Timer aTimer = default!;
+    private bool error = false;
+
+    protected override void OnInitialized()
+    {
+        aTimer = new Timer(1000);
+        aTimer.Elapsed += CompileSource;
+        aTimer.AutoReset = false;
+    }
+    private void ResetTimer(KeyboardEventArgs e)
+    {
+        aTimer.Stop();
+        aTimer.Start();
+    }
+    private async void CompileSource(Object? source, ElapsedEventArgs e)
+    {
+        try
+        {
+            var tokens = Lexer.Tokenize(sourceCode);
+            var ast = Parser.ParseTree(tokens);
+            var regexTree = Transformer.TransformTree(ast);
+            var optimizedTree = CodeOptimizer.OptimizeTree(regexTree);
+            compiledRuddyRex = CodeGenerator.GenerateCode(optimizedTree);
+            error = false;
+        }
+        catch (Exception ex)
+        {
+            error = true;
+            errorMessage = ex.Message;
+        }
+        
+        await InvokeAsync(StateHasChanged);
+    }
+}

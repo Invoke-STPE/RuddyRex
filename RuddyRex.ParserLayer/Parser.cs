@@ -226,7 +226,7 @@ public static class Parser
         {
             return new AbstractTree<INode>() { Type = keyword.Value };
         }
-        throw new InvalidKeywordException($"{keyword.Value} Is not a valid keyword Identifier");
+        throw new InvalidKeywordException($"{keyword.Value} is not a valid start keyword, try Match");
     }
 }
 
