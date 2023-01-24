@@ -27,4 +27,9 @@ public class RangeNode : IParentNode
     {
         return visitor.ConvertRange(this);
     }
+
+    public override string ToString()
+    {
+        return Type.ToString();
+    }
 }

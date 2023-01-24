@@ -16,4 +16,8 @@ public record CharacterNode : ICharValueNode
     {
         return visitor.ConvertChar(this);
     }
+    public override string ToString()
+    {
+        return Type.ToString();
+    }
 }

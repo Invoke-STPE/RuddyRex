@@ -13,4 +13,8 @@ public class NullNode : INode
     {
         throw new NotImplementedException();
     }
+    public override string ToString()
+    {
+        return Type.ToString();
+    }
 }

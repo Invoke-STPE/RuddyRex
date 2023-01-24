@@ -1,5 +1,13 @@
 ﻿@page "/"
 @using System.Timers;
+@using RuddyRex.Core.Interfaces.NodeInterface
+@using RuddyRex.Core.Interfaces.RegexInterface
+@using RuddyRex.Core.Interfaces.TokenInterfaces
+@using System.Text.Json
+@using RuddyRex.Core.Types
+@using RuddyRex.ParserLayer.Models
+@using RuddyRex.ParserLayer.ErrorHandling
+@using RuddyRex.Transformation.Models
 
 <PageTitle>Index</PageTitle>
 
@@ -7,27 +15,32 @@
 
 <div class="row">
 <label for="story">Input your RuddyRex expression:</label>
-
+<div class="row">
+    <div class="col">
+            <div class="btn-group" role="group" aria-label="Basic example">
+                <button type="button" class="btn btn-outline-primary" @onclick="InsertCPRRegex">CPR nummere</button>
+                <button type="button" class="btn btn-outline-primary" @onclick="InsertOptimize">Optimize Expression</button>
+                <button type="button" class="btn btn-outline-primary" @onclick="InsertPanic">Panic Recovery</button>
+            </div>
+    </div>
+</div>
 <textarea @bind="sourceCode" @bind:event="oninput" @onkeyup="ResetTimer" rows="5" cols="33">
 </textarea>
 </div>
-<div class="row w-25">
+<div class="row w-50">
     <h2>Compiled expression in regular expression:</h2>
-    @if(error)
-    {
-        <p class="text-danger">@errorMessage</p>
-    }
-    else 
-    {
-            <p>@compiledRuddyRex</p>
-    }
+
+        @foreach (var error in errorMessages)
+        {
+            <p class="text-danger">@error.Message</p>
+        }
+        <p>@compiledRuddyRex</p>
 </div>
 @code{
     private string sourceCode;
     private string compiledRuddyRex;
-    private string errorMessage;
+    private List<Exception> errorMessages = new();
     private Timer aTimer = default!;
-    private bool error = false;
 
     protected override void OnInitialized()
     {
@@ -42,21 +55,199 @@
     }
     private async void CompileSource(Object? source, ElapsedEventArgs e)
     {
-        try
-        {
-            var tokens = Lexer.Tokenize(sourceCode);
-            var ast = Parser.ParseTree(tokens);
-            var regexTree = Transformer.TransformTree(ast);
-            var optimizedTree = CodeOptimizer.OptimizeTree(regexTree);
-            compiledRuddyRex = CodeGenerator.GenerateCode(optimizedTree);
-            error = false;
-        }
-        catch (Exception ex)
-        {
-            error = true;
-            errorMessage = ex.Message;
-        }
-        
+        RuddyRexError.ClearErrors();
+        var tokens = Lexer.Tokenize(sourceCode);
+        Print(tokens);
+        Console.ReadLine();
+        var ast = Parser.ParseTree(tokens);
+        PrintTree(ast, "","RuddyRex Syntax Tree");
+        Console.ReadLine();
+        var regexTree = Transformer.TransformTree(ast);
+        PrintTree(regexTree, "", "Regex Syntax Tree");
+        Console.ReadLine();
+        var optimizedTree = CodeOptimizer.OptimizeTree(regexTree);
+        PrintTree(optimizedTree, "", "OptimizedTree Syntax Tree");
+        Console.ReadLine();
+        compiledRuddyRex = CodeGenerator.GenerateCode(optimizedTree);
+        errorMessages = RuddyRexError.GetErrors();
+
         await InvokeAsync(StateHasChanged);
+    }
+
+    private async void InsertCPRRegex()
+    {
+        sourceCode = @"Match
+                        Between {2 till 4} digit ""-""{0 till 1}
+                        Between {2 till 4} digit ""-""{0 till 1}
+                        Between {2 till 4} digit ""-""{0 till 1}
+                        Exactly {4} digit";
+        await InvokeAsync(StateHasChanged);
+        CompileSource(null, null);
+    }
+    private async void InsertOptimize()
+    {
+        sourceCode = @"Match
+                        (""?"") (Between {1 till 3} letter)";
+        await InvokeAsync(StateHasChanged);
+        CompileSource(null, null);
+    }
+
+    private async void InsertPanic(){
+        sourceCode = @"Match
+                            ""Tracking ID:"" space {0 till}
+                            (Beteen {0 till} letter) space{0 till}";
+        await InvokeAsync(StateHasChanged);
+        CompileSource(null, null);
+    }
+
+    private void Print(List<IToken> tokens)
+    {
+        foreach (var token in tokens)
+        {
+            Console.WriteLine(token);
+        }
+
+        Console.WriteLine("==================================");
+    }
+
+    private void PrintTree(AbstractTree<INode> tree, string indent, string message)
+    {
+        Console.WriteLine("==================================");
+        Console.WriteLine($"========{message}=========");
+        Console.WriteLine("==================================");
+        Console.WriteLine(indent + "+- " + "Root");
+        indent += "   ";
+
+        foreach (var node in tree.Nodes)
+        {
+            Print(node, indent);
+        }
+    }
+
+    private void Print(INode node, string indent)
+    {
+        //Console.Write(indent + "+- " + node.Type);
+        indent += "   ";
+        switch (node.Type)
+        {
+            case NodeType.StringLiteral:
+                var stringNode = (StringNode)node;
+                Console.WriteLine(indent + "+- " + node.Type);
+                break;
+            case NodeType.NumberLiteral:
+                var numberNode = (NumberNode)node;
+                Console.WriteLine(indent + "+- " + node.Type);
+                break;
+            case NodeType.GroupExpression:
+                var groupNode = (GroupNode)node;
+                Console.WriteLine(indent + "+- " + node.Type);
+                foreach (var child in groupNode.Nodes)
+                {
+                    Print(child, indent);
+                }
+                break;
+            case NodeType.KeywordExpression:
+                var expressionNode = (KeywordExpressionNode)node;
+                Console.WriteLine(indent + "+- " + node.Type);
+                Print(expressionNode.Parameter, indent);
+                Print(expressionNode.ValueType, indent);
+                break;
+            case NodeType.RangeExpression:
+                var rangeNode = (RangeNode)node;
+                Console.WriteLine(indent + "+- " + node.Type);
+                foreach (var child in rangeNode.Nodes)
+                {
+                    Print(child, indent);
+                }
+                break;
+            case NodeType.CharacterRange:
+                var characterRangeNode = (CharacterRangeNode)node;
+                Console.WriteLine(indent + "+- " + node.Type);
+                foreach (var child in characterRangeNode.Nodes)
+                {
+                    Print(child, indent);
+                }
+                break;
+            case NodeType.CharacterNode:
+                var characterNode = (CharacterNode)node;
+                Console.WriteLine(indent + "+- " + node.Type);
+                break;
+            case NodeType.Keyword:
+                var keywordNode = (KeywordNode)node;
+                Console.WriteLine(indent + "+- " + node.Type);
+                break;
+            default:
+                break;
+        }
+
+    }
+
+    private void PrintTree(AbstractTree<IRegexNode> tree, string indent, string message)
+    {
+        Console.WriteLine("==================================");
+        Console.WriteLine($"========{message}=========");
+        Console.WriteLine("==================================");
+        Console.WriteLine(indent + "+- " + "Root");
+        indent +=  "   ";
+
+        foreach (var node in tree.Nodes)
+        {
+            Print(node, indent);
+        }
+    }
+
+    private void Print(IRegexNode node, string indent)
+    {
+        indent += "   ";
+        switch (node.Type)
+        {
+            case RegexType.Group:
+                var groupNode = (RegexGroup)node;
+                Console.WriteLine(indent + "+- " + node.Type);
+                foreach (var child in groupNode.Expressions)
+                {
+                    Print(child, indent);
+                }
+                break;
+            case RegexType.CharacterClass:
+                var characterRangeNode = (RegexCharacterClass)node;
+                Console.WriteLine(indent + "+- " + node.Type);
+                foreach (var child in characterRangeNode.Expressions)
+                {
+                    Print(child, indent);
+                }
+                break;
+            case RegexType.Char:
+                var charNode = (RegexChar)node;
+                Console.WriteLine(indent + "+- " + node.Type);
+                break;
+            case RegexType.Repetition:
+                var repetitionNode = (RegexRepetition)node;
+                Console.WriteLine(indent + "+- " + node.Type);
+                Print(repetitionNode.Expression, indent);
+                Print(repetitionNode.Quantifier, indent);
+                break;
+            case RegexType.Quantifier:
+                var rangeNode = (RegexQuantifier)node;
+                Console.WriteLine(indent + "+- " + node.Type);
+                break;
+            case RegexType.Alternative:
+                var alternativeNode = (RegexAlternative)node;
+                Console.WriteLine(indent + "+- " + node.Type);
+                foreach (var child in alternativeNode.Expressions)
+                {
+                    Print(child, indent);
+                }
+                break;
+            case RegexType.ClassRange:
+                var classNode = (RegexClassRange)node;
+                Console.WriteLine(indent + "+- " + node.Type);
+                Print(classNode.From, indent);
+                Print(classNode.To, indent);
+                break;
+            default:
+                break;
+        }
+
     }
 }

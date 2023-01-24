@@ -36,4 +36,9 @@ public class KeywordExpressionNode : IExpressionNode
     {
         return Keyword.ToLower() == "exactly";
     }
+
+    public override string ToString()
+    {
+        return Type.ToString();
+    }
 }

@@ -15,4 +15,8 @@ public record NumberNode : INumberNode
     {
         throw new NotImplementedException();
     }
+    public override string ToString()
+    {
+        return Type.ToString();
+    }
 }

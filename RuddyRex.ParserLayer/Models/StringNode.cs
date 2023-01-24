@@ -15,4 +15,8 @@ public record StringNode : IStringValueNode
     {
         return visitor.ConvertString(this);
     }
+    public override string ToString()
+    {
+        return Type.ToString();
+    }
 }
