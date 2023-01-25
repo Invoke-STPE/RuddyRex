@@ -5,6 +5,7 @@ using RuddyRex.Core.Interfaces.TokenInterfaces;
 using RuddyRex.Core.Types;
 using RuddyRex.ParserLayer.DTO;
 using RuddyRex.ParserLayer.Models;
+using RuddyRex.ParserLayer.ErrorHandling;
 
 namespace RuddyRex.ParserLayer;
 
@@ -12,6 +13,7 @@ public static class Parser
 {
     private static Queue<IToken> _tokens;
     static Stack<IToken> brackets;
+    private static IToken currentToken = null;
 
     public static AbstractTree<INode> ParseTree(List<IToken> tokens)
     {
@@ -21,14 +23,23 @@ public static class Parser
         while (PeekToken().Type is not TokenType.None)
         {
             IToken _currentToken = NextToken();
-            INode node = AnalyseToken(_currentToken);
-            if (node.Type is not NodeType.None)
+
+            try
             {
-                tree.Nodes.Add(node);
+                INode node = AnalyseToken(_currentToken);
+                if (node.Type is not NodeType.None)
+                {
+                    tree.Nodes.Add(node);
+                }
             }
+            catch (Exception ex)
+            {
+                RuddyRexError.Report(ex);
+            }
+            
 
         }
-        if (brackets.Count > 0) throw new ExpectedBracketException("Expected bracket pair, but found none."); // TODO: exception skal ændres 
+        if (brackets.Count > 0) RuddyRexError.Report(new ExpectedBracketException("Expected bracket pair, but found none."));
         return tree;
     }
 
@@ -71,32 +82,41 @@ public static class Parser
     private static INode AnalyseKeywordIdentifier(IToken token)
     {
         ITokenString tokenKeyword = (ITokenString)token;
-        if (tokenKeyword.Value.ToLower() == "space")
+        try
         {
-            return CreateKeyword(tokenKeyword.Value);
+            if (tokenKeyword.Value.ToLower() == "space")
+            {
+                return CreateKeyword(tokenKeyword.Value);
+            }
+            if (tokenKeyword.Value.ToLower() == "any")
+            {
+                return CreateKeyword(tokenKeyword.Value);
+            }
+            if (tokenKeyword.Value.ToLower() == "alternate")
+            {
+                return CreateKeyword(tokenKeyword.Value);
+            }
+            if (tokenKeyword.Value.ToLower() == "till")
+            {
+                return CreateKeyword(tokenKeyword.Value);
+            }
+            if (RuddyRexDictionary.IsValidKeyword(tokenKeyword.Value))
+            {
+                return CreateKeywordExpression(token);
+            }
+            if (RuddyRexDictionary.IsValidReturnValue(tokenKeyword.Value))
+            {
+                return CreateValueType(token);
+            }
+            throw new InvalidKeywordException($"Invalid keyword: {tokenKeyword.Value} is not regonized as a keyword");
         }
-        if (tokenKeyword.Value.ToLower() == "any")
+        catch (Exception)
         {
-            return CreateKeyword(tokenKeyword.Value);
-        }
-        if (tokenKeyword.Value.ToLower() == "alternate")
-        {
-            return CreateKeyword(tokenKeyword.Value);
-        }
-        if (tokenKeyword.Value.ToLower() == "till")
-        {
-            return CreateKeyword(tokenKeyword.Value);
-        }
-        if (RuddyRexDictionary.IsValidKeyword(tokenKeyword.Value))
-        {
-            return CreateKeywordExpression(token);
-        }
-        if (RuddyRexDictionary.IsValidReturnValue(tokenKeyword.Value))
-        {
-            return CreateValueType(token);
+            
+            Synchronize();
+            throw;
         }
         
-        return tokenKeyword.Value.Length == 0 ? throw new InvalidRangeExpression("Invalid range") : throw new InvalidKeywordException("Keyword not regonized");
     }
     private static INode CreateKeyword(string value)
     {
@@ -105,15 +125,44 @@ public static class Parser
     private static INode CreateKeywordExpression(IToken token)
     {
         ITokenString tokenKeyword = (ITokenString)token;
-
         KeywordExpressionNode keywordNode = new KeywordExpressionNode()
         {
             Keyword = tokenKeyword.Value,
             Parameter = AnalyseToken(NextToken()),
-            ValueType = (KeywordNode)AnalyseToken(NextToken())
+
+            ValueType = PeekToken().Type != TokenType.None ? (KeywordNode)AnalyseToken(NextToken()) : throw new InvalidKeywordException("Invalid keyword between range expression")
         };
 
         return keywordNode;
+    }
+
+    private static void Synchronize()
+    {
+        Console.WriteLine($"Error found at token {currentToken.Type}, starting synchronization");
+        Console.WriteLine("Skipping tokens untill synchronization point is found...");
+        while (_tokens.Count != 0)
+        {
+            switch (PeekToken().Type)
+            {
+                case TokenType.None:
+                case TokenType.OpeningParenthesis:
+                case TokenType.OpeningSquareBracket:
+                case TokenType.ClosingSquareBracket:
+                case TokenType.StringLiteral:
+                    Console.WriteLine($"Found synchronization point at: {currentToken.Type}");
+                    return;
+                case TokenType.KeywordIdentifier:
+                    ITokenString tokenString = (ITokenString)PeekToken();
+                    if (RuddyRexDictionary.IsValidStartKeyword(tokenString.Value))
+                    {
+                        Console.WriteLine($"Found synchronization point at: {currentToken.Type}");
+                        return;
+                    }
+                    break;
+            }
+            NextToken();
+            Console.WriteLine($"{currentToken.Type} is not a synchronization point");
+        }
     }
 
     private static INode CreateValueType(IToken token)
@@ -126,7 +175,7 @@ public static class Parser
     private static INode AnalyseClosingCurlyBracket()
     {
         if (brackets.Count == 0 || brackets.Pop().Type != TokenType.OpeningCurlyBracket) 
-            throw new ExpectedBracketException("Expected bracket pair, but found none.");
+            throw new ExpectedBracketException("Expected closing '}', but found none.");
 
         if (PeekToken().Type == TokenType.ClosingParenthesis)
             return new NullNode();
@@ -149,7 +198,7 @@ public static class Parser
                 keyword = (KeywordNode)AnalyseToken(NextToken());
                 if (keyword.Value.ToLower() != "till")
                 {
-                    throw new InvalidRangeExpression("Invalid keyword in range expression");
+                    throw new InvalidRangeExpression($"Invalid keyword {keyword.Value} is not regonized as a valid keyword");
                 }
             }
         }
@@ -157,7 +206,7 @@ public static class Parser
         {
             if (keyword?.Value.ToLower() != "till")
             {
-                throw new InvalidRangeExpression("Invalid keyword in range expression");
+                throw new InvalidRangeExpression($"Invalid keyword {keyword.Value} is not regonized as a valid keyword");
             }
         }
         if (rangeNode.Nodes.Count == 0) 
@@ -210,6 +259,7 @@ public static class Parser
     {
         if (_tokens.TryDequeue(out IToken result))
         {
+            currentToken = result;
             return result;
         }
         return new NullValueToken();
@@ -222,7 +272,7 @@ public static class Parser
     private static AbstractTree<INode> CreateAST(IToken? token)
     {
         ITokenString keyword = (ITokenString)token;
-        if (RuddyRexDictionary.IsValidStartKeyword((keyword.Value)))
+        if (RuddyRexDictionary.IsValidBeginKeyword((keyword.Value)))
         {
             return new AbstractTree<INode>() { Type = keyword.Value };
         }

@@ -468,7 +468,7 @@ namespace RuddyRex.Parserlayer.Tests
                 Parser.ParseTree(tokens);
             }
             [TestMethod]
-            [ExpectedException(typeof(InvalidRangeExpression))]
+            [ExpectedException(typeof(InvalidKeywordException))]
             [DataRow("Match Between { }")]
             [DataRow("Match Exactly { }")]
             public void WhenPassedEmptyRangeExpressionKeyword(string input)
@@ -477,7 +477,7 @@ namespace RuddyRex.Parserlayer.Tests
                 Parser.ParseTree(tokens);
             }
             [TestMethod]
-            [ExpectedException(typeof(InvalidRangeExpression))]
+            [ExpectedException(typeof(InvalidKeywordException))]
             [DataRow("Match Between {1 2}")]
             public void WhenPassedTwoNumberRangeExpressionWithoutKeyword(string input)
             {

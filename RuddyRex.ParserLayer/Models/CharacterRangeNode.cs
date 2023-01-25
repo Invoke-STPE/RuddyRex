@@ -28,4 +28,9 @@ public class CharacterRangeNode : IParentNode
     {
         return HashCode.Combine(Type, Nodes);
     }
+
+    public override string ToString()
+    {
+        return Type.ToString();
+    }
 }

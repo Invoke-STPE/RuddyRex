@@ -27,4 +27,9 @@ public class GroupNode : IParentNode
     {
         return visitor.ConvertGroup(this);
     }
+
+    public override string ToString()
+    {
+        return Type.ToString();
+    }
 }
